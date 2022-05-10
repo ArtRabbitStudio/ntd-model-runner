@@ -39,21 +39,22 @@ def run( runInfo, DB, useCloudStorage ):
         cloudModule = gcs if useCloudStorage else None
     )
 
+    data = []
     for sim_no in range( len( results ) ):
-        data = []
-        print( f"-> saving sim_no {sim_no} for {runInfo['short']}:{runInfo['iu_code']}" )
+        print( f"-> adding sim_no {sim_no} for {runInfo['short']}:{runInfo['iu_code']} to insert list" )
         df = results[ sim_no ]
         df.drop( columns = ['species'], inplace = True )
         df[ 'disease_id' ] = runInfo[ 'disease_id' ]
         df[ 'iu_id' ] = runInfo[ 'iu_id' ]
         df[ 'sim_no' ] = sim_no
-        print( df )
+        # print( df )
         df_list = df.values
         for sim_row in df.values:
             data.append( tuple( sim_row ) )
 
-        DB.cursor().executemany( insert_result_sql, data )
-        DB.commit()
+    print( f"-> inserting {len(data)} results ({len(results)} simulations) into db" )
+    DB.cursor().executemany( insert_result_sql, data )
+    DB.commit()
 
 def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
                 demogName='Default', paramFileName='sch_example.txt', resultOutputPath=None, cloudModule=None ):
@@ -108,7 +109,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
     num_cores = multiprocessing.cpu_count()
 
     # number of simulations to run
-    numSims = 1 #num_cores * 3
+    numSims = 4 #num_cores * 3
     print( f'-> running {numSims} simulations on {num_cores} cores' )
     #numSims = 2
 
