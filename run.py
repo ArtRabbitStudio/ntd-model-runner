@@ -1,12 +1,36 @@
 import sys
+import signal
+
+from optparse import OptionParser
 
 # local imports
 from ntd_model_runner import run
 from db import db
 
+# get CLI options
+parser = OptionParser()
+parser.add_option( '-i', '--iu-limit', dest='iuLimit', default=1 )
+parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
+
+( options, args ) = parser.parse_args()
+
+iuLimit = int( options.iuLimit )
+numSims = int( options.numSims )
+
+print( f"-> running {numSims} simulations for {iuLimit} IUs" )
+
 # instantiate local db module
 DB = db()
 
+# handle exits gracefully
+def handler( signum, frame ):
+    DB = None
+    sys.exit()
+
+# register ctrl-c handler
+signal.signal( signal.SIGINT, handler )
+
+# sql statements
 runs_sql = '''
 SELECT d.type, d.species, d.short, i.code AS iu_code, d.id AS disease_id, i.id AS iu_id
 FROM diseases d, ius i, ius_diseases i_d
@@ -21,18 +45,15 @@ WHERE disease_id = %s
 AND iu_id = %s
 '''
 
-# maybe get number of runs from args
-limit = int( sys.argv[ 1 ] ) if len( sys.argv ) > 1 else 1
-
 # get the runs
-disease_iu_combos = DB.query( runs_sql, ( limit, ) )
+disease_iu_combos = DB.query( runs_sql, ( iuLimit, ) )
 print( f'-> found {DB.cursor().rowcount} disease/IU combos' )
 
 # track current run
 last_iu_combo = None
 
 # cloud or local CSV/pickle files
-useCloudStorage = True
+useCloudStorage = False
 
 # run the runs
 for( runInfo ) in DB.cursor():
@@ -47,7 +68,7 @@ for( runInfo ) in DB.cursor():
         DB.query( delete_runs_sql, ( d_id, i_id, ) )
         DB.commit()
         
-    run( runInfo = runInfo, DB = DB, useCloudStorage = useCloudStorage )
+    run( runInfo = runInfo, numSims = numSims, DB = DB, useCloudStorage = useCloudStorage )
     last_iu_combo = new_iu_combo
     sys.exit()
         

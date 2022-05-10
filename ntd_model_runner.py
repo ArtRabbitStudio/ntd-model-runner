@@ -16,7 +16,7 @@ VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s )
 class MissingArgumentError( ValueError ):
     pass
 
-def run( runInfo, DB, useCloudStorage ):
+def run( runInfo, numSims, DB, useCloudStorage ):
 
     DISEASE_CLOUD_PATH = f'diseases/{runInfo["type"]}-{runInfo["species"].lower()}/source-data'
 
@@ -36,12 +36,14 @@ def run( runInfo, DB, useCloudStorage ):
         InSimFilePath = GcsInSimFilePath if useCloudStorage else InSimFilePath,
         RkFilePath = GcsRkFilePath if useCloudStorage else RkFilePath,
         coverageTextFileStorageName = coverageTextFileStorageName,
+        numSims = numSims,
         cloudModule = gcs if useCloudStorage else None
     )
 
-    data = []
     for sim_no in range( len( results ) ):
+
         print( f"-> adding sim_no {sim_no} for {runInfo['short']}:{runInfo['iu_code']} to insert list" )
+
         df = results[ sim_no ]
         df.drop( columns = ['species'], inplace = True )
         df[ 'disease_id' ] = runInfo[ 'disease_id' ]
@@ -49,15 +51,21 @@ def run( runInfo, DB, useCloudStorage ):
         df[ 'sim_no' ] = sim_no
         # print( df )
         df_list = df.values
+
+        data = []
         for sim_row in df.values:
             data.append( tuple( sim_row ) )
 
-    print( f"-> inserting {len(data)} results ({len(results)} simulations) into db" )
-    DB.cursor().executemany( insert_result_sql, data )
-    DB.commit()
+        print( f"-> inserting {len(data)} results for sim_no {sim_no} into db" )
+        start_time = time.time()
+        DB.cursor().executemany( insert_result_sql, data )
+        DB.commit()
+        end_time = time.time()
+        total_time = end_time - start_time
+        print( f"  -> {total_time:.3f}s" )
 
 def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
-                demogName='Default', paramFileName='sch_example.txt', resultOutputPath=None, cloudModule=None ):
+                demogName='Default', paramFileName='sch_example.txt', resultOutputPath=None, numSims=None, cloudModule=None ):
     '''
     File to load in a pickle file and associated parameters file and then
     run forward in time 23 years and give back results
@@ -66,6 +74,10 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
 
     # flag for saving results or not
     saveResults = ( resultOutputPath != None )
+
+    # number of simulations to run
+    if numSims is None:
+        raise MissingArgumentError( 'numSims' )
 
     # path to pickle file
     if InSimFilePath is None:
@@ -107,11 +119,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
 
     # count number of processors
     num_cores = multiprocessing.cpu_count()
-
-    # number of simulations to run
-    numSims = 4 #num_cores * 3
     print( f'-> running {numSims} simulations on {num_cores} cores' )
-    #numSims = 2
 
     # randomly pick indices for number of simulations
     indices = np.random.choice(a=range(200), size = numSims, replace=False)

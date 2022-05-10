@@ -65,7 +65,7 @@ CREATE TABLE `results` (
   `draw_1` double NOT NULL,
   `disease_id` bigint(20) NOT NULL,
   `iu_id` bigint(20) NOT NULL,
-  `sim_no` tinyint NOT NULL,
+  `sim_no` mediumint NOT NULL,
   PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
