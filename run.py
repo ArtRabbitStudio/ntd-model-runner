@@ -11,13 +11,15 @@ from db import db
 parser = OptionParser()
 parser.add_option( '-i', '--iu-limit', dest='iuLimit', default=1 )
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
+parser.add_option( '-c', '--cloud-storage', action='store_true', dest='useCloudStorage', default=False )
 
 ( options, args ) = parser.parse_args()
 
 iuLimit = int( options.iuLimit )
 numSims = int( options.numSims )
+useCloudStorage = options.useCloudStorage
 
-print( f"-> running {numSims} simulations for {iuLimit} IUs" )
+print( f"-> running {numSims} simulations for {iuLimit} IUs, {'' if useCloudStorage else 'not '}using cloud storage" )
 
 # instantiate local db module
 DB = db()
@@ -51,9 +53,6 @@ print( f'-> found {DB.cursor().rowcount} disease/IU combos' )
 
 # track current run
 last_iu_combo = None
-
-# cloud or local CSV/pickle files
-useCloudStorage = False
 
 # run the runs
 for( runInfo ) in DB.cursor():
