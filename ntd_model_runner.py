@@ -40,9 +40,9 @@ def run( runInfo, numSims, DB, useCloudStorage ):
         cloudModule = gcs if useCloudStorage else None
     )
 
-    for sim_no in range( len( results ) ):
+    db_start_time = time.time()
 
-        print( f"-> adding sim_no {sim_no} for {runInfo['short']}:{runInfo['iu_code']} to insert list" )
+    for sim_no in range( len( results ) ):
 
         df = results[ sim_no ]
         df.drop( columns = ['species'], inplace = True )
@@ -56,13 +56,19 @@ def run( runInfo, numSims, DB, useCloudStorage ):
         for sim_row in df.values:
             data.append( tuple( sim_row ) )
 
-        print( f"-> inserting {len(data)} results for sim_no {sim_no} into db" )
+        print( f"-> inserting {len(data)} results for sim_no {sim_no} ({runInfo['short']}:{runInfo['iu_code']}) into db" )
+
         start_time = time.time()
         DB.cursor().executemany( insert_result_sql, data )
         DB.commit()
         end_time = time.time()
         total_time = end_time - start_time
         print( f"  -> {total_time:.3f}s" )
+
+    db_end_time = time.time()
+    total_db_time = db_end_time - db_start_time
+    print( f"-> total time writing to db {total_db_time:.3f}s" )
+
 
 def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
                 demogName='Default', paramFileName='sch_example.txt', resultOutputPath=None, numSims=None, cloudModule=None ):
