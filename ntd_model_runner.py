@@ -8,9 +8,9 @@ import pickle
 import time
 import multiprocessing
 
-replace_result_sql = '''
-INSERT INTO results( Time, age_start, age_end, intensity, measure, draw_1, disease_id, iu_id )
-VALUES ( %s, %s, %s, %s, %s, %s, %s, %s )
+insert_result_sql = '''
+INSERT INTO results( Time, age_start, age_end, intensity, measure, draw_1, disease_id, iu_id, sim_no )
+VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s )
 '''
 
 class MissingArgumentError( ValueError ):
@@ -18,7 +18,7 @@ class MissingArgumentError( ValueError ):
 
 def run( runInfo, DB, useCloudStorage ):
 
-    DISEASE_CLOUD_PATH = f'diseases/{runInfo["type"]}-{runInfo["species"]}/source-data'
+    DISEASE_CLOUD_PATH = f'diseases/{runInfo["type"]}-{runInfo["species"].lower()}/source-data'
 
     iu = runInfo["iu_code"]
     region = iu[:3]
@@ -39,17 +39,21 @@ def run( runInfo, DB, useCloudStorage ):
         cloudModule = gcs if useCloudStorage else None
     )
 
-    for i in range( len( results ) ):
-        df = results[ i ]
+    for sim_no in range( len( results ) ):
+        data = []
+        print( f"-> saving sim_no {sim_no} for {runInfo['short']}:{runInfo['iu_code']}" )
+        df = results[ sim_no ]
         df.drop( columns = ['species'], inplace = True )
         df[ 'disease_id' ] = runInfo[ 'disease_id' ]
         df[ 'iu_id' ] = runInfo[ 'iu_id' ]
+        df[ 'sim_no' ] = sim_no
         print( df )
         df_list = df.values
-        for j in df.values:
-            DB.insert( replace_result_sql, tuple( j ) )
+        for sim_row in df.values:
+            data.append( tuple( sim_row ) )
 
-    DB.commit()
+        DB.cursor().executemany( insert_result_sql, data )
+        DB.commit()
 
 def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
                 demogName='Default', paramFileName='sch_example.txt', resultOutputPath=None, cloudModule=None ):
