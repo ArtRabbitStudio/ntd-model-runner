@@ -1,6 +1,8 @@
 from sch_simulation.helsim_RUN_KK import *
 from sch_simulation.helsim_FUNC_KK import *
 
+from joblib import Parallel, delayed
+
 import gcs
 import db
 
@@ -138,7 +140,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
         
     end_time = time.time()
 
-    print(end_time - start_time)
+    print( f'-> finished {numSims} simulations on {num_cores} cores in {(end_time - start_time):.3f}s' )
 
     return results
 
