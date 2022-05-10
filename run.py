@@ -11,7 +11,7 @@ from db import db
 parser = OptionParser()
 parser.add_option( '-i', '--iu-limit', dest='iuLimit', default=1 )
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
-parser.add_option( '-c', '--cloud-storage', action='store_true', dest='useCloudStorage', default=False )
+parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
 
 ( options, args ) = parser.parse_args()
 
