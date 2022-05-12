@@ -16,53 +16,56 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ius`
+-- Table structure for table `iu`
 --
 
-DROP TABLE IF EXISTS `ius`;
-CREATE TABLE `ius` (
+DROP TABLE IF EXISTS `iu`;
+CREATE TABLE `iu` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` text DEFAULT NULL,
   PRIMARY KEY(id),
-  UNIQUE KEY `uc_ius_code` (`code`) USING HASH
+  UNIQUE KEY `uc_iu_code` (`code`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Table structure for table `diseases`
+-- Table structure for table `disease`
 --
 
-DROP TABLE IF EXISTS `diseases`;
-CREATE TABLE `diseases` (
+DROP TABLE IF EXISTS `disease`;
+CREATE TABLE `disease` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(16) NOT NULL,
   `species` varchar(16) NOT NULL,
   `short` varchar(4) NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE KEY `uc_diseases_type_species_short` (`type`,`species`,`short`)
+  UNIQUE KEY `uc_disease_type_species_short` (`type`,`species`,`short`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `ius_diseases`;
-CREATE TABLE `ius_diseases` (
-  `id_ius` bigint(20) NOT NULL,
-  `id_diseases` bigint(20) NOT NULL,
-  PRIMARY KEY( id_ius, id_diseases )
+DROP TABLE IF EXISTS `iu_disease`;
+CREATE TABLE `iu_disease` (
+  `iu_id` bigint(20) NOT NULL,
+  `disease_id` bigint(20) NOT NULL,
+  PRIMARY KEY( iu_id, disease_id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Table structure for table `results`
+-- Table structure for table `result`
 --
 
-DROP TABLE IF EXISTS `results`;
+DROP TABLE IF EXISTS `result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `results` (
+CREATE TABLE `result` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `run_data` JSON,
+  /*
   `Time` double NOT NULL,
   `age_start` tinyint NOT NULL,
   `age_end` tinyint NOT NULL,
   `intensity` text NOT NULL,
   `measure` text NOT NULL,
   `draw_1` double NOT NULL,
+  */
   `disease_id` bigint(20) NOT NULL,
   `iu_id` bigint(20) NOT NULL,
   `sim_no` mediumint NOT NULL,
