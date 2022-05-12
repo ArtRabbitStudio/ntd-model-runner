@@ -6,19 +6,19 @@ from db import db
 
 # SQL statements
 insert_disease_sql = '''
-INSERT INTO diseases ( `type`, `species`, `short` )
+INSERT INTO disease ( `type`, `species`, `short` )
 VALUES ( %s, %s, %s )
 ON DUPLICATE KEY UPDATE type = type, species = species, short = short
 '''
 
 insert_iu_sql = '''
-INSERT INTO ius ( `code` )
+INSERT INTO iu ( `code` )
 VALUES ( %s )
 ON DUPLICATE KEY UPDATE code = code
 '''
 
 insert_join_sql = '''
-INSERT IGNORE INTO ius_diseases ( `id_ius`, `id_diseases` )
+INSERT IGNORE INTO iu_disease ( `iu_id`, `disease_id` )
 VALUES ( %s, %s )
 '''
 
@@ -48,7 +48,7 @@ for member in tar.getmembers():
 
     if disease_id == 0:
         params = ( disease_type, disease_species )
-        disease_id = DB.fetchone( "SELECT id FROM diseases WHERE type = %s AND species = %s", params )['id']
+        disease_id = DB.fetchone( "SELECT id FROM disease WHERE type = %s AND species = %s", params )['id']
 
     content = tar.extractfile(member).read()
     ius = content.split( b"\n" )
@@ -58,7 +58,7 @@ for member in tar.getmembers():
             iu_id = DB.insert( insert_iu_sql, ( iu_str, ) )
             if iu_id == 0:
                 params = ( iu_str, )
-                iu_id = DB.fetchone( "SELECT id FROM ius WHERE code = %s", params )['id']
+                iu_id = DB.fetchone( "SELECT id FROM iu WHERE code = %s", params )['id']
 
             DB.insert( insert_join_sql, ( iu_id, disease_id, ) )
 
