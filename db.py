@@ -1,4 +1,6 @@
+import sys
 import mysql.connector
+from mysql.connector.errors import DatabaseError
 
 DB_USER = 'ntd'
 DB_PASS = 'ntd'
@@ -9,7 +11,12 @@ DB_NAME = 'ntd'
 class db(object):
 
     def __init__(self):
-        self._db_connection = mysql.connector.connect( user = DB_USER, password = DB_PASS, host = DB_HOST, port = DB_PORT, database = DB_NAME )
+        try:
+            self._db_connection = mysql.connector.connect( user = DB_USER, password = DB_PASS, host = DB_HOST, port = DB_PORT, database = DB_NAME )
+        except DatabaseError as d:
+            print( f"xx> db error: {d}" )
+            sys.exit()
+
         self._db_cur = self._db_connection.cursor( buffered = True, dictionary = True )
 
     def insert(self, query, params):
@@ -30,5 +37,6 @@ class db(object):
         self._db_connection.commit()
 
     def __del__(self):
-        print( '==> db connection closing' )
-        self._db_connection.close()
+        if hasattr( self, '_db_connection' ):
+            print( '==> db connection closing' )
+            self._db_connection.close()

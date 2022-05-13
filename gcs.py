@@ -1,9 +1,15 @@
 import os
 from google.cloud import storage
+from google.auth.exceptions import DefaultCredentialsError
 
 bucket_name = 'ntd-disease-simulator-data'
-client = storage.Client()
-bucket = client.bucket( bucket_name )
+try:
+    client = storage.Client()
+    bucket = client.bucket( bucket_name )
+except DefaultCredentialsError:
+    print( f"xx> missing GCP credentials file, add it & set GOOGLE_APPLICATION_CREDENTIALS in .env" )
+    exit()
+
 
 # gcs_path = relative from bucket name, so e.g. diseases/trachoma/data/...
 def get_blob( gcs_path ):

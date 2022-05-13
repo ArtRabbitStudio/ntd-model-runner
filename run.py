@@ -22,7 +22,6 @@ parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloud
 ( options, args ) = parser.parse_args()
 
 iuList = options.iuList if isinstance( options.iuList, list ) == True else [ '' ]
-print( iuList )
 numSims = int( options.numSims )
 disease = options.disease
 useCloudStorage = options.useCloudStorage
