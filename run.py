@@ -17,6 +17,7 @@ parser.add_option( '-d', '--disease', dest='disease', default='Man' )
 parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='callback', callback=iu_list_callback, default='' )
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
 parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
+parser.add_option( '-s', '--scenario', dest='scenario', type='int', default=1 )
 # add: scenario?
 
 ( options, args ) = parser.parse_args()
@@ -25,7 +26,7 @@ iuList = options.iuList if isinstance( options.iuList, list ) == True else [ '' 
 numSims = int( options.numSims )
 disease = options.disease
 useCloudStorage = options.useCloudStorage
-scenario = 'SCEN_01' # for example
+scenario = options.scenario
 
 cli_iu_list_len = len( [ x for x in iuList if x != '' ] )
 print( f"-> {numSims} simulations for {cli_iu_list_len} IUs requested, {'' if useCloudStorage else 'not '}using cloud storage" )

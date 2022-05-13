@@ -2,9 +2,11 @@ import pickle
 import time
 import multiprocessing
 import math
-import os
+import os, sys
+import pkg_resources
 
-import pandas
+import pandas as pd
+import numpy as np
 
 import gcs
 import db
@@ -13,8 +15,6 @@ from joblib import Parallel, delayed
 
 from sch_simulation.helsim_RUN_KK import *
 from sch_simulation.helsim_FUNC_KK import *
-
-LOCAL_DATA_DIR = './local-data'
 
 class MissingArgumentError( ValueError ):
     pass
@@ -25,46 +25,89 @@ class DirectoryNotFoundError( ValueError ):
 # run the model with the right params and then transform results for IHME/IPM
 def run( runInfo, scenario, numSims, DB, useCloudStorage, saveResults=False ):
 
-    DISEASE_CLOUD_PATH = f'diseases/{runInfo[ "type" ]}-{runInfo[ "species" ].lower()}/source-data'
+    # get run info
+    iu = runInfo[ "iu_code" ]
+    region = iu[:3]
+    disease = runInfo[ 'type' ]
+    species = runInfo[ "species" ]
+    short = runInfo[ "short" ]
+
+    # construct cloud path for this disease/species
+    GcsSpecies = {
+        'Ascaris': 'roundworm',
+        'Trichuris': 'whipworm',
+        'Hookworm': 'hookworm',
+        'Mansoni': 'mansoni'
+    }[ species ]
+
+    DISEASE_CLOUD_PATH = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}/source-data'
+
+    # get model package's data dir for finding scenario files
+    MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
 
     # make sure local data directory is present
+    LOCAL_DATA_DIR = './local-data'
+
     if useCloudStorage == False:
         if not os.path.isdir( LOCAL_DATA_DIR):
             raise DirectoryNotFoundError( LOCAL_DATA_DIR)
 
-    iu = runInfo[ "iu_code" ]
-    region = iu[:3]
-    short = runInfo[ "short" ]
-    species = runInfo[ "species" ]
-
+    # locate pickle file for IU
     InSimFilePath = f'{LOCAL_DATA_DIR}/{short}_{iu}.p'
     GcsInSimFilePath = f'{DISEASE_CLOUD_PATH}/{region}/{iu}/{short}_{iu}.p'
 
+    # locate RK input file for IU
     RkFilePath = f'{LOCAL_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
     GcsRkFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
 
+    # locate & check coverage file for selected disease/scenario
+    coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{scenario}.xlsx'
+    coverageFilePath = f'{MODEL_DATA_DIR}/{coverageFileName}'
+
+    if not os.path.exists( coverageFilePath ):
+        print( f"xx> couldn't find {disease.lower()}-{species.lower()} coverage file for scenario {scenario}" )
+        sys.exit( 1 )
+
+    print( f"-> using coverage file {coverageFileName}" )
+
     coverageTextFileStorageName = f'/tmp/{short}_{iu}_MDA_vacc.txt'
 
+    # locate & check parameter file for selected disease/scenario
+    paramFileName = f'{disease.upper()}_params/{species.lower()}_scenario_{scenario}.txt'
+    paramFilePath = f'{MODEL_DATA_DIR}/{paramFileName}'
+
+    if not os.path.exists( paramFilePath ):
+        print( f"xx> couldn't find {disease.lower()}-{species.lower()} parameter file for scenario {scenario}" )
+        sys.exit( 1 )
+
+    print( f"-> using parameter file {coverageFileName}" )
+
+    # run the model
     results = run_model(
         InSimFilePath = GcsInSimFilePath if useCloudStorage else InSimFilePath,
         RkFilePath = GcsRkFilePath if useCloudStorage else RkFilePath,
+        coverageFileName = coverageFileName,
         coverageTextFileStorageName = coverageTextFileStorageName,
-        paramFileName = "SCH_params/sch_scenario_1.txt",
+        paramFileName = paramFileName,
         numSims = numSims,
         cloudModule = gcs if useCloudStorage else None
     )
 
-    transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
-
+    # output the raw model result data for comparison?
     if saveResults == True:
         for i in range(len(results)):
             df = results[i]
             df.to_csv( f'{iu}_results_{i:03}.csv', index=False )
 
+    # get a transformer generator function for the IHME/IPM transforms
+    transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
+
+    # run IHME transforms
     ihme_df = next( transformer )
     ihme_file_name = f"ihme-{iu}-{runInfo['species']}-{scenario}-{numSims}.csv"
     ihme_df.to_csv( ihme_file_name, index=False )
 
+    # run IPM transforms
     ipm_df = next( transformer )
     ipm_file_name = f"ipm-{iu}-{runInfo['species']}-{scenario}-{numSims}.csv"
     ipm_df.to_csv( ipm_file_name, index=False )
