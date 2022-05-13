@@ -49,11 +49,17 @@ def run( runInfo, scenario, numSims, DB, useCloudStorage, saveResults=False ):
         InSimFilePath = GcsInSimFilePath if useCloudStorage else InSimFilePath,
         RkFilePath = GcsRkFilePath if useCloudStorage else RkFilePath,
         coverageTextFileStorageName = coverageTextFileStorageName,
+        paramFileName = "SCH_params/sch_scenario_1.txt",
         numSims = numSims,
         cloudModule = gcs if useCloudStorage else None
     )
 
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
+
+    if saveResults == True:
+        for i in range(len(results)):
+            df = results[i]
+            df.to_csv( f'{iu}_results_{i:03}.csv', index=False )
 
     ihme_df = next( transformer )
     ihme_file_name = f"ihme-{iu}-{runInfo['species']}-{scenario}-{numSims}.csv"
@@ -62,11 +68,6 @@ def run( runInfo, scenario, numSims, DB, useCloudStorage, saveResults=False ):
     ipm_df = next( transformer )
     ipm_file_name = f"ipm-{iu}-{runInfo['species']}-{scenario}-{numSims}.csv"
     ipm_df.to_csv( ipm_file_name, index=False )
-
-    if saveResults == True:
-        for i in range(len(results)):
-            df = results[i]
-            df.to_csv( f'{iu}_results_{i:03}.csv', index=False )
 
     return
 
@@ -141,7 +142,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
 def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
     # espen_loc,year_id,age_start,age_end,sex_id,intensity,scenario,species,sequelae,measure
-    ihme_keys = {
+    keys = {
         "espen_loc":[],
         "year_id":[],
         "age_start":[],
@@ -153,7 +154,7 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
     }
 
     for i in range( 0, numSims ):
-        ihme_keys[ f'draw_{i}' ] = []
+        keys[ f'draw_{i}' ] = []
 
     # we're going to take the draw_1 from each run result for an IU:
 
@@ -171,27 +172,10 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
     print( f'-> starting IHME transform for {numSims} simulations' )
     a = time.time()
-
-    ihme_values = []
-
-    # first 7440 rows = standard ESPEN results + population data
-    for rowIndex, row in results[0][0:7440].iterrows():
-
-        if rowIndex > 0 and rowIndex % 1000 == 0:
-            print( f"-> {rowIndex}" )
-
-        # add the first fields up to the first draw
-        scenario_fields = [ iu, math.trunc( row.Time + 2018 ), row.age_start, row.age_end, row.intensity, scenario, species, row.measure, row.draw_1 ]
-        ihme_values.insert( rowIndex, scenario_fields )
-
-        # add draw_1 from the current line in each file as draw_X in the ihme file
-        for simNo in range(1,numSims):
-            ihme_values[ rowIndex ].append( results[ simNo ].loc[ rowIndex ].draw_1 )
-
+    values = transform_results( results, iu, 'ihme', species, scenario, numSims, keys )
     b = time.time()
     print( f'-> finished IHME transform for {numSims} simulations in {(b-a):.3f}s' )
-
-    yield pd.DataFrame( ihme_values, columns = ihme_keys )
+    yield pd.DataFrame( values, columns = keys )
 
     ################################################################################
     # IPM costs file
@@ -199,28 +183,42 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
     print( f'-> starting IPM transform for {numSims} simulations' )
     a = time.time()
-
-    ipm_values = []
-
-    # 7440 -> end = cost data
-    for rowIndex, row in results[0][7440:].iterrows():
-
-        arrIndex = rowIndex - 7440
-
-        if arrIndex > 0 and arrIndex % 1000 == 0:
-            print( f"-> {arrIndex}" )
-
-        # add the first fields up to the first draw
-        ipm_values.insert( arrIndex, [ iu, math.trunc( row.Time + 2018 ), row.age_start, row.age_end, row.intensity, scenario, species, row.measure, row.draw_1 ] )
-
-        # add draw_1 from the current line in each file as draw_X in the ipm file
-        for simNo in range(1,numSims):
-            ipm_values[ arrIndex ].append( results[ simNo ].loc[ arrIndex ].draw_1 )
-
+    values = transform_results( results, iu, 'ipm', species, scenario, numSims, keys )
     b = time.time()
     print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
-
-    yield pd.DataFrame( ipm_values, columns = ihme_keys )
+    yield pd.DataFrame( values, columns = keys )
 
     return
+
+def transform_results( results, iu, type, species, scenario, numSims, keys ):
+
+    # first 7440 rows = standard ESPEN results + population data
+    # rows 7441-7585 = IPM cost data
+    startrow = { 'ihme': 0, 'ipm': 7440 }[ type ]
+    endrow = { 'ihme': 7440, 'ipm': 7584 }[ type ]
+
+    # array to put the transformed data into
+    values = []
+
+    # spin through the relevant rows
+    for rowIndex, row in results[ 0 ][ startrow:endrow ].iterrows():
+
+        # get an index into target array, i.e. where we're putting the new row
+        # - jump ahead by 7440 for the ipm data
+        arrIndex = ( rowIndex - 7440 ) if type == 'ipm' else rowIndex
+
+        if arrIndex > 0 and arrIndex % 1000 == 0:
+            print( f"-> transformed {arrIndex} rows" )
+
+        # add in the first fields, up to the first draw
+        scenario_fields = [ iu, math.trunc( row.Time + 2018 ), row.age_start, row.age_end, row.intensity, scenario, species, row.measure, row.draw_1 ]
+        values.insert( arrIndex, scenario_fields )
+
+        # add draw_1 from the current line in each file as draw_X in the ihme file
+        for simNo in range( 1, numSims ):
+            # put the 'draw_1' value from row 'rowIndex' of the source data into row 'arrIndex' of the target
+            values[ arrIndex ].append( results[ simNo ].loc[ rowIndex ].draw_1 )
+
+    return values
+
 
