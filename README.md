@@ -8,7 +8,7 @@ Scripts & db for running NTD SCH model with various scenarios, IUS, groups, simu
 
 ```bash
 docker run --detach --name mariadb -p 3306:3306 --env MARIADB_USER=ntd --env MARIADB_PASSWORD=ntd --env MARIADB_ROOT_PASSWORD=ntd  mariadb:latest
-echo 'create user "ntd"@"%" identified by "ntd"; grant all privileges on ntd.* to "ntd"@"%"; flush privileges;' | mysql -u root -pntd -h 127.0.0.1 -P 3306
+echo 'create database ntd; grant all privileges on ntd.* to "ntd"@"%"; flush privileges;' | mysql -u root -pntd -h 127.0.0.1 -P 3306
 mysql -u ntd -pntd -h 127.0.0.1 -P 3306  ntd < results.sql
 ```
 
@@ -20,12 +20,13 @@ GOOGLE_APPLICATION_CREDENTIALS=${PWD}/<your-gcp-service-account-key>.json
 EOF
 ```
 
-- Run it in a python `virtualenv`:
+- Run it in a python `virtualenv`, install the libraries and import the IU/disease data:
 
 ```bash
 $ pipenv shell
 [ ... ]
 (venv)$ pip install .
+(venv)$ python import-ius.py
 ```
 
 ### How do I run it?
