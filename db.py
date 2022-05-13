@@ -30,5 +30,5 @@ class db(object):
         self._db_connection.commit()
 
     def __del__(self):
-        print( '=> db connection closing' )
+        print( '==> db connection closing' )
         self._db_connection.close()
