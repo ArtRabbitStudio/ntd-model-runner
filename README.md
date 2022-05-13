@@ -26,7 +26,7 @@ EOF
 $ pipenv shell
 [ ... ]
 (venv)$ pip install .
-(venv)$ python import-ius.py
+(venv)$ python import-ius.py iu-disease-data/ius-with-disease-data.tbz
 ```
 
 ### How do I run it?
