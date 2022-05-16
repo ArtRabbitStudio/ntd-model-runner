@@ -38,4 +38,4 @@ $ python run.py -d Man -i COD14280 -n 1 -l
 - `-d` disease (`Man`, `Hook`, `Asc`, `Tri`)
 - `-i` IU
 - `-n` number of simulations
-- `-l` load `.p` and `Input_RK_[...].csv` from `./local-data`, rather than from GCS, which is default
+- `-l` load `.p` and `Input_RK_[...].csv` from `./data/input`, rather than from GCS, which is default

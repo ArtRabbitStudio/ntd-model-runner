@@ -129,3 +129,6 @@ sch_vaccine_branch_vaccine.csv
 # vim swap
 *.swp
 *.swo
+
+# local output data files
+data/output

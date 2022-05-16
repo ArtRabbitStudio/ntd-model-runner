@@ -18,7 +18,6 @@ parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='call
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
 parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
 parser.add_option( '-s', '--scenario', dest='scenario', type='int', default=1 )
-# add: scenario?
 
 ( options, args ) = parser.parse_args()
 
@@ -81,13 +80,20 @@ for runInfo in runs:
 
     # empty out db for each run
     if new_iu_combo != last_iu_combo:
-       print( f"-> clearing results for {runInfo['short']}:{runInfo['iu_code']}" )
-       DB.query( delete_runs_sql, ( d_id, i_id, ) )
-       DB.commit()
+        print( f"-> clearing results for {runInfo['short']}:{runInfo['iu_code']}" )
+        DB.query( delete_runs_sql, ( d_id, i_id, ) )
+        DB.commit()
         
     try:
-       print( f"-> running {numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
-       run( runInfo = runInfo, scenario = scenario, numSims = numSims, DB = DB, useCloudStorage = useCloudStorage, saveResults=True )
+        print( f"-> running {numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
+        run(
+            runInfo = runInfo,
+            scenario = scenario,
+            numSims = numSims,
+            DB = DB,
+            useCloudStorage = useCloudStorage,
+            saveIntermediateResults=True
+        )
 
     except DirectoryNotFoundError as d:
         print( f"xx> local data directory not found: {d}" )

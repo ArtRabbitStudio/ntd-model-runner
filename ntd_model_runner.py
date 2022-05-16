@@ -11,6 +11,7 @@ import numpy as np
 import gcs
 import db
 
+from pathlib import Path
 from joblib import Parallel, delayed
 
 from sch_simulation.helsim_RUN_KK import *
@@ -23,7 +24,7 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, scenario, numSims, DB, useCloudStorage, saveResults=False ):
+def run( runInfo, scenario, numSims, DB, useCloudStorage, saveIntermediateResults=False ):
 
     # get run info
     iu = runInfo[ "iu_code" ]
@@ -40,25 +41,39 @@ def run( runInfo, scenario, numSims, DB, useCloudStorage, saveResults=False ):
         'Mansoni': 'mansoni'
     }[ species ]
 
-    DISEASE_CLOUD_PATH = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}/source-data'
+    DISEASE_CLOUD_ROOT = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}'
+    DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/source-data'
+    DISEASE_CLOUD_DST_PATH = f'{DISEASE_CLOUD_ROOT}/run-data/202106'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
 
     # make sure local data directory is present
-    LOCAL_DATA_DIR = './local-data'
+    LOCAL_INPUT_DATA_DIR = './data/input'
 
     if useCloudStorage == False:
-        if not os.path.isdir( LOCAL_DATA_DIR):
-            raise DirectoryNotFoundError( LOCAL_DATA_DIR)
+        if not os.path.isdir( LOCAL_INPUT_DATA_DIR ):
+            raise DirectoryNotFoundError( LOCAL_INPUT_DATA_DIR )
+
+    # construct GCS/local output directory paths
+    LOCAL_OUTPUT_DATA_DIR = './data/output'
+    output_data_root = f"{DISEASE_CLOUD_DST_PATH}/{region}/{iu}"
+    GcsOutputDataPath = f'gs://ntd-disease-simulator-data/{output_data_root}'
+    LocalOutputDataPath = f'{LOCAL_OUTPUT_DATA_DIR}/{output_data_root}'
+    output_data_path = GcsOutputDataPath if useCloudStorage else LocalOutputDataPath
+
+    # make sure local output directory is present
+    if useCloudStorage == False:
+        if not os.path.isdir( output_data_path ):
+            Path( output_data_path ).mkdir( parents = True, exist_ok = True )
 
     # locate pickle file for IU
-    InSimFilePath = f'{LOCAL_DATA_DIR}/{short}_{iu}.p'
-    GcsInSimFilePath = f'{DISEASE_CLOUD_PATH}/{region}/{iu}/{short}_{iu}.p'
+    InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}.p'
+    GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}.p'
 
     # locate RK input file for IU
-    RkFilePath = f'{LOCAL_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
-    GcsRkFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
+    RkFilePath = f'{LOCAL_INPUT_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
+    GcsRkFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
 
     # locate & check coverage file for selected disease/scenario
     coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{scenario}.xlsx'
@@ -94,22 +109,22 @@ def run( runInfo, scenario, numSims, DB, useCloudStorage, saveResults=False ):
     )
 
     # output the raw model result data for comparison?
-    if saveResults == True:
+    if saveIntermediateResults == True:
         for i in range(len(results)):
             df = results[i]
-            df.to_csv( f'{iu}_results_{i:03}.csv', index=False )
+            df.to_csv( f'{output_data_path}/{iu}_results_{i:03}.csv', index=False )
 
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
 
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"ihme-{iu}-{runInfo['species']}-{scenario}-{numSims}.csv"
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv"
     ihme_df.to_csv( ihme_file_name, index=False )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"ipm-{iu}-{runInfo['species']}-{scenario}-{numSims}.csv"
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv"
     ipm_df.to_csv( ipm_file_name, index=False )
 
     return
@@ -174,7 +189,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
 
     # run simulations in parallel
     results = Parallel(n_jobs=num_cores)(
-            delayed(multiple_simulations)(params, pickleData, simparams, i) for i in range(numSims))
+            delayed(multiple_simulations)(params, pickleData, simparams, indices, i) for i in range(numSims))
         
     end_time = time.time()
 
