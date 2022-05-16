@@ -132,3 +132,4 @@ sch_vaccine_branch_vaccine.csv
 
 # local output data files
 data/output
+*-service-account-key.json

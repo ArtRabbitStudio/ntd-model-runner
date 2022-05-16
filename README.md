@@ -20,19 +20,20 @@ GOOGLE_APPLICATION_CREDENTIALS=${PWD}/<your-gcp-service-account-key>.json
 EOF
 ```
 
-- Run it in a python `virtualenv`, install the libraries and import the IU/disease data:
+- Run it in a python `virtualenv`, install the libraries and import the IU/disease/group data:
 
 ```bash
 $ pipenv shell
-[ ... ]
+# [ ... pipenv output ... ]
 (venv)$ pip install .
 (venv)$ python import-ius.py iu-disease-data/ius-with-disease-data.tbz
+(venv)% python import-groups.py iu-disease-data
 ```
 
 ### How do I run it?
 
 ```
-$ python run.py -d Man -i COD14280 -n 1 -l
+$ python run.py -d Man -i COD14280 -n 1 [-l]
 ```
 
 - `-d` disease (`Man`, `Hook`, `Asc`, `Tri`)

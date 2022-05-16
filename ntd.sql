@@ -48,6 +48,14 @@ CREATE TABLE `iu_disease` (
   PRIMARY KEY( iu_id, disease_id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `iu_disease_group`;
+CREATE TABLE `iu_disease_group` (
+  `iu_id` bigint(20) NOT NULL,
+  `disease_id` bigint(20) NOT NULL,
+  `group_id` bigint(20) NOT NULL,
+  PRIMARY KEY( iu_id, disease_id, group_id )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Table structure for table `result`
 --
