@@ -41,12 +41,20 @@ CREATE TABLE `disease` (
   UNIQUE KEY `uc_disease_type_species_short` (`type`,`species`,`short`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Table structure for table `iu_disease`
+--
+
 DROP TABLE IF EXISTS `iu_disease`;
 CREATE TABLE `iu_disease` (
   `iu_id` bigint(20) NOT NULL,
   `disease_id` bigint(20) NOT NULL,
   PRIMARY KEY( iu_id, disease_id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `iu_disease_group`
+--
 
 DROP TABLE IF EXISTS `iu_disease_group`;
 CREATE TABLE `iu_disease_group` (
@@ -56,29 +64,6 @@ CREATE TABLE `iu_disease_group` (
   PRIMARY KEY( iu_id, disease_id, group_id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `result`
---
-
-DROP TABLE IF EXISTS `result`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `result` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `run_data` JSON,
-  /*
-  `Time` double NOT NULL,
-  `age_start` tinyint NOT NULL,
-  `age_end` tinyint NOT NULL,
-  `intensity` text NOT NULL,
-  `measure` text NOT NULL,
-  `draw_1` double NOT NULL,
-  */
-  `disease_id` bigint(20) NOT NULL,
-  `iu_id` bigint(20) NOT NULL,
-  `sim_no` mediumint NOT NULL,
-  PRIMARY KEY(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

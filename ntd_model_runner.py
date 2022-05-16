@@ -24,7 +24,7 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, scenario, numSims, DB, useCloudStorage, saveIntermediateResults=False ):
+def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermediateResults=False ):
 
     # get run info
     iu = runInfo[ "iu_code" ]
@@ -43,7 +43,7 @@ def run( runInfo, scenario, numSims, DB, useCloudStorage, saveIntermediateResult
 
     DISEASE_CLOUD_ROOT = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}'
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/source-data'
-    DISEASE_CLOUD_DST_PATH = f'{DISEASE_CLOUD_ROOT}/run-data/202106'
+    DISEASE_CLOUD_DST_PATH = f'{DISEASE_CLOUD_ROOT}/run-data/202206'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
@@ -117,14 +117,17 @@ def run( runInfo, scenario, numSims, DB, useCloudStorage, saveIntermediateResult
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
 
+    # decide whether to put the group ID in the filename
+    groupId_string = f'-group_{groupId}' if groupId is not None else ''
+
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv"
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-{numSims}_simulations.csv"
     ihme_df.to_csv( ihme_file_name, index=False )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv"
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-{numSims}_simulations.csv"
     ipm_df.to_csv( ipm_file_name, index=False )
 
     return

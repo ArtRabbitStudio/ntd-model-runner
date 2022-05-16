@@ -57,6 +57,9 @@ for file in files:
         # {'disease_id': 2, 'short': 'Asc', 'iu_id': 1670, 'code': 'KEN54039'}
         iu_id = record[ 'iu_id' ]
         disease_id = record[ 'disease_id' ]
+
+        # IU_ID    IU_ID2  scen  group    median  97.5 qtl
+        # 46493  TZA46493     0      1  0.089995  0.153408
         group_id = int( df.loc[ rowIndex ][ 'group' ] )
 
         insert_params = ( iu_id, disease_id, group_id )

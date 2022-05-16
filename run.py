@@ -18,6 +18,7 @@ parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='call
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
 parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
 parser.add_option( '-s', '--scenario', dest='scenario', type='int', default=1 )
+parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
 
 ( options, args ) = parser.parse_args()
 
@@ -25,6 +26,7 @@ iuList = options.iuList if isinstance( options.iuList, list ) == True else [ '' 
 numSims = int( options.numSims )
 disease = options.disease
 useCloudStorage = options.useCloudStorage
+groupId = options.groupId
 scenario = options.scenario
 
 cli_iu_list_len = len( [ x for x in iuList if x != '' ] )
@@ -88,6 +90,7 @@ for runInfo in runs:
         print( f"-> running {numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
         run(
             runInfo = runInfo,
+            groupId = groupId,
             scenario = scenario,
             numSims = numSims,
             DB = DB,
