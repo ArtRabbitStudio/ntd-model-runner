@@ -56,12 +56,6 @@ AND d.short = %s
 ORDER BY d.type, d.species, i.code
 '''
 
-delete_runs_sql = '''
-DELETE FROM result
-WHERE disease_id = %s
-AND iu_id = %s
-'''
-
 # get the runs
 disease_iu_params = tuple( iuList ) + tuple( [ disease ] )
 disease_iu_combos = DB.query( runs_sql, disease_iu_params, )
@@ -78,14 +72,7 @@ for( runInfo ) in DB.cursor():
 for runInfo in runs:
     d_id = runInfo[ 'disease_id' ]
     i_id = runInfo[ 'iu_id' ]
-    new_iu_combo = [ d_id, i_id ]
 
-    # empty out db for each run
-    if new_iu_combo != last_iu_combo:
-        print( f"-> clearing results for {runInfo['short']}:{runInfo['iu_code']}" )
-        DB.query( delete_runs_sql, ( d_id, i_id, ) )
-        DB.commit()
-        
     try:
         print( f"-> running {numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
         run(
@@ -106,5 +93,3 @@ for runInfo in runs:
 
     except MissingArgumentError as m:
         print( f"xx> argument not provided: {m}" )
-
-    last_iu_combo = new_iu_combo
