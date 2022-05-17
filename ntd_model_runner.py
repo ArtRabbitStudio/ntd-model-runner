@@ -26,6 +26,9 @@ class DirectoryNotFoundError( ValueError ):
 # run the model with the right params and then transform results for IHME/IPM
 def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermediateResults=False ):
 
+    if groupId is None:
+        raise MissingArgumentError( 'groupId' )
+
     # get run info
     iu = runInfo[ "iu_code" ]
     region = iu[:3]
@@ -43,7 +46,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
 
     DISEASE_CLOUD_ROOT = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}'
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/source-data'
-    DISEASE_CLOUD_DST_PATH = f'{DISEASE_CLOUD_ROOT}/run-data/202206'
+    DISEASE_CLOUD_DST_PATH = f'202206/{runInfo[ "type" ]}-{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
@@ -57,8 +60,8 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
 
     # construct GCS/local output directory paths
     LOCAL_OUTPUT_DATA_DIR = './data/output'
-    output_data_root = f"{DISEASE_CLOUD_DST_PATH}/{region}/{iu}"
-    GcsOutputDataPath = f'gs://ntd-disease-simulator-data/{output_data_root}'
+    output_data_root = f"{DISEASE_CLOUD_DST_PATH}/{iu}"
+    GcsOutputDataPath = f'gs://ntd-endgame-result-data/{output_data_root}'
     LocalOutputDataPath = f'{LOCAL_OUTPUT_DATA_DIR}/{output_data_root}'
     output_data_path = GcsOutputDataPath if useCloudStorage else LocalOutputDataPath
 
@@ -112,7 +115,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
     if saveIntermediateResults == True:
         for i in range(len(results)):
             df = results[i]
-            df.to_csv( f'{output_data_path}/{iu}_results_{i:03}.csv', index=False )
+            df.to_csv( f'{output_data_path}/intermediate-results/{iu}_results_{i:03}.csv', index=False )
 
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
@@ -122,12 +125,12 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
 
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-{numSims}_simulations.csv"
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId}-{numSims}_simulations.csv"
     ihme_df.to_csv( ihme_file_name, index=False )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-{numSims}_simulations.csv"
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId}-{numSims}_simulations.csv"
     ipm_df.to_csv( ipm_file_name, index=False )
 
     return
