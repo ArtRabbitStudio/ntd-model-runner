@@ -1,10 +1,11 @@
-import sys
+import os, sys
 import mysql.connector
 from mysql.connector.errors import DatabaseError
 
+ENV_DB_HOST = os.getenv( 'DB_HOST' )
 DB_USER = 'ntd'
 DB_PASS = 'ntd'
-DB_HOST = '127.0.0.1'
+DB_HOST = ENV_DB_HOST if ENV_DB_HOST else '127.0.0.1'
 DB_PORT = 3306
 DB_NAME = 'ntd'
 
