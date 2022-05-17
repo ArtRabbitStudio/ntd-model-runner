@@ -1,0 +1,1 @@
+build-essential vim curl git python3 pip default-mysql-client expect psmisc htop silversearcher-ag
