@@ -46,7 +46,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
 
     DISEASE_CLOUD_ROOT = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}'
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/source-data'
-    DISEASE_CLOUD_DST_PATH = f'202206/{runInfo[ "type" ]}-{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId}'
+    DISEASE_CLOUD_DST_PATH = f'ntd/202206/{runInfo[ "type" ]}-{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId:03}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
@@ -121,16 +121,16 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
 
     # decide whether to put the group ID in the filename
-    groupId_string = f'-group_{groupId}' if groupId is not None else ''
+    groupId_string = f'-group_{groupId:03}' if groupId is not None else ''
 
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId}-{numSims}_simulations.csv"
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv"
     ihme_df.to_csv( ihme_file_name, index=False )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId}-{numSims}_simulations.csv"
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv"
     ipm_df.to_csv( ipm_file_name, index=False )
 
     return
