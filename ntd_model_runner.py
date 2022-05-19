@@ -24,7 +24,7 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermediateResults=False ):
+def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, saveIntermediateResults=False ):
 
     if groupId is None:
         raise MissingArgumentError( 'groupId' )
@@ -123,15 +123,19 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, saveIntermedi
     # decide whether to put the group ID in the filename
     groupId_string = f'-group_{groupId:03}' if groupId is not None else ''
 
+    # add a '.bz2' suffix if compressing the IHME/IPM files
+    compressSuffix = ".bz2" if compress == True else ""
+    compression = None if compress == False else "bz2"
+
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv"
-    ihme_df.to_csv( ihme_file_name, index=False )
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv{compressSuffix}"
+    ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv"
-    ipm_df.to_csv( ipm_file_name, index=False )
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv{compressSuffix}"
+    ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
 
     return
 

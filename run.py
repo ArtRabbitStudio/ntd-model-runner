@@ -19,6 +19,7 @@ parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
 parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
 parser.add_option( '-s', '--scenario', dest='scenario', type='int', default=1 )
 parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
+parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store_false', default=True )
 
 ( options, args ) = parser.parse_args()
 
@@ -28,9 +29,12 @@ disease = options.disease
 useCloudStorage = options.useCloudStorage
 groupId = options.groupId
 scenario = options.scenario
+compress = options.compress
 
 cli_iu_list_len = len( [ x for x in iuList if x != '' ] )
-print( f"-> {numSims} simulations for {cli_iu_list_len} IUs requested, {'' if useCloudStorage else 'not '}using cloud storage" )
+cloudStorageStr = '' if useCloudStorage else 'not '
+compressStr = '' if compress else 'not '
+print( f"-> {numSims} simulations for {cli_iu_list_len} IUs requested, {cloudStorageStr}using cloud storage, {compressStr}compressing output files" )
 
 # instantiate local db module
 DB = db()
@@ -82,7 +86,8 @@ for runInfo in runs:
             numSims = numSims,
             DB = DB,
             useCloudStorage = useCloudStorage,
-            saveIntermediateResults=True
+            compress = compress,
+            saveIntermediateResults=False
         )
 
     except DirectoryNotFoundError as d:
