@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 100 then 50 sims
-result_folder=results
+result_folder=results/$( date +%Y%m%d%H%M%S )
 short=Hook
 n=200
 mkdir -p $result_folder
@@ -10,6 +10,6 @@ for s in 1 2 ; do
     for i in $IUs ; do
         iu=$( echo $i | cut -f 2 -d : )
         group=$( echo $i | cut -f 1 -d : )
-        unbuffer bash -c "time python3 -u run.py -d $short -i $iu -s $s -n $n -g $group" | tee -a $result_folder/$iu.out
+        unbuffer bash -c "time python3 -u run.py -d $short -i $iu -s $s -n $n -g $group -m KenyaKDHS" | tee -a $result_folder/$iu.out
     done
 done
