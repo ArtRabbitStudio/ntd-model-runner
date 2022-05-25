@@ -14,6 +14,7 @@ def iu_list_callback( option, opt, value, parser ):
 parser = OptionParser()
 
 parser.add_option( '-d', '--disease', dest='disease', default='Man' )
+parser.add_option( '-m', '--demography-name', dest='demogName', default="Default" )
 parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='callback', callback=iu_list_callback, default='' )
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
 parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
@@ -26,6 +27,7 @@ parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store
 iuList = options.iuList if isinstance( options.iuList, list ) == True else [ '' ]
 numSims = int( options.numSims )
 disease = options.disease
+demogName = options.demogName
 useCloudStorage = options.useCloudStorage
 groupId = options.groupId
 scenario = options.scenario
@@ -76,6 +78,8 @@ for( runInfo ) in DB.cursor():
 for runInfo in runs:
     d_id = runInfo[ 'disease_id' ]
     i_id = runInfo[ 'iu_id' ]
+
+    runInfo[ 'demogName' ] = demogName
 
     try:
         print( f"-> running {numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )

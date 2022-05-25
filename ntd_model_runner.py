@@ -35,6 +35,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     disease = runInfo[ 'type' ]
     species = runInfo[ "species" ]
     short = runInfo[ "short" ]
+    demogName = runInfo[ 'demogName' ]
 
     # construct cloud path for this disease/species
     GcsSpecies = {
@@ -106,6 +107,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
         RkFilePath = GcsRkFilePath if useCloudStorage else RkFilePath,
         coverageFileName = coverageFileName,
         coverageTextFileStorageName = coverageTextFileStorageName,
+        demogName = demogName,
         paramFileName = paramFileName,
         numSims = numSims,
         cloudModule = gcs if useCloudStorage else None
@@ -115,7 +117,13 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     if saveIntermediateResults == True:
         for i in range(len(results)):
             df = results[i]
-            df.to_csv( f'{output_data_path}/intermediate-results/{iu}_results_{i:03}.csv', index=False )
+
+            intermediate_results_dir = f"{output_data_path}/intermediate-results"
+            if ( useCloudStorage == False ) and ( not os.path.isdir( intermediate_results_dir ) ):
+                print( f"-> making local intermediate results directory {intermediate_results_dir}" )
+                Path( intermediate_results_dir ).mkdir( parents = True, exist_ok = True )
+
+            df.to_csv( f'{intermediate_results_dir}/{iu}_results_{i:03}.csv', index=False )
 
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
@@ -136,6 +144,8 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     ipm_df = next( transformer )
     ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv{compressSuffix}"
     ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
+
+    os.remove( coverageTextFileStorageName )
 
     return
 
@@ -183,6 +193,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
     cov = parse_coverage_input(coverageFileName, coverageTextFileStorageName)
 
     # initialize the parameters
+    print( f'-> loading parameters for demography {demogName}' )
     params = loadParameters(paramFileName, demogName)
 
     # add coverage data to parameters file
