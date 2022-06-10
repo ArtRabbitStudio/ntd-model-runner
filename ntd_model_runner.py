@@ -271,10 +271,13 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
 def transform_results( results, iu, type, species, scenario, numSims, keys ):
 
+    # previously used row 7584 for end of IPM data, now just run to the end of the results
+    num_result_rows = results[ 0 ].shape[ 0 ]
+
     # first 7440 rows = standard ESPEN results + population data
-    # rows 7441-7585 = IPM cost data
+    # rows 7441-end = IPM cost data
     startrow = { 'ihme': 0, 'ipm': 7440 }[ type ]
-    endrow = { 'ihme': 7440, 'ipm': 7584 }[ type ]
+    endrow = { 'ihme': 7440, 'ipm': num_result_rows }[ type ]
 
     # array to put the transformed data into
     values = []
