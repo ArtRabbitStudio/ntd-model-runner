@@ -203,8 +203,11 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
     num_cores = multiprocessing.cpu_count()
     print( f'-> running {numSims} simulations on {num_cores} cores' )
 
-    # randomly pick indices for number of simulations
-    indices = np.random.choice(a=range(200), size = numSims, replace=False)
+    # randomly pick indices for number of simulations?
+#    indices = np.random.choice(a=range(200), size = numSims, replace=False)
+
+    # pick parameters and saved populations in order
+    indices = range( numSims )
 
     start_time = time.time()
 
