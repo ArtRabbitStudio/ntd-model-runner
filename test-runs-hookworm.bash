@@ -12,6 +12,9 @@ for scenario in $( seq 1 $max_scenario ) ; do
     for i in $IUs ; do
         iu=$( echo $i | cut -f 2 -d : )
         group=$( echo $i | cut -f 1 -d : )
-        unbuffer bash -c "time python3 -u run.py -d $short -g $group -i $iu -s $scenario -n $num_sims -m $demogName" | tee -a $result_folder/s${scenario}_g${group}_${iu}.out
+        CMD="time python3 -u run.py -d $short -g $group -i $iu -s $scenario -n $num_sims -m $demogName"
+        echo "*--> running ${CMD}"
+        unbuffer bash -c "${CMD}" | tee -a $result_folder/s${scenario}_g${group}_${iu}.out
+        echo
     done
 done
