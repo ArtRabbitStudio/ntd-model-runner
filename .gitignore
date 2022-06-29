@@ -132,4 +132,7 @@ sch_vaccine_branch_vaccine.csv
 
 # local output data files
 data/output
+data/tmp
+test-results
+results
 *-service-account-key.json

@@ -13,12 +13,13 @@ def iu_list_callback( option, opt, value, parser ):
 # get CLI options
 parser = OptionParser()
 
+parser.add_option( '-o', '--output-folder', dest='outputFolder', default='202206' )
 parser.add_option( '-d', '--disease', dest='disease', default='Man' )
 parser.add_option( '-m', '--demography-name', dest='demogName', default="Default" )
 parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='callback', callback=iu_list_callback, default='' )
 parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
 parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
-parser.add_option( '-s', '--scenario', dest='scenario', type='int', default=1 )
+parser.add_option( '-s', '--scenario', dest='scenario', type='string', default='1' )
 parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
 parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store_false', default=True )
 
@@ -29,6 +30,7 @@ numSims = int( options.numSims )
 disease = options.disease
 demogName = options.demogName
 useCloudStorage = options.useCloudStorage
+outputFolder = options.outputFolder
 groupId = options.groupId
 scenario = options.scenario
 compress = options.compress
@@ -37,6 +39,8 @@ cli_iu_list_len = len( [ x for x in iuList if x != '' ] )
 cloudStorageStr = '' if useCloudStorage else 'not '
 compressStr = '' if compress else 'not '
 print( f"-> {numSims} simulations for {cli_iu_list_len} IUs requested, {cloudStorageStr}using cloud storage, {compressStr}compressing output files" )
+if outputFolder != '':
+    print (f"-> saving result to output folder {outputFolder}" )
 
 # instantiate local db module
 DB = db()
@@ -91,7 +95,8 @@ for runInfo in runs:
             DB = DB,
             useCloudStorage = useCloudStorage,
             compress = compress,
-            saveIntermediateResults=False
+            saveIntermediateResults=False,
+            outputFolder = outputFolder
         )
 
     except DirectoryNotFoundError as d:

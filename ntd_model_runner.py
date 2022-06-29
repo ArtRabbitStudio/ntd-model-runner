@@ -24,7 +24,7 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, saveIntermediateResults=False ):
+def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, saveIntermediateResults=False, outputFolder='202206' ):
 
     if groupId is None:
         raise MissingArgumentError( 'groupId' )
@@ -47,7 +47,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
 
     DISEASE_CLOUD_ROOT = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}'
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/source-data'
-    DISEASE_CLOUD_DST_PATH = f'ntd/202206/{runInfo[ "type" ]}-{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId:03}'
+    DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{runInfo[ "type" ]}-{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId:03}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
