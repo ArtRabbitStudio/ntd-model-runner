@@ -76,7 +76,7 @@ function execute () {
             unbuffer bash -c "${CMD}" | tee -a ${output_file}
             ;;
 
-        Darwi)
+        Darwin)
             bash -c "${CMD}"
             ;;
 
