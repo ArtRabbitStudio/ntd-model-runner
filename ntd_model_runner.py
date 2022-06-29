@@ -84,7 +84,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     coverageFilePath = f'{MODEL_DATA_DIR}/{coverageFileName}'
 
     if not os.path.exists( coverageFilePath ):
-        print( f"xx> couldn't find {disease.lower()}-{species.lower()} coverage file for scenario {scenario}" )
+        print( f"xx> couldn't find {disease.lower()}-{species.lower()} coverage file for scenario {scenario} : {coverageFilePath}" )
         sys.exit( 1 )
 
     print( f"-> using coverage file {coverageFileName}" )
@@ -96,10 +96,10 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     paramFilePath = f'{MODEL_DATA_DIR}/{paramFileName}'
 
     if not os.path.exists( paramFilePath ):
-        print( f"xx> couldn't find {disease.lower()}-{species.lower()} parameter file for scenario {scenario}" )
+        print( f"xx> couldn't find {disease.lower()}-{species.lower()} parameter file for scenario {scenario} : {paramFilePath}" )
         sys.exit( 1 )
 
-    print( f"-> using parameter file {coverageFileName}" )
+    print( f"-> using parameter file {paramFileName}" )
 
     # run the model
     results = run_model(
