@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
+family=sth
 short=Asc
 disease=roundworm
 num_sims=5
 demogName=KenyaKDHS
 uncompressed="-u"
 local_storage="-l"
-output_folder="sth-001"
+output_folder="${family}-001"
 result_folder=results/$( date +%Y%m%d%H%M%S )
 
 function run_scenarios () {
@@ -71,7 +72,7 @@ function maybe_fetch_files () {
     local_p_file="data/input/${short}_${local_iu}.p"
 
     if [[ ! -f ${local_p_file} ]] ; then
-        remote_p_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/sch-${disease}/source-data/${local_iu:0:3}/${local_iu}/${short}_${local_iu}.p"
+        remote_p_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/${family}-${disease}/source-data/${local_iu:0:3}/${local_iu}/${short}_${local_iu}.p"
         echo "*--> fetching ${local_iu} .p file: $remote_p_file"
         curl -o ${local_p_file} ${remote_p_file}
     else
@@ -81,7 +82,7 @@ function maybe_fetch_files () {
     local_csv_file="data/input/Input_Rk_${short}_${local_iu}.csv"
 
     if [[ ! -f ${local_csv_file} ]] ; then
-        remote_csv_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/sch-${disease}/source-data/${local_iu:0:3}/${local_iu}/Input_Rk_${short}_${local_iu}.csv"
+        remote_csv_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/${family}-${disease}/source-data/${local_iu:0:3}/${local_iu}/Input_Rk_${short}_${local_iu}.csv"
         echo "*--> fetching ${local_iu} .csv file: ${remote_csv_file}"
         curl -o ${local_csv_file} ${remote_csv_file}
     else
