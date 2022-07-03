@@ -20,7 +20,6 @@ function run_scenarios () {
             group=$( echo $line | cut -f 1 -d , )
 
             cmd="time python3 -u run.py -d $short -g $group -i $iu -s $scenario -n $num_sims -m $demogName -o $output_folder $uncompressed $local_storage"
-            echo $cmd
             execute $group $iu $scenario "$cmd"
 
         done
