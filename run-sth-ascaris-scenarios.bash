@@ -39,8 +39,6 @@ function execute () {
         maybe_fetch_files $local_iu
     fi
 
-    exit
-
     output_file=$( printf "$result_folder/s${local_scenario}-g%03d-${local_iu}.out" ${local_group} )
 
     echo "*--> running '${CMD}' into ${output_file}"
