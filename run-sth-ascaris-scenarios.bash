@@ -40,6 +40,8 @@ function execute () {
         maybe_fetch_files $local_iu
     fi
 
+    exit
+
     output_file=$( printf "$result_folder/s${local_scenario}-g%03d-${local_iu}.out" ${local_group} )
 
     echo "*--> running '${CMD}' into ${output_file}"
@@ -68,20 +70,20 @@ function maybe_fetch_files () {
 
     local_iu=$1
 
-    local_p_file="data/input/Man_${local_iu}.p"
+    local_p_file="data/input/${short}_${local_iu}.p"
 
     if [[ ! -f ${local_p_file} ]] ; then
-        remote_p_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/sch-mansoni/source-data/${local_iu:0:3}/${local_iu}/Man_${local_iu}.p"
+        remote_p_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/sch-mansoni/source-data/${local_iu:0:3}/${local_iu}/${short}_${local_iu}.p"
         echo "*--> fetching ${local_iu} .p file: $remote_p_file"
         curl -o ${local_p_file} ${remote_p_file}
     else
         echo "*--> already got $local_p_file locally"
     fi
 
-    local_csv_file="data/input/Input_Rk_Man_${local_iu}.csv"
+    local_csv_file="data/input/Input_Rk_${short}_${local_iu}.csv"
 
     if [[ ! -f ${local_csv_file} ]] ; then
-        remote_csv_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/sch-mansoni/source-data/${local_iu:0:3}/${local_iu}/Input_Rk_Man_${local_iu}.csv"
+        remote_csv_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/sch-mansoni/source-data/${local_iu:0:3}/${local_iu}/Input_Rk_${short}_${local_iu}.csv"
         echo "*--> fetching ${local_iu} .csv file: ${remote_csv_file}"
         curl -o ${local_csv_file} ${remote_csv_file}
     else
