@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-segment=a
+segment=''
 family=sth
 short=Hook
 disease=hookworm
@@ -15,7 +15,7 @@ function run_scenarios () {
 
     for scenario in 1 2 3a 3b ; do
 
-        lines=$( grep -v Group_name iu-disease-data/hookwormIUs-${segment}.csv | sed 's/"//g' )
+        lines=$( grep -v Group_name iu-disease-data/hookwormIUs${segment}.csv | sed 's/"//g' )
 
         for line in $lines ; do
 
