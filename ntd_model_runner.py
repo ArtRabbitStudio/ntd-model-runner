@@ -147,6 +147,9 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
 
     os.remove( coverageTextFileStorageName )
 
+    print( f"-> IHME file: {ihme_file_name}" )
+    print( f"-> IPM file:  {ipm_file_name}" )
+
     return
 
 '''
