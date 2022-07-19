@@ -7,9 +7,9 @@ Scripts & db for running NTD SCH model with various scenarios, IUS, groups, simu
 - Create a MySQL db:
 
 ```bash
-docker run --detach --name mariadb -p 3306:3306 --env MARIADB_USER=ntd --env MARIADB_PASSWORD=ntd --env MARIADB_ROOT_PASSWORD=ntd  mariadb:latest
+docker run --detach --name mariadb -p 3306:3306 --env MARIADB_USER=ntd --env MARIADB_PASSWORD=ntd --env MARIADB_ROOT_PASSWORD=ntd  mariadb:10.7
 echo 'create database ntd; grant all privileges on ntd.* to "ntd"@"%"; flush privileges;' | mysql -u root -pntd -h 127.0.0.1 -P 3306
-mysql -u ntd -pntd -h 127.0.0.1 -P 3306  ntd < results.sql
+mysql -u ntd -pntd -h 127.0.0.1 -P 3306  ntd < ntd.sql
 ```
 
 - Add a `.env` file containing the GCP credentials:
