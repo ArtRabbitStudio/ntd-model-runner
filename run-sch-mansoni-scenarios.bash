@@ -5,12 +5,12 @@ num_sims=5
 demogName=KenyaKDHS
 uncompressed="-u"
 local_storage="-l"
-output_folder="sch-001"
+output_folder="sch-002"
 result_folder=results/$( date +%Y%m%d%H%M%S )
 
 function run_scenarios () {
 
-    for scenario in 1 3b ; do
+    for scenario in 1 2 3a 3b; do
 
         if [[ ${scenario:0:1} = 3 ]] ; then
 
@@ -19,7 +19,7 @@ function run_scenarios () {
                 continue
             fi
 
-            lines=$( grep -v Group_name iu-disease-data/mansoniIUs_scenario3.csv )
+            lines=$( grep -v Group_name iu-disease-data/mansoniIUs_scenario3b.csv )
 
             for line in $lines ; do
 
@@ -35,12 +35,12 @@ function run_scenarios () {
 
         else
 
-            lines=$( grep -v Group_name iu-disease-data/mansoniIUs.csv | sed 's/"//g' )
+            lines=$( grep -v Group_name iu-disease-data/mansoniIUs_scenario3b.csv | sed 's/"//g' )
 
             for line in $lines ; do
 
                 iu=$( echo $line | cut -f 3 -d , )
-                group=$( echo $line | cut -f 1 -d , )
+                group=$( echo $line | cut -f 1 -d , | cut -f 1 -d _ )
 
                 cmd="time python3 -u run.py -d $short -g $group -i $iu -s $scenario -n $num_sims -m $demogName -o $output_folder $uncompressed $local_storage"
                 execute $group $iu $scenario "$cmd"
@@ -113,5 +113,5 @@ function maybe_fetch_files () {
     fi
 }
 
-mkdir -p $result_folder
+#mkdir -p $result_folder
 run_scenarios
