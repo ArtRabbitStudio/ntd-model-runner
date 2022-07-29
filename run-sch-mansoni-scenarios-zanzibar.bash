@@ -10,48 +10,23 @@ result_folder=results/$( date +%Y%m%d%H%M%S )
 
 function run_scenarios () {
 
-    for scenario in 1 2 3a 3b; do
+    for scenario in 1 2 3a 3b ; do
 
-        if [[ ${scenario:0:1} = 3 ]] ; then
+        lines=$( grep -v Group_name iu-disease-data/mansoniIUs_zanzibar.csv )
 
-            # ignore 3, only do 3a/3b
-            if [[ ${scenario:1:1} = "" ]] ; then
-                continue
-            fi
+        for line in $lines ; do
 
-            lines=$( grep -v Group_name iu-disease-data/mansoniIUs_zanzibar.csv )
+            iu=$( echo $line | cut -f 3 -d , )
+            group=$( echo $line | cut -f 1 -d , | cut -f 1 -d _ )
+            sub_scenario=$( echo $line | cut -f 4 -d , | tr -d '\r')
+            full_scenario="${scenario}_${sub_scenario}"
 
-            for line in $lines ; do
+            cmd="time python3 -u run.py -d $short -g $group -i $iu -s ${full_scenario} -n $num_sims -m $demogName -o $output_folder $uncompressed $local_storage"
+            echo $cmd
+            continue
+            execute $group $iu $full_scenario "$cmd"
 
-                iu=$( echo $line | cut -f 3 -d , )
-                group=$( echo $line | cut -f 1 -d , | cut -f 1 -d _ )
-                sub_scenario=$( echo $line | cut -f 4 -d , | tr -d '\r')
-                full_scenario="${scenario}_${sub_scenario}"
-
-                cmd="time python3 -u run.py -d $short -g $group -i $iu -s ${full_scenario} -n $num_sims -m $demogName -o $output_folder $uncompressed $local_storage"
-                echo $cmd
-                continue
-                execute $group $iu $full_scenario "$cmd"
-
-            done
-
-        else
-
-            lines=$( grep -v Group_name iu-disease-data/mansoniIUs_zanzibar.csv | sed 's/"//g' )
-
-            for line in $lines ; do
-
-                iu=$( echo $line | cut -f 3 -d , )
-                group=$( echo $line | cut -f 1 -d , | cut -f 1 -d _ )
-
-                cmd="time python3 -u run.py -d $short -g $group -i $iu -s $scenario -n $num_sims -m $demogName -o $output_folder $uncompressed $local_storage"
-                echo $cmd
-                continue
-                execute $group $iu $scenario "$cmd"
-
-            done
-
-        fi
+        done
 
     done
 
