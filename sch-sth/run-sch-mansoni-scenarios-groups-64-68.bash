@@ -12,7 +12,7 @@ function run_scenarios () {
 
     for scenario in 1 2 3a 3b ; do
 
-        lines=$( grep -v Group_name iu-disease-data/mansoniIUs-grp-64-68.csv)
+        lines=$( grep -v Group_name iu-disease-data/mansoniIUs-groups-64-68.csv)
 
         for line in $lines ; do
 
