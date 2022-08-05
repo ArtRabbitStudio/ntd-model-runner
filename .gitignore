@@ -131,8 +131,8 @@ sch_vaccine_branch_vaccine.csv
 *.swo
 
 # local output data files
-data/output
-data/tmp
+*/data/output
+*/data/tmp
 test-results
 results
 *-service-account-key.json
