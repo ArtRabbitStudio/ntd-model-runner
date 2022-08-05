@@ -13,7 +13,7 @@ setuptools.setup(
     install_requires=[
         'sch_simulation @ git+https://github.com/igorclark/ntd-model-sch.git@Endgame_v2', # the SCH model
         'google-cloud-storage', 'gcsfs', 'fsspec', # for cloud storage inc. via pandas/pickle
-        'mysql-connector-python' # for storing results
+        'mysql-connector-python==8.0.28' # for storing results
     ],
     include_package_data=True
 )
