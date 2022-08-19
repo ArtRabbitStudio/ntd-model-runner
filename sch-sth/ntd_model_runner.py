@@ -125,6 +125,8 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
 
             df.to_csv( f'{intermediate_results_dir}/{iu}_results_{i:03}.csv', index=False )
 
+    print( results )
+
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
 
@@ -280,10 +282,18 @@ def transform_results( results, iu, type, species, scenario, numSims, keys ):
     # previously used row 7584 for end of IPM data, now just run to the end of the results
     num_result_rows = results[ 0 ].shape[ 0 ]
 
-    # first 7440 rows = standard ESPEN results + population data
-    # rows 7441-end = IPM cost data
-    startrow = { 'ihme': 0, 'ipm': 7440 }[ type ]
-    endrow = { 'ihme': 7440, 'ipm': num_result_rows }[ type ]
+    if species == 'Mansoni':
+        # first 9280 rows = standard ESPEN results + population data
+        # rows 9281-end = IPM cost data
+        last_ihme_row = 9280
+
+    else:
+        # first 7440 rows = standard ESPEN results + population data
+        # rows 7441-end = IPM cost data
+        last_ihme_row = 7440
+
+    startrow = { 'ihme': 0, 'ipm': last_ihme_row }[ type ]
+    endrow = { 'ihme': last_ihme_row, 'ipm': num_result_rows }[ type ]
 
     # array to put the transformed data into
     values = []
@@ -292,8 +302,8 @@ def transform_results( results, iu, type, species, scenario, numSims, keys ):
     for rowIndex, row in results[ 0 ][ startrow:endrow ].iterrows():
 
         # get an index into target array, i.e. where we're putting the new row
-        # - jump ahead by 7440 for the ipm data
-        arrIndex = ( rowIndex - 7440 ) if type == 'ipm' else rowIndex
+        # - jump ahead by last_ihme_row for the ipm data
+        arrIndex = ( rowIndex - last_ihme_row ) if type == 'ipm' else rowIndex
 
         if arrIndex > 0 and arrIndex % 1000 == 0:
             print( f"-> transformed {arrIndex} rows" )
