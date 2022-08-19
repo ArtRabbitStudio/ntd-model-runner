@@ -125,8 +125,6 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
 
             df.to_csv( f'{intermediate_results_dir}/{iu}_results_{i:03}.csv', index=False )
 
-    print( results )
-
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
 
