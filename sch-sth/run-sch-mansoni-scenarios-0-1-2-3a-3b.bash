@@ -22,7 +22,12 @@ function run_scenarios () {
             full_scenario="${scenario}_${sub_scenario}"
 
             cmd="time python3 -u run.py -d $short -g $group -i $iu -s ${full_scenario} -n $num_sims -m $demogName -o $output_folder $uncompressed $local_storage"
-            execute $group $iu $full_scenario "$cmd"
+			if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
+				echo $cmd
+				continue
+			else
+				execute $group $iu $full_scenario "$cmd"
+			fi
 
         done
 
@@ -90,5 +95,8 @@ function maybe_fetch_files () {
     fi
 }
 
-#mkdir -p $result_folder
+if [[ "${DISPLAY_CMD:=n}" != "y" ]] ; then
+	mkdir -p $result_folder
+fi
+
 run_scenarios
