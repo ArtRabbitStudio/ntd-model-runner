@@ -1,5 +1,5 @@
-PARAMETER_ROOT=/Users/igor/Work/ntd/ntd-models/ntd-model-runner/lf/parameters
-SCENARIO_ROOT=/Users/igor/Work/ntd/ntd-models/ntd-model-runner/lf/scenarios
+PARAMETER_ROOT=./parameters
+SCENARIO_ROOT=./scenarios
 RESULTS_ROOT=./results
 NUM_SIMULATIONS=20
 
@@ -51,7 +51,6 @@ for id in 1 ; do
 
 		done
 
-		echo $last_tmp
 		IHME_OUTPUT_FILE=${IHME_FILE_ROOT}/IHME_scen${scen_iu}_output.csv
 		mv $last_tmp ${IHME_OUTPUT_FILE}
 		gsed -i "s/${scen_iu}/${iu}/g" ${IHME_OUTPUT_FILE}
