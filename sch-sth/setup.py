@@ -12,6 +12,7 @@ setuptools.setup(
     python_requires='>=3.9',
     install_requires=[
         'sch_simulation @ git+https://github.com/igorclark/ntd-model-sch.git@Endgame_v2', # the SCH model
+        'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@update-setup-py-imports', # the Trachoma model
         'google-cloud-storage', 'gcsfs', 'fsspec', # for cloud storage inc. via pandas/pickle
         'mysql-connector-python==8.0.28' # for storing results
     ],
