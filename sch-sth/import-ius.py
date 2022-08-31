@@ -51,6 +51,7 @@ for member in tar.getmembers():
         disease_id = DB.fetchone( "SELECT id FROM disease WHERE type = %s AND species = %s", params )['id']
 
     content = tar.extractfile(member).read()
+    inserted = 0
     ius = content.split( b"\n" )
     for iu in ius:
         iu_str = iu.decode( "utf-8" )
@@ -61,5 +62,8 @@ for member in tar.getmembers():
                 iu_id = DB.fetchone( "SELECT id FROM iu WHERE code = %s", params )['id']
 
             DB.insert( insert_join_sql, ( iu_id, disease_id, ) )
+            inserted = inserted + 1
+            if inserted % 500 == 0:
+                print( f"--> inserted {inserted} IUs" )
 
     DB.commit()
