@@ -22,6 +22,7 @@ parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloud
 parser.add_option( '-s', '--scenario', dest='scenario', type='string', default='1' )
 parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
 parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store_false', default=True )
+parser.add_option( '-p', '--source-data-path', dest='sourceDataPath', default='source-data' )
 
 ( options, args ) = parser.parse_args()
 
@@ -31,9 +32,10 @@ disease = options.disease
 demogName = options.demogName
 useCloudStorage = options.useCloudStorage
 outputFolder = options.outputFolder
-groupId = options.groupId
+groupId = options.groupId if options.groupId != 0 else None
 scenario = options.scenario
 compress = options.compress
+sourceDataPath = options.sourceDataPath
 
 cli_iu_list_len = len( [ x for x in iuList if x != '' ] )
 cloudStorageStr = '' if useCloudStorage else 'not '
@@ -85,6 +87,9 @@ for runInfo in runs:
 
     runInfo[ 'demogName' ] = demogName
 
+#    print( f"run( {runInfo}, {groupId}, {scenario}, {numSims}, {DB}, {useCloudStorage}, {compress}, {False}, {outputFolder}" );
+#    sys.exit(0)
+
     try:
         print( f"-> running {numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
         run(
@@ -96,7 +101,8 @@ for runInfo in runs:
             useCloudStorage = useCloudStorage,
             compress = compress,
             saveIntermediateResults=False,
-            outputFolder = outputFolder
+            outputFolder = outputFolder,
+            sourceDataPath = sourceDataPath
         )
 
     except DirectoryNotFoundError as d:

@@ -17,6 +17,8 @@ from joblib import Parallel, delayed
 from sch_simulation.helsim_RUN_KK import *
 from sch_simulation.helsim_FUNC_KK import *
 
+from run_trachoma import run_trachoma_model
+
 class MissingArgumentError( ValueError ):
     pass
 
@@ -24,10 +26,7 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, saveIntermediateResults=False, outputFolder='202206' ):
-
-    if groupId is None:
-        raise MissingArgumentError( 'groupId' )
+def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, saveIntermediateResults=False, outputFolder='202206', sourceDataPath='source-data' ):
 
     # get run info
     iu = runInfo[ "iu_code" ]
@@ -37,17 +36,34 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     short = runInfo[ "short" ]
     demogName = runInfo[ 'demogName' ]
 
+    if groupId is None and species != "Trachoma":
+        raise MissingArgumentError( 'groupId' )
+
     # construct cloud path for this disease/species
     GcsSpecies = {
         'Ascaris': 'roundworm',
         'Trichuris': 'whipworm',
         'Hookworm': 'hookworm',
-        'Mansoni': 'mansoni'
+        'Mansoni': 'mansoni',
+        'Trachoma': 'trachoma',
     }[ species ]
 
-    DISEASE_CLOUD_ROOT = f'diseases/{runInfo[ "type" ]}-{GcsSpecies.lower()}'
-    DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/source-data'
-    DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{runInfo[ "type" ]}-{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId:03}'
+    GcsPrefix = {
+        'Ascaris': f"{runInfo['type']}-",
+        'Trichuris': f"{runInfo['type']}-",
+        'Hookworm': f"{runInfo['type']}-",
+        'Mansoni': f"{runInfo['type']}-",
+        'Trachoma': '',
+    }[ species ]
+
+    DISEASE_CLOUD_ROOT = f'diseases/{GcsPrefix}{GcsSpecies.lower()}'
+    DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/{sourceDataPath}'
+
+    # only include the group if it's been specified
+    if groupId is None:
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{scenario}/{iu[0:3]}'
+    else:
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId:03}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
@@ -70,6 +86,28 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     if useCloudStorage == False:
         if not os.path.isdir( output_data_path ):
             Path( output_data_path ).mkdir( parents = True, exist_ok = True )
+
+    # short-circuit out to trachoma?
+    if species == 'Trachoma':
+
+        # locate pickle file for IU
+        GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/OutputVals_{iu}.p'
+        InSimFilePath = GcsInSimFilePath if useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/OutputVals_{iu}.p'
+
+        # locate Beta input file for IU
+        GcsBetaFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/InputBet_{iu}.csv'
+        BetaFilePath = GcsBetaFilePath if useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/InputBet_{iu}.csv'
+
+        # specify compression settings
+        compressSuffix = ".bz2" if compress == True else ""
+        compression = None if compress == False else "bz2"
+
+        # specify file output locations
+        ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv{compressSuffix}"
+        ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv{compressSuffix}"
+
+        cloudModule = gcs if useCloudStorage else None
+        return run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
 
     # locate pickle file for IU
     InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}.p'
