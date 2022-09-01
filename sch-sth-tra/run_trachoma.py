@@ -87,7 +87,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
     #############################################################################################################################
 
     # generate MDA data from coverage file
-    coverageFileName = 'scen' + scenario + '.xlsx'
+    coverageFileName = 'scen' + scenario + '.csv'
     MDAData = readCoverageData(coverageFileName)
     MDA_dates = getMDADates(MDAData)
     MDA_times = get_MDA_times(MDA_dates, Start_date, sim_params['burnin'])
