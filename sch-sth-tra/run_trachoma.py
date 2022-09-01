@@ -4,6 +4,7 @@ import time
 from joblib import Parallel, delayed
 num_cores = multiprocessing.cpu_count()
 import pickle
+import gcs
 
 def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression ):
 
@@ -67,6 +68,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
     pickleData = pickle.loads( cloudModule.get_blob( InSimFilePath ) ) if cloudModule != None else pickle.load( open( InSimFilePath, 'rb' ) )
 
     # load beta values file
+    print( f"-> reading beta values file from {BetaFilePath}" )
     allBetas = pd.read_csv( BetaFilePath )
 
     #############################################################################################################################
@@ -94,7 +96,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
     #############################################################################################################################
     #############################################################################################################################
 
-    print( f'Running {numSims} simulations on {num_cores} cores' )
+    print( f'-> Running {numSims} simulations on {num_cores} cores' )
     start = time.time()
 
     #############################################################################################################################
@@ -105,7 +107,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
                                             params = params, 
                                             timesim = sim_params['timesim'],
                                             demog=demog, 
-                                            beta = allBetas.bet[i], 
+                                            beta = allBetas.beta[i],
                                             MDA_times = MDA_times, 
                                             MDAData=MDAData, 
                                             outputTimes= outputTimes, 

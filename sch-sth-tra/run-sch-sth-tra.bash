@@ -9,6 +9,7 @@ iu_list_file=""
 scenarios="0,1,2,3a,3b"
 source_data_path="source-data"
 
+# map of e.g. Tra -> 'trachoma' for source data URL paths
 declare -A DISEASE_SHORT_NAMES_TO_CODES
 DISEASE_SHORT_NAMES_TO_CODES[Tra]="trachoma"
 DISEASE_SHORT_NAMES_TO_CODES[Tri]="sth-whipworm"
