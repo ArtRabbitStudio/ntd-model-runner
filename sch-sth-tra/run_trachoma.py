@@ -20,14 +20,11 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
         'inf_red':0.45,
         'min_ID':11, # Parameters relating to duration of infection period, including ID period
         'av_D_duration':300/7,
-        'dis_red':0.3,
         'min_D':1, # Parameters relating to duration of disease period
         'v_1':1,
         'v_2':2.6,
         'phi':1.4,
         'epsilon':0.5,# Parameters relating to lambda function- calculating force of infection
-        'ag':0.0016, # Decay rate for age component of decline in D duration
-        'prop_age':0.4, # Proportion of immunity attributed to age
         # Parameters relating to MDA
         'MDA_Cov':0.8,
         'MDA_Eff': 0.85, # Efficacy of treatment
@@ -38,13 +35,12 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
         'olderChildMaxAge':15, # Note this is years, need to check it converts to weeks later
         'b1':1,# this relates to bacterial load function
         'ep2':0.114,
-        'n_inf_sev':30,
         'TestSensitivity': 0.96,
         'TestSpecificity': 0.93
     }
 
     sim_params = {
-        'timesim':1500, 
+        'timesim':52*21,
         'burnin': 26,
         'N_MDA':5,
         'nsim':10
@@ -58,7 +54,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
 
     previous_rounds = 0
 
-    Start_date = date( 2017, 6, 1 )
+    Start_date = date( 2020, 6, 1 )
     End_date = date( 2030, 12, 31 )
 
     #############################################################################################################################
@@ -79,7 +75,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
     #############################################################################################################################
     #############################################################################################################################
     # which years to make endgame output specify and convert these to simulation time
-    outputYear = range(2018, 2041)
+    outputYear = range(2020, 2041)
     outputTimes = getOutputTimes(outputYear)
     outputTimes = get_MDA_times(outputTimes, Start_date, sim_params['burnin'])
 
