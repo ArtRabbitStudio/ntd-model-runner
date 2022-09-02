@@ -35,6 +35,7 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
         'olderChildMaxAge':15, # Note this is years, need to check it converts to weeks later
         'b1':1,# this relates to bacterial load function
         'ep2':0.114,
+        'n_inf_sev':38,
         'TestSensitivity': 0.96,
         'TestSpecificity': 0.93
     }
