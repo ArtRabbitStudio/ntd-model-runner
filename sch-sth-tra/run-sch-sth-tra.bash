@@ -55,14 +55,12 @@ function run_scenarios () {
 
             cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} ${uncompressed} ${local_storage}"
 
-			if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
-				echo $cmd
-                break
-				continue
-			else
-				execute $group $iu $full_scenario "$cmd"
-                break
-			fi
+            if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
+                echo $cmd
+                continue
+            else
+                execute $group $iu $full_scenario "$cmd"
+            fi
 
         done
 
@@ -196,7 +194,7 @@ if [[ -z "${disease}" || -z "${num_sims}" || -z "${output_folder}" || ! -f "${iu
 fi
 
 if [[ "${DISPLAY_CMD:=n}" != "y" ]] ; then
-	mkdir -p $result_folder
+    mkdir -p $result_folder
 fi
 
 run_scenarios
