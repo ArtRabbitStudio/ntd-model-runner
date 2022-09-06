@@ -1,5 +1,6 @@
 import tarfile
 import sys
+import os
 import re
 
 from db import db
@@ -22,22 +23,9 @@ INSERT IGNORE INTO iu_disease ( `iu_id`, `disease_id` )
 VALUES ( %s, %s )
 '''
 
-# instantiate local db module
-DB = db()
+def import_disease_ius( filename, content ):
 
-# check for IU data file
-if len( sys.argv ) != 2 :
-    print( f"usage: {sys.argv[0]} <tar-bz-file-containing-IU-data>" )
-    sys.exit( 1 )
-
-# open IU data file
-iu_data_tar_file = sys.argv[ 1 ]
-tar = tarfile.open( iu_data_tar_file, "r:bz2" )
-
-# add disease & IU data for each disease file inside data file
-for member in tar.getmembers():
-
-    components = member.name.split( '.' )[ 0 ].split( "-" )
+    components = filename.split( '.' )[ 0 ].split( "-" )
 
     disease_type = components[0]
     disease_species = components[1]
@@ -50,7 +38,6 @@ for member in tar.getmembers():
         params = ( disease_type, disease_species )
         disease_id = DB.fetchone( "SELECT id FROM disease WHERE type = %s AND species = %s", params )['id']
 
-    content = tar.extractfile(member).read()
     inserted = 0
     ius = content.split( b"\n" )
     for iu in ius:
@@ -67,3 +54,31 @@ for member in tar.getmembers():
                 print( f"--> inserted {inserted} IUs" )
 
     DB.commit()
+
+# instantiate local db module
+DB = db()
+
+# check for IU data file
+if len( sys.argv ) != 2 :
+    print( f"usage: {sys.argv[0]} <tar-or-plain-file-containing-IU-data>" )
+    sys.exit( 1 )
+
+named_file = sys.argv[ 1 ]
+
+# either extract & read from tar
+if tarfile.is_tarfile( named_file ):
+
+    print( f"-> reading entries from tar file {named_file}" )
+
+    # open IU data file
+    tar = tarfile.open( named_file, "r:bz2" )
+
+    # add disease & IU data for each disease file inside data file
+    for member in tar.getmembers():
+        import_disease_ius( member.name, tar.extractfile( member ).read() )
+
+# or just import the specific named file
+else:
+    print( f"-> reading data from file {named_file}" )
+    with open( named_file, 'rb' ) as file:
+        import_disease_ius( os.path.basename( named_file ), file.read() )

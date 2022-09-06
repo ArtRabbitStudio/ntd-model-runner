@@ -1,12 +1,17 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2086
+
+# default options, potentially overridden in env
 PARAMETER_ROOT="${PARAMETER_ROOT:=./parameters}"
 SCENARIO_ROOT="${SCENARIO_ROOT:=./scenarios}"
 RESULTS_ROOT="${RESULTS_ROOT:=./results}"
 NUM_SIMULATIONS=${NUM_SIMULATIONS:=5}
 
+# run the model for a given ID, provided as $2 and passed in at bottom
 function run_ID () {
 
-	id=${1}
-	output_folder=${2}
+	output_folder_name=${1}
+	id=${2}
 
 	PARAMS="${PARAMETER_ROOT}/RandomParamIU${id}.txt"
 	SCENARIO="${SCENARIO_ROOT}/scenariosNoImp${id}.xml"
@@ -17,15 +22,15 @@ function run_ID () {
 	mkdir -p "${RESULTS}"
 
 	echo "== running ${NUM_SIMULATIONS} simulations of LF model with ${PARAMS} ${SCENARIO}"
-	time transfil_N \
+	transfil_N \
 		-p  "${PARAMS}" \
 		-s  "${SCENARIO}" \
 		-o "${RESULTS}" \
 		-n ./Pop_Distribution.csv \
-		-r ${NUM_SIMULATIONS}
+		-r "${NUM_SIMULATIONS}"
 
 	echo "== converting output files for IHME & IPM"
-	time do_file_conversions ${id} ${output_folder}
+	( time do_file_conversions "${id}" "${output_folder_name}" ) 2>&1
 
 	echo "== clearing out model 'result' files"
 	rm -rf "${RESULTS}"
@@ -34,17 +39,19 @@ function run_ID () {
 function do_file_conversions () {
 
 	id=${1}
-	output_folder=${2}
+	output_folder_name=${2}
 
 	for scen_iu in $( xmllint --xpath "/Model/ScenarioList/scenario/@name" <( tail -n +2 scenarios/scenariosNoImp${id}.xml ) | sed 's/name="\([^"]*\)"/\1/g' ) ; do
 
 		scen=$( echo $scen_iu | cut -f 1 -d _ )
 		iu=$( echo $scen_iu | cut -f 2 -d _ )
 
-		convert_output_files "${scen}" "${iu}" IHME "${output_folder}"
-		convert_output_files "${scen}" "${iu}" IPM "${output_folder}"
+		convert_output_files "${scen}" "${iu}" IHME "${output_folder_name}"
+		convert_output_files "${scen}" "${iu}" IPM "${output_folder_name}"
 
 	done
+
+	echo "== done converting output files"
 }
 
 function convert_output_files () {
@@ -52,14 +59,15 @@ function convert_output_files () {
 	scen=${1}
 	iu=${2}
 	inst=${3^^}
-	output_folder=${4}
+	output_folder_name=${4}
 
 	echo "== converting ${inst} files for IU ${iu} scenario ${scen}"
 	last_tmp=$( mktemp )
 
 	MODEL_OUTPUT_FILE_ROOT=res_endgame/${inst}_scen${scen}/${scen}_${iu}
 
-	for n in $(seq 0 $(( $NUM_SIMULATIONS - 2)) ); do
+	# shellcheck disable=SC2004
+	for n in $(seq 0 $(( $NUM_SIMULATIONS - 2 )) ); do
 
 		NEXT_SEQUENCE_NUMBER=$(( n + 1 ))
 
@@ -96,25 +104,41 @@ function convert_output_files () {
 
 	done
 
-	IU_OUTPUT_PATH="ntd/${output_folder}/lf/scenario_${scen}/${iu}"
+	organise_output_files "${scen}" "${iu}" "${inst}" "${output_folder_name}"
+
+}
+
+function organise_output_files () {
+
+	scen=${1}
+	iu=${2}
+	inst=${3^^}
+	output_folder_name=${4}
+
+	IU_OUTPUT_PATH="ntd/${output_folder_name}/lf/scenario_${scen}/${iu}"
 
 	LOCAL_IU_OUTPUT_DIR="combined_output/${IU_OUTPUT_PATH}"
 	LOCAL_IU_OUTPUT_FILE_NAME="${inst,,}-${iu}-lf-scenario_${scen}-${NUM_SIMULATIONS}.csv"
 	LOCAL_IU_OUTPUT_FILE_PATH="${LOCAL_IU_OUTPUT_DIR}/${LOCAL_IU_OUTPUT_FILE_NAME}"
-	LOCAL_IU_OUTPUT_FILE_PATH_BZ="${LOCAL_IU_OUTPUT_DIR}/${LOCAL_IU_OUTPUT_FILE_NAME}.bz2"
+#	LOCAL_IU_OUTPUT_FILE_PATH_BZ="${LOCAL_IU_OUTPUT_DIR}/${LOCAL_IU_OUTPUT_FILE_NAME}.bz2"
 
-	GCS_IU_OUTPUT_DIR="gs://ntd-endgame-result-data/${IU_OUTPUT_PATH}"
-	GCS_IU_OUTPUT_FILE_NAME="${LOCAL_IU_OUTPUT_FILE_NAME}.bz2"
-	GCS_IU_OUTPUT_FILE_PATH="${GCS_IU_OUTPUT_DIR}/${GCS_IU_OUTPUT_FILE_NAME}"
+#	GCS_IU_OUTPUT_DIR="gs://ntd-endgame-result-data/${IU_OUTPUT_PATH}"
+#	GCS_IU_OUTPUT_FILE_NAME="${LOCAL_IU_OUTPUT_FILE_NAME}.bz2"
+#	GCS_IU_OUTPUT_FILE_PATH="${GCS_IU_OUTPUT_DIR}/${GCS_IU_OUTPUT_FILE_NAME}"
 
 	mkdir -p "${LOCAL_IU_OUTPUT_DIR}"
 	mv $last_tmp ${LOCAL_IU_OUTPUT_FILE_PATH}
 
-	# clear out intermediate files
-	rm -f ${MODEL_OUTPUT_FILE_ROOT}/${inst}_*.csv
+	# clear out intermediate files in e.g. res_endgame/IPM_scen3c/3c_SDN53289
+#	rm -rf ${MODEL_OUTPUT_FILE_ROOT}
 
 	# remove IU folders e.g. ./res_endgame/IPM_scen3b/3b_TCD10760
-	find ./res_endgame -type d -empty | xargs rmdir
+	# shellcheck disable=SC2044
+	for s in $( find ./res_endgame -type d -empty ) ; do
+		if [[ -d "${s}" ]] ; then
+			rm -rf "${s}"
+		fi
+	done
 
 	# strip out the scenario number from the IU in the output
 	gsed -i "s/${scen}_${iu}/${iu}/g" ${LOCAL_IU_OUTPUT_FILE_PATH}
@@ -122,14 +146,11 @@ function convert_output_files () {
 	# compress the files
 	bzip2 --force --best ${LOCAL_IU_OUTPUT_FILE_PATH}
 
-	echo "---> copying output file: ${LOCAL_IU_OUTPUT_FILE_PATH}.bz2 to GCS"
-	#gsutil cp ${LOCAL_IU_OUTPUT_FILE_PATH_BZ} ${GCS_IU_OUTPUT_FILE_PATH}
-
 }
 
 if [[ $# != 2 ]] ; then
-	echo "usage: ${0} <running-ID> <output-folder>"
+	echo "usage: ${0} <output-folder> <running-ID>"
 	exit 1
 fi
 
-run_ID ${1} ${2}
+run_ID "${1}" "${2}"
