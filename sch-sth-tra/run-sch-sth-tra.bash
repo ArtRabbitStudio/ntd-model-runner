@@ -53,7 +53,7 @@ function run_scenarios () {
 
             esac
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} ${uncompressed} ${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} -f ${save_pickle_file} ${uncompressed} ${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo $cmd
@@ -141,7 +141,7 @@ function maybe_fetch_files () {
 }
 
 # work out disease, num sims, output folder, file options
-while getopts ":d:s:i:n:o:p:ulh" opts ; do
+while getopts ":d:s:i:n:o:p:f:ulh" opts ; do
 
     case "${opts}" in
 
@@ -167,6 +167,10 @@ while getopts ":d:s:i:n:o:p:ulh" opts ; do
 
         p)
             source_data_path=${OPTARG}
+            ;;
+
+        f)
+            save_pickle_file=${OPTARG}
             ;;
 
         u)

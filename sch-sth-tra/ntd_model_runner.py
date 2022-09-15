@@ -26,7 +26,7 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, saveIntermediateResults=False, outputFolder='202206', sourceDataPath='source-data' ):
+def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, savePickleFileSuffix=None, saveIntermediateResults=False, outputFolder='202206', sourceDataPath='source-data' ):
 
     # get run info
     iu = runInfo[ "iu_code" ]
@@ -113,6 +113,12 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}.p'
     GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}.p'
 
+    # specify output pickle file location for IU?
+    if savePickleFileSuffix != None:
+        OutSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}_{savePickleFileSuffix}.p'
+        GcsOutSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}_{savePickleFileSuffix}.p'
+        print( f"-> will write output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
+
     # locate RK input file for IU
     RkFilePath = f'{LOCAL_INPUT_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
     GcsRkFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
@@ -150,6 +156,14 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
         numSims = numSims,
         cloudModule = gcs if useCloudStorage else None
     )
+
+    # store the results in a pickle file for use in later runs?
+    if savePickleFileSuffix != None:
+        print( f"-> writing output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
+        if useCloudStorage:
+            gcs.write_string_to_file( pickle.dumps( results ), GcsOutSimFilePath )
+        else:
+            pickle.dump( results, open( OutSimFilePath, 'wb' ) )
 
     # output the raw model result data for comparison?
     if saveIntermediateResults == True:
@@ -255,7 +269,7 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
     # run simulations in parallel
     results = Parallel(n_jobs=num_cores)(
             delayed(multiple_simulations)(params, pickleData, simparams, indices, i) for i in range(numSims))
-        
+
     end_time = time.time()
 
     print( f'-> finished {numSims} simulations on {num_cores} cores in {(end_time - start_time):.3f}s' )
