@@ -175,7 +175,7 @@ def run(
         print( f"-> writing output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
 
         if useCloudStorage:
-            gcs.write_string_to_file( pickle.dumps( simData ), GcsOutSimFilePath, protocol=pickle.HIGHEST_PROTOCOL )
+            gcs.write_string_to_file( pickle.dumps( simData, protocol=pickle.HIGHEST_PROTOCOL ), GcsOutSimFilePath )
 
         else:
             pickle.dump( simData, open( OutSimFilePath, 'wb' ), protocol=pickle.HIGHEST_PROTOCOL )
