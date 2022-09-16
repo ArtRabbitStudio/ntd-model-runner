@@ -238,10 +238,6 @@ def run_model(
     if InSimFilePath is None:
         raise MissingArgumentError( "InSimFilePath" )
 
-    # load pickle file
-    print( f'-> reading in pickle data from {InSimFilePath}' )
-    pickleData = pickle.loads( cloudModule.get_blob( InSimFilePath ) ) if cloudModule != None else pickle.load( open( InSimFilePath, 'rb' ) )
-
     # path to 200 parameters file
     if RkFilePath is None:
         raise MissingArgumentError( 'RkFilePath' )
@@ -277,20 +273,26 @@ def run_model(
     num_cores = multiprocessing.cpu_count()
     print( f'-> running {numSims} simulations on {num_cores} cores' )
 
-    # randomly pick indices for number of simulations?
-#    indices = np.random.choice(a=range(200), size = numSims, replace=False)
-
     # pick parameters and saved populations in order
     indices = range( numSims )
 
     start_time = time.time()
 
-    # run simulations in parallel
+    # run simulations in parallel starting from zero
     if runningBurnIn == True:
+
+        print( f'-> running burn-in, not reading pickle data (from {InSimFilePath})' )
         res = Parallel(n_jobs=num_cores)(
             delayed(BurnInSimulations)(params,simparams, i) for i in range(numSims)
         )
+
+    # run simulations in parallel starting from specified pickled state
     else:
+
+        # load pickle file
+        print( f'-> reading in pickle data from {InSimFilePath}' )
+        pickleData = pickle.loads( cloudModule.get_blob( InSimFilePath ) ) if cloudModule != None else pickle.load( open( InSimFilePath, 'rb' ) )
+
         res = Parallel(n_jobs=num_cores)(
             delayed(multiple_simulations_after_burnin)(params, pickleData, simparams, indices, i, burnInTime) for i in range(numSims)
         )
