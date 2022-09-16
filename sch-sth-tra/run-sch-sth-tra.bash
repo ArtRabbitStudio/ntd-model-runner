@@ -59,7 +59,7 @@ function run_scenarios () {
             if [[ -z "${read_pickle_file_suffix}" ]] ; then
                 read_pickle_cmd=""
             else
-                read_pickle_cmd="-f ${read_pickle_file_suffix}"
+                read_pickle_cmd="-r ${read_pickle_file_suffix}"
             fi
 
             if [[ -z "${save_pickle_file_suffix}" ]] ; then
