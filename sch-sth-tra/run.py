@@ -23,7 +23,9 @@ parser.add_option( '-s', '--scenario', dest='scenario', type='string', default='
 parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
 parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store_false', default=True )
 parser.add_option( '-p', '--source-data-path', dest='sourceDataPath', default='source-data' )
+parser.add_option( '-r', '--read-pickle-file-suffix', dest='readPickleFileSuffix', type='string', default=None )
 parser.add_option( '-f', '--save-pickle-file-suffix', dest='savePickleFileSuffix', type='string', default=None )
+parser.add_option( '-b', '--burn-in-time', dest='burnInTime', type='int', default=None )
 
 ( options, args ) = parser.parse_args()
 
@@ -37,7 +39,13 @@ groupId = options.groupId if options.groupId != 0 else None
 scenario = options.scenario
 compress = options.compress
 sourceDataPath = options.sourceDataPath
+readPickleFileSuffix = options.readPickleFileSuffix
 savePickleFileSuffix = options.savePickleFileSuffix
+burnInTime = options.burnInTime
+
+if readPickleFileSuffix == savePickleFileSuffix:
+    print( "-> pickle output destination must be different from pickle input destination." )
+    sys.exit( 1 )
 
 cli_iu_list_len = len( [ x for x in iuList if x != '' ] )
 cloudStorageStr = '' if useCloudStorage else 'not '
@@ -102,7 +110,9 @@ for runInfo in runs:
             DB = DB,
             useCloudStorage = useCloudStorage,
             compress = compress,
+            readPickleFileSuffix=readPickleFileSuffix,
             savePickleFileSuffix=savePickleFileSuffix,
+            burnInTime = burnInTime,
             saveIntermediateResults=False,
             outputFolder = outputFolder,
             sourceDataPath = sourceDataPath

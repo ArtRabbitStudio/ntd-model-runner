@@ -18,8 +18,11 @@ DISEASE_SHORT_NAMES_TO_CODES[Hook]="sth-hookworm"
 DISEASE_SHORT_NAMES_TO_CODES[Man]="sch-mansoni"
 
 function usage() {
-    echo "usage: ${0} -d <short-disease> -s <scenario-list> -i <iu-list-file> -n <num-sims> -o <output-folder> [-p <source-data-path>] [-u (uncompressed)] [-l (local_storage)]"
-    exit 0
+    echo "usage: ${0}"
+    echo "            -d <short-disease> -s <scenario-list> -i <iu-list-file> -n <num-sims> -o <output-folder>"
+    echo "            [-p <source-data-path>] [-u (uncompressed)] [-l (local_storage)]"
+    echo "            [-r <read-pickle-file-suffix>] [-f <save-pickle-file-suffix>] [-b <burn-in-years>]"
+    exit 1
 }
 
 function run_scenarios () {
@@ -53,7 +56,25 @@ function run_scenarios () {
 
             esac
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} -f ${save_pickle_file} ${uncompressed} ${local_storage}"
+            if [[ -z "${read_pickle_file_suffix}" ]] ; then
+                read_pickle_cmd=""
+            else
+                read_pickle_cmd="-f ${read_pickle_file_suffix}"
+            fi
+
+            if [[ -z "${save_pickle_file_suffix}" ]] ; then
+                save_pickle_cmd=""
+            else
+                save_pickle_cmd="-f ${save_pickle_file_suffix}"
+            fi
+
+            if [[ -z "${burn_in_time}" ]] ; then
+                burn_in_time_cmd=""
+            else
+                burn_in_time_cmd="-b ${burn_in_time}"
+            fi
+
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo $cmd
@@ -141,7 +162,7 @@ function maybe_fetch_files () {
 }
 
 # work out disease, num sims, output folder, file options
-while getopts ":d:s:i:n:o:p:f:ulh" opts ; do
+while getopts ":d:s:i:n:o:p:r:f:b:ulh" opts ; do
 
     case "${opts}" in
 
@@ -169,8 +190,25 @@ while getopts ":d:s:i:n:o:p:f:ulh" opts ; do
             source_data_path=${OPTARG}
             ;;
 
+        r)
+            read_pickle_file_suffix=${OPTARG}
+            if [[ "${read_pickle_file_suffix:0:1}" == "-" ]] ; then
+                usage
+            fi
+            ;;
+
         f)
-            save_pickle_file=${OPTARG}
+            save_pickle_file_suffix=${OPTARG}
+            if [[ "${save_pickle_file_suffix:0:1}" == "-" ]] ; then
+                usage
+            fi
+            ;;
+
+        b)
+            burn_in_time=${OPTARG}
+            if [[ "${burn_in_time:0:1}" == "-" ]] ; then
+                usage
+            fi
             ;;
 
         u)
@@ -199,6 +237,16 @@ fi
 
 if [[ "${DISPLAY_CMD:=n}" != "y" ]] ; then
     mkdir -p $result_folder
+fi
+
+if [[ "${save_pickle_file_suffix}" = "${read_pickle_file_suffix}" ]] ; then
+    echo "error: output pickle file suffix must be different from input pickle file suffix" >&2
+    usage
+fi
+
+if [[ -n "${save_pickle_file_suffix}" && -z "${burn_in_time}" ]] ; then
+    echo "error: burn-in requires a number of years" >&2
+    usage
 fi
 
 run_scenarios

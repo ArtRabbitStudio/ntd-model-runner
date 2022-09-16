@@ -26,7 +26,12 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False, savePickleFileSuffix=None, saveIntermediateResults=False, outputFolder='202206', sourceDataPath='source-data' ):
+def run(
+    runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False,
+    readPickleFileSuffix=None, savePickleFileSuffix=None, burnInTime=None,
+    saveIntermediateResults=False,
+    outputFolder='202206', sourceDataPath='source-data'
+):
 
     # get run info
     iu = runInfo[ "iu_code" ]
@@ -110,14 +115,17 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
         return run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
 
     # locate pickle file for IU
-    InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}.p'
-    GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}.p'
+    pickleReadSuffix = f"_{readPickleFileSuffix}" if readPickleFileSuffix != None else ""
+    InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}{pickleReadSuffix}.p'
+    GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}{pickleReadSuffix}.p'
 
     # specify output pickle file location for IU?
     if savePickleFileSuffix != None:
         OutSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}_{savePickleFileSuffix}.p'
         GcsOutSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}_{savePickleFileSuffix}.p'
         print( f"-> will write output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
+    else:
+        print( "-> not writing output pickle file" )
 
     # locate RK input file for IU
     RkFilePath = f'{LOCAL_INPUT_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
@@ -146,7 +154,7 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
     print( f"-> using parameter file {paramFileName}" )
 
     # run the model
-    results = run_model(
+    results, simData = run_model(
         InSimFilePath = GcsInSimFilePath if useCloudStorage else InSimFilePath,
         RkFilePath = GcsRkFilePath if useCloudStorage else RkFilePath,
         coverageFileName = coverageFileName,
@@ -154,16 +162,23 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
         demogName = demogName,
         paramFileName = paramFileName,
         numSims = numSims,
-        cloudModule = gcs if useCloudStorage else None
+        cloudModule = gcs if useCloudStorage else None,
+        runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
+        burnInTime = burnInTime
     )
 
     # store the results in a pickle file for use in later runs?
     if savePickleFileSuffix != None:
+
+        # to make the pickle files compatible with older models these should be straight dicts
+        # simDataAsDicts = [ dataclasses.asdict( d ) for d in simData ]
         print( f"-> writing output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
+
         if useCloudStorage:
-            gcs.write_string_to_file( pickle.dumps( results ), GcsOutSimFilePath )
+            gcs.write_string_to_file( pickle.dumps( simData ), GcsOutSimFilePath, protocol=pickle.HIGHEST_PROTOCOL )
+
         else:
-            pickle.dump( results, open( OutSimFilePath, 'wb' ) )
+            pickle.dump( simData, open( OutSimFilePath, 'wb' ), protocol=pickle.HIGHEST_PROTOCOL )
 
     # output the raw model result data for comparison?
     if saveIntermediateResults == True:
@@ -208,8 +223,12 @@ def run( runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=Fals
 function to load in a pickle file and associated parameters file and then
 run forward in time 23 years and give back results
 '''
-def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
-                demogName='Default', paramFileName='sch_example.txt', numSims=None, cloudModule=None ):
+def run_model(
+    InSimFilePath=None, RkFilePath=None,
+    coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
+    demogName='Default', paramFileName='sch_example.txt',
+    numSims=None, cloudModule=None, runningBurnIn=False, burnInTime=None
+):
 
     # number of simulations to run
     if numSims is None:
@@ -267,14 +286,23 @@ def run_model( InSimFilePath=None, RkFilePath=None, coverageFileName='Coverage_t
     start_time = time.time()
 
     # run simulations in parallel
-    results = Parallel(n_jobs=num_cores)(
-            delayed(multiple_simulations)(params, pickleData, simparams, indices, i) for i in range(numSims))
+    if runningBurnIn == True:
+        res = Parallel(n_jobs=num_cores)(
+            delayed(BurnInSimulations)(params,simparams, i) for i in range(numSims)
+        )
+    else:
+        res = Parallel(n_jobs=num_cores)(
+            delayed(multiple_simulations_after_burnin)(params, pickleData, simparams, indices, i, burnInTime) for i in range(numSims)
+        )
+
+    results = [ item[ 0 ] for item in res ]
+    simData = [ item[ 1 ] for item in res ]
 
     end_time = time.time()
 
     print( f'-> finished {numSims} simulations on {num_cores} cores in {(end_time - start_time):.3f}s' )
 
-    return results
+    return results, simData
 
 def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
