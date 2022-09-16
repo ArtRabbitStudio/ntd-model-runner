@@ -192,6 +192,12 @@ def run(
 
             df.to_csv( f'{intermediate_results_dir}/{iu}_results_{i:03}.csv', index=False )
 
+
+    # don't waste time saving output if running burn-in
+    if ( savePickleFileSuffix != None ):
+        print( f"-> running burn-in, not saving output" )
+        return
+
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
 
