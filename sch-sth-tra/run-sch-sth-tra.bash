@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# fail fast and hard
 set -euo pipefail
 
 # default values
@@ -96,7 +97,9 @@ function get_lines () {
 
     # if there's no segment_number/out_of variables then just strip & output all the lines from the file
     if [[ -z ${1:-} || -z ${2:-} ]] ; then
+        set +e
         grep -v IU_ID ${iu_list_file} | sed 's/"//g'
+        set -e
         return
     fi
 
@@ -110,7 +113,11 @@ function get_lines () {
     local num_per_segment=$(( $line_count / $requested_segments ))
     local remainder=$(( $line_count % ( num_per_segment * $requested_segments )  ))
     local total_from_segments=$(( $requested_segments * $num_per_segment ))
-    echo "-> $requested_segments segments * $num_per_segment lines makes $total_from_segments lines total, leaving a remainder of ${remainder} from a ${line_count}-line file, using a last segment of $(( num_per_segment + remainder )) to make a total of $(( $total_from_segments + $remainder )) " >&2
+    echo \
+        "-> $requested_segments segments * $num_per_segment lines makes $total_from_segments lines total," \
+        "leaving a remainder of ${remainder} from a ${line_count}-line file," \
+        "using a last segment of $(( num_per_segment + remainder ))" \
+        "to make a total of $(( $total_from_segments + $remainder ))" >&2
 
     local first_line=$(( $num_per_segment * ( $seg - 1 ) + 1 ))
     local last_line=$(( ( $first_line + $num_per_segment ) - 1 ))
@@ -123,7 +130,10 @@ function get_lines () {
     local segment_line_count=$(( ( last_line - first_line ) + 1 ))
     echo "-> segment number ${seg} has ${segment_line_count} lines, from $first_line - $last_line inclusive" >&2
 
+    # strip the lines from the file and only return the selected subset
+    set +e
     grep -v IU_ID ${iu_list_file} | sed 's/"//g' | sed -n "${first_line},${last_line}p;${end_line}q"
+    set -e
 
 }
 
