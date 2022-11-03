@@ -43,7 +43,7 @@ readPickleFileSuffix = options.readPickleFileSuffix
 savePickleFileSuffix = options.savePickleFileSuffix
 burnInTime = options.burnInTime
 
-if readPickleFileSuffix == savePickleFileSuffix:
+if readPickleFileSuffix == savePickleFileSuffix and readPickleFileSuffix != None:
     print( "-> pickle output destination must be different from pickle input destination." )
     sys.exit( 1 )
 

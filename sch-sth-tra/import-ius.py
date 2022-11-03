@@ -7,20 +7,20 @@ from db import db
 
 # SQL statements
 insert_disease_sql = '''
-INSERT INTO disease ( `type`, `species`, `short` )
+INSERT INTO disease ( type, species, short )
 VALUES ( %s, %s, %s )
-ON DUPLICATE KEY UPDATE type = type, species = species, short = short
+ON CONFLICT ( type, species, short ) DO UPDATE SET type = EXCLUDED.type, species = EXCLUDED.species, short = EXCLUDED.short
 '''
 
 insert_iu_sql = '''
-INSERT INTO iu ( `code` )
+INSERT INTO iu ( code )
 VALUES ( %s )
-ON DUPLICATE KEY UPDATE code = code
 '''
 
 insert_join_sql = '''
-INSERT IGNORE INTO iu_disease ( `iu_id`, `disease_id` )
+INSERT INTO iu_disease ( iu_id, disease_id )
 VALUES ( %s, %s )
+ON CONFLICT ( iu_id, disease_id ) DO NOTHING
 '''
 
 def import_disease_ius( filename, content ):

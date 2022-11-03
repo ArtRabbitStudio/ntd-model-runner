@@ -28,8 +28,9 @@ AND lower(d.species) = %s
 '''
 
 insert_sql = '''
-INSERT IGNORE INTO iu_disease_group ( `iu_id`, `disease_id`, `group_id` )
+INSERT INTO iu_disease_group ( iu_id, disease_id, group_id )
 VALUES ( %s, %s, %s )
+ON CONFLICT( iu_id, disease_id, group_id ) DO NOTHING
 '''
 
 for file in files:

@@ -304,8 +304,13 @@ if [[ -z "${disease:=}" || -z "${num_sims:=}" || -z "${output_folder:=}" || ! -f
 fi
 
 if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
-    echo "making folder"
-    #mkdir -p $result_folder
+    echo "(would be making folder $result_folder in a real run)" >&2
+else
+    mkdir -p $result_folder
+    if [[ ! -d "${result_folder}" ]] ; then
+        echo "couldn't make/find result folder ${result_folder}"
+       exit 1
+    fi
 fi
 
 if [[ "${save_pickle_file_suffix:=}" = "${read_pickle_file_suffix:=}" ]] && [[ -n "${read_pickle_file_suffix:=}" ]]; then
