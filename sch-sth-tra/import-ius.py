@@ -15,6 +15,7 @@ ON CONFLICT ( type, species, short ) DO UPDATE SET type = EXCLUDED.type, species
 insert_iu_sql = '''
 INSERT INTO iu ( code )
 VALUES ( %s )
+ON CONFLICT ( code ) DO NOTHING
 '''
 
 insert_join_sql = '''
@@ -23,7 +24,8 @@ VALUES ( %s, %s )
 ON CONFLICT ( iu_id, disease_id ) DO NOTHING
 '''
 
-def import_disease_ius( filename, content ):
+# importer function
+def import_disease_ius( filename, content, DB ):
 
     components = filename.split( '.' )[ 0 ].split( "-" )
 
@@ -55,30 +57,34 @@ def import_disease_ius( filename, content ):
 
     DB.commit()
 
-# instantiate local db module
-DB = db()
+# main code block
+if __name__ == '__main__':
 
-# check for IU data file
-if len( sys.argv ) != 2 :
-    print( f"usage: {sys.argv[0]} <tar-or-plain-file-containing-IU-data>" )
-    sys.exit( 1 )
+    # check for IU data file
+    if len( sys.argv ) != 2 :
+        print( f"usage: {sys.argv[0]} <directory-containing-IU-data>" )
+        sys.exit( 1 )
 
-named_file = sys.argv[ 1 ]
+    # instantiate local db module / connection
+    DB = db()
 
-# either extract & read from tar
-if tarfile.is_tarfile( named_file ):
+    named_file = sys.argv[ 1 ]
 
-    print( f"-> reading entries from tar file {named_file}" )
+    # either extract & read from tar
+    if tarfile.is_tarfile( named_file ):
 
-    # open IU data file
-    tar = tarfile.open( named_file, "r:bz2" )
+        print( f"-> reading entries from tar file {named_file}" )
 
-    # add disease & IU data for each disease file inside data file
-    for member in tar.getmembers():
-        import_disease_ius( member.name, tar.extractfile( member ).read() )
+        # open IU data file
+        tar = tarfile.open( named_file, "r:bz2" )
 
-# or just import the specific named file
-else:
-    print( f"-> reading data from file {named_file}" )
-    with open( named_file, 'rb' ) as file:
-        import_disease_ius( os.path.basename( named_file ), file.read() )
+        # add disease & IU data for each disease file inside data file
+        for member in tar.getmembers():
+            import_disease_ius( member.name, tar.extractfile( member ).read(), DB )
+
+    # or just import the specific named file
+    else:
+        print( f"-> reading data from file {named_file}" )
+        with open( named_file, 'rb' ) as file:
+            import_disease_ius( os.path.basename( named_file ), file.read(), DB )
+

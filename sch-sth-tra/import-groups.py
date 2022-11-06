@@ -5,20 +5,7 @@ from pathlib import Path
 
 from db import db
 
-DB = db()
-
-# check for IU data file
-if len( sys.argv ) != 2 :
-    print( f"usage: {sys.argv[0]} <tar-bz-file-containing-IU-data>" )
-    sys.exit( 1 )
-
-group_data_dir = sys.argv[ 1 ]
-glob_path = 'scen_grp_ref_*.csv'
-files = list( Path( group_data_dir ).glob( glob_path ) )
-if len( files ) == 0:
-    print( f"-> no {glob_path} files found in {group_data_dir}, exiting" )
-    sys.exit()
-
+# SQL statements
 fetch_sql = '''
 SELECT d.id AS disease_id, d.short, iu.id AS iu_id, iu.code
 FROM disease d, iu, iu_disease iud
@@ -33,7 +20,8 @@ VALUES ( %s, %s, %s )
 ON CONFLICT( iu_id, disease_id, group_id ) DO NOTHING
 '''
 
-for file in files:
+# importer function
+def import_iu_disease_groups_from_file( file, DB ):
 
     species = file.as_posix().split( '/' )[ 1 ].split( '.' )[ 0 ].split( '_' )[ 3 ]
     df = pd.read_csv( file )
@@ -70,5 +58,28 @@ for file in files:
         
     DB.commit()
     print( f'-> added {ius_added_to_groups} total IUs to groups out of {len(df)} found in group file' )
+
+
+# main code block
+if __name__ == '__main__':
+
+    # check for IU data file
+    if len( sys.argv ) != 2 :
+        print( f"usage: {sys.argv[0]} <tar-bz-file-containing-IU-data>" )
+        sys.exit( 1 )
+
+    group_data_dir = sys.argv[ 1 ]
+    glob_path = 'scen_grp_ref_*.csv'
+    files = list( Path( group_data_dir ).glob( glob_path ) )
+
+    if len( files ) == 0:
+        print( f"-> no {glob_path} files found in {group_data_dir}, exiting" )
+        sys.exit()
+
+    # instantiate local db module / connection
+    DB = db()
+
+    for file in files:
+        import_iu_disease_groups_from_file( file, DB )
 
 
