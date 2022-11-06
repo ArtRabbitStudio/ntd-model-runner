@@ -25,13 +25,9 @@ class MissingArgumentError( ValueError ):
 class DirectoryNotFoundError( ValueError ):
     pass
 
+
 # run the model with the right params and then transform results for IHME/IPM
-def run(
-    runInfo, groupId, scenario, numSims, DB, useCloudStorage, compress=False,
-    readPickleFileSuffix=None, savePickleFileSuffix=None, burnInTime=None,
-    saveIntermediateResults=False,
-    outputFolder='202206', sourceDataPath='source-data'
-):
+def run( runInfo, run_options, DB ):
 
     # get run info
     iu = runInfo[ "iu_code" ]
@@ -41,8 +37,26 @@ def run(
     short = runInfo[ "short" ]
     demogName = runInfo[ 'demogName' ]
 
-    if groupId is None and species != "Trachoma":
-        raise MissingArgumentError( 'groupId' )
+    # get/check run options
+    if not hasattr( run_options, 'scenario' ) or run_options.scenario is None:
+        raise MissingArgumentError( 'run_options.scenario' )
+
+    if not hasattr( run_options, 'groupId' ) or run_options.groupId is None:
+        # trachoma doesn't have groups
+        if species != "Trachoma":
+            raise MissingArgumentError( 'run_options.groupId' )
+
+    if not hasattr( run_options, 'numSims' ) or run_options.numSims is None:
+        raise MissingArgumentError( 'run_options.numSims' )
+
+    # get local vars out of dictionary
+    compress = run_options.compress if hasattr( run_options, 'compress' ) else False
+    readPickleFileSuffix = run_options.readPickleFileSuffix if hasattr( run_options, 'readPickleFileSuffix' ) else None
+    savePickleFileSuffix = run_options.savePickleFileSuffix if hasattr( run_options, 'savePickleFileSuffix' ) else None
+    saveIntermediateResults = run_options.saveIntermediateResults if hasattr( run_options, 'saveIntermediateResults' ) else False
+    burnInTime = run_options.burnInTime if hasattr( run_options, 'burnInTime' ) else None
+    outputFolder = run_options.outputFolder if hasattr( run_options, 'outputFolder' ) else '202206'
+    sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
 
     # construct cloud path for this disease/species
     GcsSpecies = {
@@ -65,10 +79,10 @@ def run(
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/{sourceDataPath}'
 
     # only include the group if it's been specified
-    if groupId is None:
-        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{scenario}/{iu[0:3]}'
+    if run_options.groupId is None:
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}/{iu[0:3]}'
     else:
-        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{scenario}/group_{groupId:03}'
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}/group_{run_options.groupId:03}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
@@ -76,7 +90,7 @@ def run(
     # make sure local data directory is present
     LOCAL_INPUT_DATA_DIR = './data/input'
 
-    if useCloudStorage == False:
+    if run_options.useCloudStorage == False:
         if not os.path.isdir( LOCAL_INPUT_DATA_DIR ):
             raise DirectoryNotFoundError( LOCAL_INPUT_DATA_DIR )
 
@@ -85,10 +99,10 @@ def run(
     output_data_root = f"{DISEASE_CLOUD_DST_PATH}/{iu}"
     GcsOutputDataPath = f'gs://ntd-endgame-result-data/{output_data_root}'
     LocalOutputDataPath = f'{LOCAL_OUTPUT_DATA_DIR}/{output_data_root}'
-    output_data_path = GcsOutputDataPath if useCloudStorage else LocalOutputDataPath
+    output_data_path = GcsOutputDataPath if run_options.useCloudStorage else LocalOutputDataPath
 
     # make sure local output directory is present
-    if useCloudStorage == False:
+    if run_options.useCloudStorage == False:
         if not os.path.isdir( output_data_path ):
             Path( output_data_path ).mkdir( parents = True, exist_ok = True )
 
@@ -97,22 +111,22 @@ def run(
 
         # locate pickle file for IU
         GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/OutputVals_{iu}.p'
-        InSimFilePath = GcsInSimFilePath if useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/OutputVals_{iu}.p'
+        InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/OutputVals_{iu}.p'
 
         # locate Beta input file for IU
         GcsBetaFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/InputBet_{iu}.csv'
-        BetaFilePath = GcsBetaFilePath if useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/InputBet_{iu}.csv'
+        BetaFilePath = GcsBetaFilePath if run_options.useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/InputBet_{iu}.csv'
 
         # specify compression settings
         compressSuffix = ".bz2" if compress == True else ""
         compression = None if compress == False else "bz2"
 
         # specify file output locations
-        ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv{compressSuffix}"
-        ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{scenario}-{numSims}_simulations.csv{compressSuffix}"
+        ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
+        ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
 
-        cloudModule = gcs if useCloudStorage else None
-        return run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
+        cloudModule = gcs if run_options.useCloudStorage else None
+        return run_trachoma_model( iu, run_options.scenario, run_options.numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
 
     # locate pickle file for IU
     pickleReadSuffix = f"_{readPickleFileSuffix}" if readPickleFileSuffix != None else ""
@@ -123,7 +137,7 @@ def run(
     if savePickleFileSuffix != None:
         OutSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}_{savePickleFileSuffix}.p'
         GcsOutSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}_{savePickleFileSuffix}.p'
-        print( f"-> will write output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
+        print( f"-> will write output pickle file to {GcsOutSimFilePath if run_options.useCloudStorage else OutSimFilePath}" )
     else:
         print( "-> not writing output pickle file" )
 
@@ -132,11 +146,11 @@ def run(
     GcsRkFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
 
     # locate & check coverage file for selected disease/scenario
-    coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{scenario}.xlsx'
+    coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{run_options.scenario}.xlsx'
     coverageFilePath = f'{MODEL_DATA_DIR}/{coverageFileName}'
 
     if not os.path.exists( coverageFilePath ):
-        print( f"xx> couldn't find {disease.lower()}-{species.lower()} coverage file for scenario {scenario} : {coverageFilePath}" )
+        print( f"xx> couldn't find {disease.lower()}-{species.lower()} coverage file for scenario {run_options.scenario} : {coverageFilePath}" )
         sys.exit( 1 )
 
     print( f"-> using coverage file {coverageFileName}" )
@@ -144,25 +158,25 @@ def run(
     coverageTextFileStorageName = f'/tmp/{short}_{iu}_MDA_vacc.txt'
 
     # locate & check parameter file for selected disease/scenario
-    paramFileName = f'{disease.upper()}_params/{species.lower()}_scenario_{scenario}.txt'
+    paramFileName = f'{disease.upper()}_params/{species.lower()}_scenario_{run_options.scenario}.txt'
     paramFilePath = f'{MODEL_DATA_DIR}/{paramFileName}'
 
     if not os.path.exists( paramFilePath ):
-        print( f"xx> couldn't find {disease.lower()}-{species.lower()} parameter file for scenario {scenario} : {paramFilePath}" )
+        print( f"xx> couldn't find {disease.lower()}-{species.lower()} parameter file for scenario {run_options.scenario} : {paramFilePath}" )
         sys.exit( 1 )
 
     print( f"-> using parameter file {paramFileName}" )
 
     # run the model
     results, simData = run_model(
-        InSimFilePath = GcsInSimFilePath if useCloudStorage else InSimFilePath,
-        RkFilePath = GcsRkFilePath if useCloudStorage else RkFilePath,
+        InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else InSimFilePath,
+        RkFilePath = GcsRkFilePath if run_options.useCloudStorage else RkFilePath,
         coverageFileName = coverageFileName,
         coverageTextFileStorageName = coverageTextFileStorageName,
         demogName = demogName,
         paramFileName = paramFileName,
-        numSims = numSims,
-        cloudModule = gcs if useCloudStorage else None,
+        numSims = run_options.numSims,
+        cloudModule = gcs if run_options.useCloudStorage else None,
         runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
         burnInTime = burnInTime
     )
@@ -172,9 +186,9 @@ def run(
 
         # to make the pickle files compatible with older models these should be straight dicts
         # simDataAsDicts = [ dataclasses.asdict( d ) for d in simData ]
-        print( f"-> writing output pickle file to {GcsOutSimFilePath if useCloudStorage else OutSimFilePath}" )
+        print( f"-> writing output pickle file to {GcsOutSimFilePath if run_options.useCloudStorage else OutSimFilePath}" )
 
-        if useCloudStorage:
+        if run_options.useCloudStorage:
             gcs.write_string_to_file( pickle.dumps( simData, protocol=pickle.HIGHEST_PROTOCOL ), GcsOutSimFilePath )
 
         else:
@@ -186,7 +200,7 @@ def run(
             df = results[i]
 
             intermediate_results_dir = f"{output_data_path}/intermediate-results"
-            if ( useCloudStorage == False ) and ( not os.path.isdir( intermediate_results_dir ) ):
+            if ( run_options.useCloudStorage == False ) and ( not os.path.isdir( intermediate_results_dir ) ):
                 print( f"-> making local intermediate results directory {intermediate_results_dir}" )
                 Path( intermediate_results_dir ).mkdir( parents = True, exist_ok = True )
 
@@ -199,10 +213,10 @@ def run(
         return
 
     # get a transformer generator function for the IHME/IPM transforms
-    transformer = sim_result_transform_generator( results, iu, runInfo['species'], scenario, numSims )
+    transformer = sim_result_transform_generator( results, iu, runInfo['species'], run_options.scenario, run_options.numSims )
 
     # decide whether to put the group ID in the filename
-    groupId_string = f'-group_{groupId:03}' if groupId is not None else ''
+    groupId_string = f'-group_{run_options.groupId:03}' if run_options.groupId is not None else ''
 
     # add a '.bz2' suffix if compressing the IHME/IPM files
     compressSuffix = ".bz2" if compress == True else ""
@@ -210,12 +224,12 @@ def run(
 
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv{compressSuffix}"
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
     ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{scenario}-group_{groupId:03}-{numSims}_simulations.csv{compressSuffix}"
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
     ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
 
     os.remove( coverageTextFileStorageName )

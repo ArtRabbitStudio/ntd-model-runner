@@ -8,13 +8,12 @@ from types import SimpleNamespace
 from ntd_model_runner import run, DirectoryNotFoundError, MissingArgumentError
 from db import db
 
-# SQL statements
-# local functions
-def iu_list_callback( option, opt, value, parser ):
-    setattr( parser.values, option.dest, value.split( ',' ) )
-
-# get CLI options
+# get CLI options passed from script runner
 def get_cli_options():
+
+    def iu_list_callback( option, opt, value, parser ):
+        setattr( parser.values, option.dest, value.split( ',' ) )
+
     parser = OptionParser()
 
     parser.add_option( '-o', '--output-folder', dest='outputFolder', default='202206' )
@@ -40,6 +39,7 @@ def get_run_info( DB, run_options ):
 
     format_strings = ', '.join( [ '%s' ] * len( run_options.iuList ) )
 
+    # SQL statements
     runs_sql = '''
     SELECT d.type, d.species, d.short, i.code AS iu_code, d.id AS disease_id, i.id AS iu_id
     FROM disease d, iu i, iu_disease i_d
@@ -65,24 +65,11 @@ def carry_out_runs( DB, run_options ):
     #    sys.exit(0)
 
         runInfo[ 'demogName' ] = run_options.demogName
+        run_options.saveIntermediateResults = False
 
         try:
             print( f"-> running {run_options.numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
-            run(
-                runInfo = runInfo,
-                groupId = run_options.groupId,
-                scenario = run_options.scenario,
-                numSims = run_options.numSims,
-                DB = DB,
-                useCloudStorage = run_options.useCloudStorage,
-                compress = run_options.compress,
-                readPickleFileSuffix=run_options.readPickleFileSuffix,
-                savePickleFileSuffix=run_options.savePickleFileSuffix,
-                burnInTime = run_options.burnInTime,
-                saveIntermediateResults=False,
-                outputFolder = run_options.outputFolder,
-                sourceDataPath = run_options.sourceDataPath
-            )
+            run( runInfo, run_options, DB )
 
         except DirectoryNotFoundError as d:
             print( f"xx> local data directory not found: {d}" )
@@ -94,11 +81,11 @@ def carry_out_runs( DB, run_options ):
             print( f"xx> argument not provided: {m}" )
 
 # main code block
-if __name__ == '__main__':
+def run_main():
 
     options = get_cli_options()
 
-    # work out what to do with the options
+    # work out what to do with the options - and put into a SimpleNamespace so as to get dot.attribute access
     run_options = SimpleNamespace( **{
         'iuList': options.iuList if isinstance( options.iuList, list ) == True else [ '' ],
         'numSims': int( options.numSims ),
@@ -146,3 +133,6 @@ if __name__ == '__main__':
 
     # do the work
     carry_out_runs( DB, run_options )
+
+if __name__ == '__main__':
+    run_main()
