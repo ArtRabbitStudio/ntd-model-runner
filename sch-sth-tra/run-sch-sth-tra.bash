@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2143
 
 # fail fast and hard
 set -euo pipefail
@@ -85,12 +86,12 @@ function get_options () {
 
         g)
             segment_number_out_of=${OPTARG}
-            if [[ -z "$( echo ${segment_number_out_of} | grep , )" ]] ; then
+            if [[ -z "$( echo "${segment_number_out_of}" | grep , )" ]] ; then
                 usage
             fi
 
-            segment_number=$( echo ${segment_number_out_of} | cut -f 1 -d , )
-            out_of=$( echo ${segment_number_out_of} | cut -f 2 -d , )
+            segment_number=$( echo "${segment_number_out_of}" | cut -f 1 -d , )
+            out_of=$( echo "${segment_number_out_of}" | cut -f 2 -d , )
 
             if [[ ${segment_number} -le 0 || ${out_of} -le 0 ]] ; then
                 echo "error: segment number/total number of segments are invalid" >&2
@@ -139,7 +140,7 @@ function check_options () {
     if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
         echo "(would be making folder $result_folder in a real run)" >&2
     else
-        mkdir -p $result_folder
+        mkdir -p "$result_folder"
         if [[ ! -d "${result_folder}" ]] ; then
             echo "couldn't make/find result folder ${result_folder}"
            exit 1
@@ -162,23 +163,23 @@ function run_scenarios () {
 
     for scenario in ${scenarios//,/ } ; do
 
-        lines=$( get_lines ${segment_number:=} ${out_of:=} ${iu_list_file} )
+        lines=$( get_lines "${segment_number:=}" "${out_of:=}" "${iu_list_file}" )
 
         for line in $lines ; do
 
             case "${disease}" in
 
                 Hook|Tri|Asc|Tra)
-                    iu=$( echo $line | cut -f 3 -d , )
-                    group=$( echo $line | cut -f 1 -d , )
+                    iu=$( echo "$line" | cut -f 3 -d , )
+                    group=$( echo "$line" | cut -f 1 -d , )
                     cmd_options="-g ${group} -i ${iu} -s ${scenario}"
                     full_scenario="${scenario}"
                     ;;
 
                 Man)
-                    iu=$( echo $line | cut -f 3 -d , )
-                    group=$( echo $line | cut -f 1 -d , | cut -f 1 -d _ )
-                    sub_scenario=$( echo $line | cut -f 4 -d , | tr -d '\r')
+                    iu=$( echo "$line" | cut -f 3 -d , )
+                    group=$( echo "$line" | cut -f 1 -d , | cut -f 1 -d _ )
+                    sub_scenario=$( echo "$line" | cut -f 4 -d , | tr -d '\r')
                     full_scenario="${scenario}_${sub_scenario}"
                     cmd_options="-g ${group} -i ${iu} -s ${full_scenario}"
                     ;;
@@ -210,10 +211,10 @@ function run_scenarios () {
             cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
-                echo $cmd
+                echo "$cmd"
                 continue
             else
-                execute $group $iu $full_scenario "$cmd"
+                execute "$group" "$iu" "$full_scenario" "$cmd"
             fi
 
             exit 0
@@ -239,24 +240,24 @@ function get_lines () {
     local requested_segments=$2
     local file=$3
 
-    local line_count=$(( $( wc -l < ${file} | awk '{print $1}' ) - 1 ))
+    local line_count=$(( $( wc -l < "${file}" | awk '{print $1}' ) - 1 ))
 
-    local num_per_segment=$(( $line_count / $requested_segments ))
-    local remainder=$(( $line_count % ( num_per_segment * $requested_segments )  ))
-    local total_from_segments=$(( $requested_segments * $num_per_segment ))
+    local num_per_segment=$(( line_count / requested_segments ))
+    local remainder=$(( line_count % ( num_per_segment * requested_segments )  ))
+    local total_from_segments=$(( requested_segments * num_per_segment ))
     echo \
         "-> $requested_segments segments * $num_per_segment lines makes $total_from_segments lines total," \
         "leaving a remainder of ${remainder} from a ${line_count}-line file," \
         "using a last segment of $(( num_per_segment + remainder ))" \
-        "to make a total of $(( $total_from_segments + $remainder ))" >&2
+        "to make a total of $(( total_from_segments + remainder ))" >&2
 
-    local first_line=$(( $num_per_segment * ( $seg - 1 ) + 1 ))
-    local last_line=$(( ( $first_line + $num_per_segment ) - 1 ))
+    local first_line=$(( num_per_segment * ( seg - 1 ) + 1 ))
+    local last_line=$(( ( first_line + num_per_segment ) - 1 ))
 
-    if [[ ${seg} = ${requested_segments} ]] ; then
-        last_line=$(( $last_line + $remainder ))
+    if [[ ${seg} = "${requested_segments}" ]] ; then
+        last_line=$(( last_line + remainder ))
     fi
-    local end_line=$(( $last_line + 1 ))
+    local end_line=$(( last_line + 1 ))
 
     local segment_line_count=$(( ( last_line - first_line ) + 1 ))
     echo "-> segment number ${seg} has ${segment_line_count} lines, from $first_line - $last_line inclusive" >&2
@@ -276,10 +277,10 @@ function execute () {
     CMD=$4
 
     if [[ -n $local_storage ]] ; then
-        maybe_fetch_files $local_iu
+        maybe_fetch_files "$local_iu"
     fi
 
-    output_file=$( printf "$result_folder/s${local_scenario}-g%03d-${local_iu}.out" ${local_group} )
+    output_file=$( printf "$result_folder/s${local_scenario}-g%03d-${local_iu}.out" "${local_group}" )
 
     echo "*--> running '${CMD}' into ${output_file}"
 
@@ -288,7 +289,7 @@ function execute () {
     case $platform in
 
         Linux)
-            unbuffer bash -c "${CMD}" | tee -a ${output_file}
+            unbuffer bash -c "${CMD}" | tee -a "${output_file}"
             ;;
 
         Darwin)
@@ -318,7 +319,7 @@ function maybe_fetch_files () {
     if [[ ! -f ${local_p_file} ]] ; then
         remote_p_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/${DISEASE_SHORT_NAMES_TO_CODES[${disease}]}/${source_data_path}/${local_iu:0:3}/${local_iu}/${p_file_name}"
         echo "*--> fetching ${local_iu} .p file: $remote_p_file"
-        curl -o ${local_p_file} ${remote_p_file}
+        curl -o "${local_p_file}" "${remote_p_file}"
     else
         echo "*--> already got $local_p_file locally"
     fi
@@ -334,7 +335,7 @@ function maybe_fetch_files () {
     if [[ ! -f ${local_csv_file} ]] ; then
         remote_csv_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/${DISEASE_SHORT_NAMES_TO_CODES[${disease}]}/${source_data_path}/${local_iu:0:3}/${local_iu}/${csv_file_name}"
         echo "*--> fetching ${local_iu} .csv file: ${remote_csv_file}"
-        curl -o ${local_csv_file} ${remote_csv_file}
+        curl -o "${local_csv_file}" "${remote_csv_file}"
     else
         echo "*--> already got $local_csv_file locally"
     fi
@@ -342,6 +343,7 @@ function maybe_fetch_files () {
 
 # call getopts in global scope to get argv for $0
 while getopts ":d:s:i:n:o:p:r:f:g:b:ulh" opts ; do
+    # shellcheck disable=SC2086
     get_options $opts
 done
 
