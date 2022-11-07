@@ -4,7 +4,6 @@ import time
 from joblib import Parallel, delayed
 num_cores = multiprocessing.cpu_count()
 import pickle
-import gcs
 
 def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression ):
 

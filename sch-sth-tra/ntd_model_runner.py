@@ -8,8 +8,8 @@ import pkg_resources
 import pandas as pd
 import numpy as np
 
-import gcs
 import db
+from gcs import gcs
 
 from pathlib import Path
 from joblib import Parallel, delayed
@@ -24,7 +24,6 @@ class MissingArgumentError( ValueError ):
 
 class DirectoryNotFoundError( ValueError ):
     pass
-
 
 # run the model with the right params and then transform results for IHME/IPM
 def run( runInfo, run_options, DB ):
@@ -56,6 +55,8 @@ def run( runInfo, run_options, DB ):
     saveIntermediateResults = run_options.saveIntermediateResults if hasattr( run_options, 'saveIntermediateResults' ) else False
     burnInTime = run_options.burnInTime if hasattr( run_options, 'burnInTime' ) else None
     outputFolder = run_options.outputFolder if hasattr( run_options, 'outputFolder' ) else '202206'
+    sourceBucket = run_options.sourceBucket if hasattr( run_options, 'sourceBucket' ) else 'ntd-disease-simulator-data'
+    destinationBucket = run_options.destinationBucket if hasattr( run_options, 'destinationBucket' ) else 'ntd-endgame-result-data'
     sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
 
     # construct cloud path for this disease/species
@@ -97,7 +98,7 @@ def run( runInfo, run_options, DB ):
     # construct GCS/local output directory paths
     LOCAL_OUTPUT_DATA_DIR = './data/output'
     output_data_root = f"{DISEASE_CLOUD_DST_PATH}/{iu}"
-    GcsOutputDataPath = f'gs://ntd-endgame-result-data/{output_data_root}'
+    GcsOutputDataPath = f'gs://{destinationBucket}/{output_data_root}'
     LocalOutputDataPath = f'{LOCAL_OUTPUT_DATA_DIR}/{output_data_root}'
     output_data_path = GcsOutputDataPath if run_options.useCloudStorage else LocalOutputDataPath
 
@@ -105,6 +106,8 @@ def run( runInfo, run_options, DB ):
     if run_options.useCloudStorage == False:
         if not os.path.isdir( output_data_path ):
             Path( output_data_path ).mkdir( parents = True, exist_ok = True )
+
+    GCS = gcs( sourceBucket )
 
     # short-circuit out to trachoma?
     if species == 'Trachoma':
@@ -114,7 +117,7 @@ def run( runInfo, run_options, DB ):
         InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/OutputVals_{iu}.p'
 
         # locate Beta input file for IU
-        GcsBetaFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/InputBet_{iu}.csv'
+        GcsBetaFilePath = f'gs://{sourceBucket}/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/InputBet_{iu}.csv'
         BetaFilePath = GcsBetaFilePath if run_options.useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/InputBet_{iu}.csv'
 
         # specify compression settings
@@ -125,7 +128,7 @@ def run( runInfo, run_options, DB ):
         ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
         ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
 
-        cloudModule = gcs if run_options.useCloudStorage else None
+        cloudModule = GCS if run_options.useCloudStorage else None
         return run_trachoma_model( iu, run_options.scenario, run_options.numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
 
     # locate pickle file for IU
@@ -143,7 +146,7 @@ def run( runInfo, run_options, DB ):
 
     # locate RK input file for IU
     RkFilePath = f'{LOCAL_INPUT_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
-    GcsRkFilePath = f'gs://ntd-disease-simulator-data/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
+    GcsRkFilePath = f'gs://{sourceBucket}/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
 
     # locate & check coverage file for selected disease/scenario
     coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{run_options.scenario}.xlsx'
@@ -176,7 +179,7 @@ def run( runInfo, run_options, DB ):
         demogName = demogName,
         paramFileName = paramFileName,
         numSims = run_options.numSims,
-        cloudModule = gcs if run_options.useCloudStorage else None,
+        cloudModule = GCS if run_options.useCloudStorage else None,
         runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
         burnInTime = burnInTime
     )
@@ -189,7 +192,7 @@ def run( runInfo, run_options, DB ):
         print( f"-> writing output pickle file to {GcsOutSimFilePath if run_options.useCloudStorage else OutSimFilePath}" )
 
         if run_options.useCloudStorage:
-            gcs.write_string_to_file( pickle.dumps( simData, protocol=pickle.HIGHEST_PROTOCOL ), GcsOutSimFilePath )
+            GCS.write_string_to_file( pickle.dumps( simData, protocol=pickle.HIGHEST_PROTOCOL ), GcsOutSimFilePath )
 
         else:
             pickle.dump( simData, open( OutSimFilePath, 'wb' ), protocol=pickle.HIGHEST_PROTOCOL )

@@ -17,6 +17,8 @@ def get_cli_options():
     parser = OptionParser()
 
     parser.add_option( '-o', '--output-folder', dest='outputFolder', default='202206' )
+    parser.add_option( '-k', '--source-bucket', dest='sourceBucket', default='ntd-disease-simulator-data' )
+    parser.add_option( '-K', '--destination-bucket', dest='destinationBucket', default='ntd-endgame-result-data' )
     parser.add_option( '-d', '--disease', dest='disease', default='Man' )
     parser.add_option( '-m', '--demography-name', dest='demogName', default="Default" )
     parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='callback', callback=iu_list_callback, default='' )
@@ -74,6 +76,9 @@ def carry_out_runs( DB, run_options ):
         except DirectoryNotFoundError as d:
             print( f"xx> local data directory not found: {d}" )
 
+        except IOError as i:
+            print( f"xx> IO error: {i}" )
+
         except FileNotFoundError as f:
             print( f"xx> file not found: {f}" )
 
@@ -93,6 +98,8 @@ def run_main():
         'demogName': options.demogName,
         'useCloudStorage': options.useCloudStorage,
         'outputFolder': options.outputFolder,
+        'sourceBucket': options.sourceBucket,
+        'destinationBucket': options.destinationBucket,
         'groupId': options.groupId if options.groupId != 0 else None,
         'scenario': options.scenario,
         'compress': options.compress,

@@ -10,6 +10,8 @@ result_folder=results/$( date +%Y%m%d%H%M%S )
 scenarios="0,1,2,3a,3b"
 num_sims=0
 source_data_path="source-data"
+source_bucket="ntd-disease-simulator-data"
+destination_bucket="ntd-endgame-result-data"
 
 # empty default values
 disease=""
@@ -33,7 +35,8 @@ DISEASE_SHORT_NAMES_TO_CODES["Man"]="sch-mansoni"
 
 function usage() {
     echo "usage: ${0}"
-    echo "            -d <short-disease-code> -s <scenario-list> -i <iu-list-file> -n <num-sims> -o <output-folder>"
+    echo "            -d <short-disease-code> -s <scenario-list> -i <iu-list-file> -n <num-sims>"
+    echo "            -o <output-folder> [-k <source-bucket> ] [-K destination-bucket>]"
     echo "            [-p <source-data-path>] [-u (uncompressed)] [-l (local_storage)]"
     echo "            [-r <read-pickle-file-suffix>] [-f <save-pickle-file-suffix>] [-b <burn-in-years>]"
     echo "            [-g <segment-number,out-of> ]"
@@ -64,6 +67,14 @@ function get_options () {
 
         o)
             output_folder=${OPTARG}
+            ;;
+
+        k)
+            source_bucket=${OPTARG}
+            ;;
+
+        K)
+            destination_bucket=${OPTARG}
             ;;
 
         p)
@@ -133,7 +144,20 @@ function get_options () {
 
 function check_options () {
 
+    # require basics
     if [[ -z "${disease:=}" || -z "${num_sims:=}" || -z "${output_folder:=}" || ! -f "${iu_list_file:=}" ]] ; then
+        usage
+    fi
+
+    # check not trying to read and write from/to same pickle fix
+    if [[ "${save_pickle_file_suffix:=}" = "${read_pickle_file_suffix:=}" ]] && [[ -n "${read_pickle_file_suffix:=}" ]]; then
+        echo "error: output pickle file suffix must be different from input pickle file suffix" >&2
+        usage
+    fi
+
+    # require burn-in time for saving pickle files
+    if [[ -n "${save_pickle_file_suffix:=}" && -z "${burn_in_time:=}" ]] ; then
+        echo "error: burn-in requires a number of years" >&2
         usage
     fi
 
@@ -145,16 +169,6 @@ function check_options () {
             echo "couldn't make/find result folder ${result_folder}"
            exit 1
         fi
-    fi
-
-    if [[ "${save_pickle_file_suffix:=}" = "${read_pickle_file_suffix:=}" ]] && [[ -n "${read_pickle_file_suffix:=}" ]]; then
-        echo "error: output pickle file suffix must be different from input pickle file suffix" >&2
-        usage
-    fi
-
-    if [[ -n "${save_pickle_file_suffix:=}" && -z "${burn_in_time:=}" ]] ; then
-        echo "error: burn-in requires a number of years" >&2
-        usage
     fi
 
 }
@@ -208,7 +222,7 @@ function run_scenarios () {
                 burn_in_time_cmd="-b ${burn_in_time}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -o ${output_folder} -p ${source_data_path} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -o ${output_folder} -p ${source_data_path} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
@@ -317,7 +331,7 @@ function maybe_fetch_files () {
     local local_p_file="data/input/${p_file_name}"
 
     if [[ ! -f ${local_p_file} ]] ; then
-        remote_p_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/${DISEASE_SHORT_NAMES_TO_CODES[${disease}]}/${source_data_path}/${local_iu:0:3}/${local_iu}/${p_file_name}"
+        remote_p_file="https://storage.googleapis.com/${source_bucket}/diseases/${DISEASE_SHORT_NAMES_TO_CODES[${disease}]}/${source_data_path}/${local_iu:0:3}/${local_iu}/${p_file_name}"
         echo "*--> fetching ${local_iu} .p file: $remote_p_file"
         curl -o "${local_p_file}" "${remote_p_file}"
     else
@@ -333,7 +347,7 @@ function maybe_fetch_files () {
     local local_csv_file="data/input/${csv_file_name}"
 
     if [[ ! -f ${local_csv_file} ]] ; then
-        remote_csv_file="https://storage.googleapis.com/ntd-disease-simulator-data/diseases/${DISEASE_SHORT_NAMES_TO_CODES[${disease}]}/${source_data_path}/${local_iu:0:3}/${local_iu}/${csv_file_name}"
+        remote_csv_file="https://storage.googleapis.com/${source_bucket}/diseases/${DISEASE_SHORT_NAMES_TO_CODES[${disease}]}/${source_data_path}/${local_iu:0:3}/${local_iu}/${csv_file_name}"
         echo "*--> fetching ${local_iu} .csv file: ${remote_csv_file}"
         curl -o "${local_csv_file}" "${remote_csv_file}"
     else
@@ -342,7 +356,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:i:n:o:p:r:f:g:b:ulh" opts ; do
+while getopts ":d:s:i:n:o:k:K:p:r:f:g:b:ulh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done
