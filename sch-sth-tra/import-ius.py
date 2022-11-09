@@ -10,18 +10,21 @@ insert_disease_sql = '''
 INSERT INTO disease ( type, species, short )
 VALUES ( %s, %s, %s )
 ON CONFLICT ( type, species, short ) DO UPDATE SET type = EXCLUDED.type, species = EXCLUDED.species, short = EXCLUDED.short
+RETURNING id
 '''
 
 insert_iu_sql = '''
 INSERT INTO iu ( code )
 VALUES ( %s )
-ON CONFLICT ( code ) DO NOTHING
+ON CONFLICT ( code ) DO UPDATE SET code = EXCLUDED.code
+RETURNING id
 '''
 
 insert_join_sql = '''
 INSERT INTO iu_disease ( iu_id, disease_id )
 VALUES ( %s, %s )
 ON CONFLICT ( iu_id, disease_id ) DO NOTHING
+RETURNING iu_id
 '''
 
 # importer function
@@ -50,7 +53,7 @@ def import_disease_ius( filename, content, DB ):
                 params = ( iu_str, )
                 iu_id = DB.fetchone( "SELECT id FROM iu WHERE code = %s", params )['id']
 
-            DB.insert( insert_join_sql, ( iu_id, disease_id, ) )
+            DB.insert( insert_join_sql, ( iu_id, disease_id, ), 'iu_id' )
             inserted = inserted + 1
             if inserted % 500 == 0:
                 print( f"--> inserted {inserted} IUs" )

@@ -1,8 +1,10 @@
 import sys
 import signal
+import base64
 
 from optparse import OptionParser
 from types import SimpleNamespace
+from slugify import slugify
 
 # local imports
 from ntd_model_runner import run, DirectoryNotFoundError, MissingArgumentError
@@ -16,13 +18,15 @@ def get_cli_options():
 
     parser = OptionParser()
 
-    parser.add_option( '-o', '--output-folder', dest='outputFolder', default='202206' )
+    parser.add_option( '-o', '--output-folder', dest='outputFolder', default=None )
     parser.add_option( '-k', '--source-bucket', dest='sourceBucket', default='ntd-disease-simulator-data' )
     parser.add_option( '-K', '--destination-bucket', dest='destinationBucket', default='ntd-endgame-result-data' )
     parser.add_option( '-d', '--disease', dest='disease', default='Man' )
     parser.add_option( '-m', '--demography-name', dest='demogName', default="Default" )
     parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='callback', callback=iu_list_callback, default='' )
     parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
+    parser.add_option( '-N', '--run-name', dest='runName', default=None )
+    parser.add_option( '-e', '--person-email', dest='personEmail', default=None )
     parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
     parser.add_option( '-s', '--scenario', dest='scenario', type='string', default='1' )
     parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
@@ -36,23 +40,48 @@ def get_cli_options():
 
     return options
 
+# check options provided via CLI
+def check_options( run_options ):
+
+    # check pickle options are OK
+    if run_options.readPickleFileSuffix == run_options.savePickleFileSuffix and run_options.readPickleFileSuffix != None:
+        print( "xx> pickle output destination must be different from pickle input destination." )
+        sys.exit( 1 )
+
+    # ensure there's a descriptive name
+    if run_options.runName == None:
+        print( "xx> you must supply a descriptive name for this run." )
+        sys.exit( 1 )
+
+    # ensure there's an email address for the owner of the run
+    if run_options.personEmail == None:
+        print( "xx> you must supply an email address for the instigator of this run." )
+        sys.exit( 1 )
+
+    # default to using the sanitized run name for the output folder
+    if run_options.outputFolder == None:
+        run_options.outputFolder = slugify( run_options.runName )
+
 # check the run info in the DB for the requested list of IUs
 def get_run_info( DB, run_options ):
 
+    # make a comma-separated list of '%s' with the same length as IU list
     format_strings = ', '.join( [ '%s' ] * len( run_options.iuList ) )
 
-    # SQL statements
+    # create the parameterised query using the IU placeholders
     runs_sql = '''
     SELECT d.type, d.species, d.short, i.code AS iu_code, d.id AS disease_id, i.id AS iu_id
     FROM disease d, iu i, iu_disease i_d
     WHERE i.id = i_d.iu_id and d.id = i_d.disease_id
     AND i.code IN ( %s )''' % format_strings
 
+    # add in the short-disease-name parameter
     runs_sql += '''
     AND d.short = %s
     ORDER BY d.type, d.species, i.code
     '''
 
+    # substitute in the parameters & run the query
     disease_iu_params = tuple( run_options.iuList ) + tuple( [ run_options.disease ] )
     DB.query( runs_sql, disease_iu_params )
 
@@ -61,17 +90,23 @@ def get_run_info( DB, run_options ):
 # run the runs
 def carry_out_runs( DB, run_options ):
 
+    # get the data out so as to free the cursor for writing result records
+    # TODO there must be a more elegant db-client/cursor way to do this
+    runs = []
     for( runInfo ) in DB.cursor():
+        runs.append( runInfo )
 
-    #    print( f"run( {runInfo}, {groupId}, {scenario}, {numSims}, {DB}, {useCloudStorage}, {compress}, {False}, {outputFolder}" );
+    for run_info in runs:
+
+    #    print( f"run( {run_info}, {run_options}" );
     #    sys.exit(0)
 
-        runInfo[ 'demogName' ] = run_options.demogName
+        run_info[ 'demogName' ] = run_options.demogName
         run_options.saveIntermediateResults = False
 
         try:
-            print( f"-> running {run_options.numSims} simulations for {runInfo['short']}:{runInfo['iu_code']}" )
-            run( runInfo, run_options, DB )
+            print( f"-> running {run_options.numSims} simulations for {run_info['short']}:{run_info['iu_code']}" )
+            run( SimpleNamespace( **run_info ), run_options, DB )
 
         except DirectoryNotFoundError as d:
             print( f"xx> local data directory not found: {d}" )
@@ -94,6 +129,8 @@ def run_main():
     run_options = SimpleNamespace( **{
         'iuList': options.iuList if isinstance( options.iuList, list ) == True else [ '' ],
         'numSims': int( options.numSims ),
+        'runName': base64.b64decode( options.runName ).decode( 'UTF-8' ),
+        'personEmail': options.personEmail,
         'disease': options.disease,
         'demogName': options.demogName,
         'useCloudStorage': options.useCloudStorage,
@@ -109,10 +146,7 @@ def run_main():
         'burnInTime': options.burnInTime,
     } )
 
-    # check pickle options are OK
-    if run_options.readPickleFileSuffix == run_options.savePickleFileSuffix and run_options.readPickleFileSuffix != None:
-        print( "-> pickle output destination must be different from pickle input destination." )
-        sys.exit( 1 )
+    check_options( run_options )
 
     # display run info
     cli_iu_list_len = len( [ x for x in run_options.iuList if x != '' ] )

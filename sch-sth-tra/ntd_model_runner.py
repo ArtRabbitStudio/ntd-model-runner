@@ -11,6 +11,8 @@ import numpy as np
 import db
 from gcs import gcs
 
+from datetime import datetime
+from types import SimpleNamespace
 from pathlib import Path
 from joblib import Parallel, delayed
 
@@ -19,6 +21,11 @@ from sch_simulation.helsim_FUNC_KK import *
 
 from run_trachoma import run_trachoma_model
 
+# constants
+INSTITUTION_TYPE_IHME = 'ihme'
+INSTITUTION_TYPE_IPM = 'ipm'
+
+# custom exceptions
 class MissingArgumentError( ValueError ):
     pass
 
@@ -26,15 +33,15 @@ class DirectoryNotFoundError( ValueError ):
     pass
 
 # run the model with the right params and then transform results for IHME/IPM
-def run( runInfo, run_options, DB ):
+def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # get run info
-    iu = runInfo[ "iu_code" ]
+    iu = run_info.iu_code
     region = iu[:3]
-    disease = runInfo[ 'type' ]
-    species = runInfo[ "species" ]
-    short = runInfo[ "short" ]
-    demogName = runInfo[ 'demogName' ]
+    disease = run_info.type
+    species = run_info.species
+    short = run_info.short
+    demogName = run_info.demogName
 
     # get/check run options
     if not hasattr( run_options, 'scenario' ) or run_options.scenario is None:
@@ -48,7 +55,7 @@ def run( runInfo, run_options, DB ):
     if not hasattr( run_options, 'numSims' ) or run_options.numSims is None:
         raise MissingArgumentError( 'run_options.numSims' )
 
-    # get local vars out of dictionary
+    # get local vars out of dictionary, using defaults if not supplied
     compress = run_options.compress if hasattr( run_options, 'compress' ) else False
     readPickleFileSuffix = run_options.readPickleFileSuffix if hasattr( run_options, 'readPickleFileSuffix' ) else None
     savePickleFileSuffix = run_options.savePickleFileSuffix if hasattr( run_options, 'savePickleFileSuffix' ) else None
@@ -69,10 +76,10 @@ def run( runInfo, run_options, DB ):
     }[ species ]
 
     GcsPrefix = {
-        'Ascaris': f"{runInfo['type']}-",
-        'Trichuris': f"{runInfo['type']}-",
-        'Hookworm': f"{runInfo['type']}-",
-        'Mansoni': f"{runInfo['type']}-",
+        'Ascaris': f"{run_info.type}-",
+        'Trichuris': f"{run_info.type}-",
+        'Hookworm': f"{run_info.type}-",
+        'Mansoni': f"{run_info.type}-",
         'Trachoma': '',
     }[ species ]
 
@@ -125,8 +132,8 @@ def run( runInfo, run_options, DB ):
         compression = None if compress == False else "bz2"
 
         # specify file output locations
-        ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
-        ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
+        ihme_file_name = f"{output_data_path}/ihme-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
+        ipm_file_name = f"{output_data_path}/ipm-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations.csv{compressSuffix}"
 
         cloudModule = GCS if run_options.useCloudStorage else None
         return run_trachoma_model( iu, run_options.scenario, run_options.numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
@@ -149,40 +156,42 @@ def run( runInfo, run_options, DB ):
     GcsRkFilePath = f'gs://{sourceBucket}/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
 
     # locate & check coverage file for selected disease/scenario
-    coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{run_options.scenario}.xlsx'
-    coverageFilePath = f'{MODEL_DATA_DIR}/{coverageFileName}'
+    run_options.coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{run_options.scenario}.xlsx'
+    coverageFilePath = f'{MODEL_DATA_DIR}/{run_options.coverageFileName}'
 
     if not os.path.exists( coverageFilePath ):
         print( f"xx> couldn't find {disease.lower()}-{species.lower()} coverage file for scenario {run_options.scenario} : {coverageFilePath}" )
         sys.exit( 1 )
 
-    print( f"-> using coverage file {coverageFileName}" )
+    print( f"-> using coverage file {run_options.coverageFileName}" )
 
     coverageTextFileStorageName = f'/tmp/{short}_{iu}_MDA_vacc.txt'
 
     # locate & check parameter file for selected disease/scenario
-    paramFileName = f'{disease.upper()}_params/{species.lower()}_scenario_{run_options.scenario}.txt'
-    paramFilePath = f'{MODEL_DATA_DIR}/{paramFileName}'
+    run_options.paramFileName = f'{disease.upper()}_params/{species.lower()}_scenario_{run_options.scenario}.txt'
+    paramFilePath = f'{MODEL_DATA_DIR}/{run_options.paramFileName}'
 
     if not os.path.exists( paramFilePath ):
         print( f"xx> couldn't find {disease.lower()}-{species.lower()} parameter file for scenario {run_options.scenario} : {paramFilePath}" )
         sys.exit( 1 )
 
-    print( f"-> using parameter file {paramFileName}" )
+    print( f"-> using parameter file {run_options.paramFileName}" )
 
     # run the model
+    run_info.started = datetime.now()
     results, simData = run_model(
         InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else InSimFilePath,
         RkFilePath = GcsRkFilePath if run_options.useCloudStorage else RkFilePath,
-        coverageFileName = coverageFileName,
+        coverageFileName = run_options.coverageFileName,
         coverageTextFileStorageName = coverageTextFileStorageName,
         demogName = demogName,
-        paramFileName = paramFileName,
+        paramFileName = run_options.paramFileName,
         numSims = run_options.numSims,
         cloudModule = GCS if run_options.useCloudStorage else None,
         runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
         burnInTime = burnInTime
     )
+    run_info.ended = datetime.now()
 
     # store the results in a pickle file for use in later runs?
     if savePickleFileSuffix != None:
@@ -216,7 +225,7 @@ def run( runInfo, run_options, DB ):
         return
 
     # get a transformer generator function for the IHME/IPM transforms
-    transformer = sim_result_transform_generator( results, iu, runInfo['species'], run_options.scenario, run_options.numSims )
+    transformer = sim_result_transform_generator( results, iu, run_info.species, run_options.scenario, run_options.numSims )
 
     # decide whether to put the group ID in the filename
     groupId_string = f'-group_{run_options.groupId:03}' if run_options.groupId is not None else ''
@@ -227,13 +236,21 @@ def run( runInfo, run_options, DB ):
 
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
+    ihme_file_name = f"{output_data_path}/ihme-{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
     ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
+
+    # store metadata in flow db
+    if run_options.useCloudStorage:
+        write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IHME, ihme_file_name, compression, DB )
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{runInfo['species'].lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
+    ipm_file_name = f"{output_data_path}/ipm-{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
     ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
+
+    # store metadata in flow db
+    if run_options.useCloudStorage:
+        write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IPM, ipm_file_name, compression, DB )
 
     os.remove( coverageTextFileStorageName )
 
@@ -362,7 +379,7 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
     print( f'-> starting IHME transform for {numSims} simulations' )
     a = time.time()
-    values = transform_results( results, iu, 'ihme', species, scenario, numSims, keys )
+    values = transform_results( results, iu, INSTITUTION_TYPE_IHME, species, scenario, numSims, keys )
     b = time.time()
     print( f'-> finished IHME transform for {numSims} simulations in {(b-a):.3f}s' )
     yield pd.DataFrame( values, columns = keys )
@@ -373,7 +390,7 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
 
     print( f'-> starting IPM transform for {numSims} simulations' )
     a = time.time()
-    values = transform_results( results, iu, 'ipm', species, scenario, numSims, keys )
+    values = transform_results( results, iu, INSTITUTION_TYPE_IPM, species, scenario, numSims, keys )
     b = time.time()
     print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
     yield pd.DataFrame( values, columns = keys )
@@ -395,8 +412,8 @@ def transform_results( results, iu, type, species, scenario, numSims, keys ):
         # rows 7441-end = IPM cost data
         last_ihme_row = 7440
 
-    startrow = { 'ihme': 0, 'ipm': last_ihme_row }[ type ]
-    endrow = { 'ihme': last_ihme_row, 'ipm': num_result_rows }[ type ]
+    startrow = { INSTITUTION_TYPE_IHME: 0, INSTITUTION_TYPE_IPM: last_ihme_row }[ type ]
+    endrow = { INSTITUTION_TYPE_IHME: last_ihme_row, INSTITUTION_TYPE_IPM: num_result_rows }[ type ]
 
     # array to put the transformed data into
     values = []
@@ -406,7 +423,7 @@ def transform_results( results, iu, type, species, scenario, numSims, keys ):
 
         # get an index into target array, i.e. where we're putting the new row
         # - jump ahead by last_ihme_row for the ipm data
-        arrIndex = ( rowIndex - last_ihme_row ) if type == 'ipm' else rowIndex
+        arrIndex = ( rowIndex - last_ihme_row ) if type == INSTITUTION_TYPE_IPM else rowIndex
 
         if arrIndex > 0 and arrIndex % 1000 == 0:
             print( f"-> transformed {arrIndex} rows" )
@@ -422,4 +439,150 @@ def transform_results( results, iu, type, species, scenario, numSims, keys ):
 
     return values
 
+##########################
+# run_info:
+#   type='sch'
+#   species='Mansoni'
+#   short='Man'
+#   iu_code='ETH18692'
+#   disease_id=1
+#   iu_id=1426
+#   demogName='KenyaKDHS'
+#
+# run_options:
+#   iuList=['ETH18692']
+#   numSims=1
+#   runName='descriptive name for "this run"'
+#   personEmail='igor@artrabbit.com'
+#   disease='Man'
+#   demogName='KenyaKDHS'
+#   useCloudStorage=False
+#   outputFolder='whatever2' // result files go in gs://<destinationBucket>/ntd/<outputFolder>
+#   sourceBucket='input_bucket'
+#   destinationBucket='output_bucket'
+#   groupId=59
+#   scenario='1_2'
+#   compress=True
+#   sourceDataPath='source-data'
+#   readPickleFileSuffix='202209b_burn_in'
+#   savePickleFileSuffix=None
+#   burnInTime=43
+#   saveIntermediateResults=False
+#   coverageFileName='SCH_params/mansoni_coverage_scenario_1_2.xlsx'
+#   paramFileName='SCH_params/mansoni_scenario_1_2.txt'
+#
+# file_name: ./data/output/ntd/whatever2/sch-mansoni/scenario_1_2/group_059/ETH18692/ipm-ETH18692-mansoni-group_059-scenario_1_2-group_059-1_simulations.csv.bz2
+#
+# compression: bz2
+##########################
+#   CREATE TABLE public.run (
+#       id SERIAL NOT NULL PRIMARY KEY,
+#       started TIMESTAMP,
+#       ended TIMESTAMP,
+#       num_sims INTEGER,
+#       disease_id INTEGER, -- FK to 'disease'
+#       description CHARACTER VARYING,
+#       person_email CHARACTER VARYING,
+#       source_bucket CHARACTER VARYING,
+#       destination_bucket CHARACTER VARYING,
+#       output_folder CHARACTER VARYING,
+#       burn_in_years INTEGER,
+#       read_pickle_file_suffix CHARACTER VARYING,
+#       save_pickle_file_suffix CHARACTER VARYING,
+#       UNIQUE( description, disease_id )
+#   );
+#
+#   CREATE TABLE public.scenario (
+#       id SERIAL NOT NULL PRIMARY KEY,
+#       name CHARACTER VARYING,
+#       coverage_filename CHARACTER VARYING,
+#       parameters_filename CHARACTER VARYING,
+#       description CHARACTER VARYING,
+#       UNIQUE( name, coverage_filename, parameters_filename )
+#   );
+#
+#   CREATE TABLE public.result (
+#       id SERIAL NOT NULL PRIMARY KEY,
+#       started TIMESTAMP,
+#       ended TIMESTAMP,
+#       run_id INTEGER NOT NULL, -- FK to 'run'
+#       iu_id INTEGER NOT NULL, -- FK to 'iu'
+#       scenario_id INTEGER NOT NULL, -- FK to 'scenario'
+#       result_type institution,
+#       filename CHARACTER VARYING,
+#       demography_name demography,
+#       group_id INTEGER -- just an int
+#   );
+##########################
+def write_db_result_record( run_info, run_options, institution, file_name, compression, DB ):
+    print( f'-> writing db {institution} result record' )
 
+    # create or re-use existing 'scenario' record
+    sql = '''
+    INSERT INTO scenario ( name, disease_id, coverage_filename, parameters_filename )
+    VALUES ( %s, %s, %s, %s )
+    ON CONFLICT ( name, coverage_filename, parameters_filename )
+    DO UPDATE
+    SET name = EXCLUDED.name, coverage_filename = EXCLUDED.coverage_filename, parameters_filename = EXCLUDED.parameters_filename
+    RETURNING id
+    '''
+
+    params = (
+        run_options.scenario, run_info.disease_id,
+        run_options.coverageFileName, run_options.paramFileName
+    )
+    scenario_id = DB.insert( sql, params )
+
+    # create or re-use existing 'run' record
+    sql = '''
+    INSERT INTO run (
+        description, disease_id, started, num_sims, demography_name, person_email,
+        source_bucket, source_data_path, destination_bucket, output_folder,
+        read_pickle_file_suffix, save_pickle_file_suffix, burn_in_years
+    )
+    VALUES (
+        %s, ( SELECT id FROM disease WHERE short = %s ), NOW(), %s, %s, %s,
+        %s, %s, %s, %s,
+        %s, %s, %s
+    )
+    ON CONFLICT ( description, disease_id )
+    DO UPDATE
+    SET description = EXCLUDED.description, disease_id = EXCLUDED.disease_id
+    RETURNING id
+    '''
+
+    params = (
+        run_options.runName, run_options.disease, run_options.numSims, run_info.demogName, run_options.personEmail,
+        run_options.sourceBucket, run_options.sourceDataPath, run_options.destinationBucket, run_options.outputFolder,
+        run_options.readPickleFileSuffix, run_options.savePickleFileSuffix, run_options.burnInTime
+    )
+    run_id = DB.insert( sql, params )
+
+    # join run to scenario
+    sql = '''
+    INSERT INTO run_scenario ( run_id, scenario_id )
+    VALUES ( %s, %s )
+    ON CONFLICT( run_id, scenario_id )
+    DO UPDATE
+    SET run_id = EXCLUDED.run_id, scenario_id = EXCLUDED.scenario_id
+    RETURNING run_id
+    '''
+
+    params = ( run_id, scenario_id )
+    join_id = DB.insert( sql, params, 'run_id' )
+
+    # create new 'result' record
+    sql = '''
+    INSERT INTO result ( run_id, started, ended, iu_id, scenario_id, result_type, filename, group_id )
+    VALUES ( %s, %s, %s, ( SELECT id FROM iu WHERE code = %s ), %s, %s, %s, %s )
+    RETURNING id
+    '''
+
+    params = (
+        run_id, run_info.started, run_info.ended,
+        run_info.iu_code, scenario_id, institution,
+        file_name, run_options.groupId
+    )
+    result_id = DB.insert( sql, params )
+
+    DB.commit()

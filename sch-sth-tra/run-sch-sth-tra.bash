@@ -14,6 +14,8 @@ source_bucket="ntd-disease-simulator-data"
 destination_bucket="ntd-endgame-result-data"
 
 # empty default values
+run_name=""
+person_email=""
 disease=""
 iu_list_file=""
 local_storage=""
@@ -35,11 +37,15 @@ DISEASE_SHORT_NAMES_TO_CODES["Man"]="sch-mansoni"
 
 function usage() {
     echo "usage: ${0}"
-    echo "            -d <short-disease-code> -s <scenario-list> -i <iu-list-file> -n <num-sims>"
-    echo "            -o <output-folder> [-k <source-bucket> ] [-K destination-bucket>]"
-    echo "            [-p <source-data-path>] [-u (uncompressed)] [-l (local_storage)]"
-    echo "            [-r <read-pickle-file-suffix>] [-f <save-pickle-file-suffix>] [-b <burn-in-years>]"
-    echo "            [-g <segment-number,out-of> ]"
+    echo "    -d <short-disease-code> -i <iu-list-file> -n <num-sims> -N <run-name> -e <person-email>"
+    echo "    [-s <scenario-list>]"
+    echo "    [-p <source-data-path>] [-o <output-folder>]"
+    echo "    [-k <source-bucket>] [-K destination-bucket>]"
+    echo "    [-u (uncompressed)]"
+    echo "    [-l (local_storage)]"
+    echo "    [-r <read-pickle-file-suffix>]"
+    echo "    [-f <save-pickle-file-suffix>] [-b <burn-in-years>]"
+    echo "    [-g <iu-file-segment-number,out-of-total-segments>]"
     exit 1
 }
 
@@ -53,10 +59,6 @@ function get_options () {
             disease=${OPTARG}
             ;;
 
-        s)
-            scenarios=${OPTARG}
-            ;;
-
         i)
             iu_list_file=${OPTARG}
             ;;
@@ -67,6 +69,18 @@ function get_options () {
 
         o)
             output_folder=${OPTARG}
+            ;;
+
+        N)
+            run_name=$( echo -n ${OPTARG} | base64 )
+            ;;
+
+        e)
+            person_email=${OPTARG}
+            ;;
+
+        s)
+            scenarios=${OPTARG}
             ;;
 
         k)
@@ -144,8 +158,9 @@ function get_options () {
 
 function check_options () {
 
-    # require basics
-    if [[ -z "${disease:=}" || -z "${num_sims:=}" || -z "${output_folder:=}" || ! -f "${iu_list_file:=}" ]] ; then
+    # require basics - output_folder not needed as defaulting to a 'slugified' desc in run.py
+    if [[ -z "${disease:=}" || -z "${num_sims:=}" || ! -f "${iu_list_file:=}" || -z "${run_name:=}" || -z "${person_email:=}" ]] ; then
+        echo "error: disease, num_sims, iu_list_file, run_name and person_email are required" >&2
         usage
     fi
 
@@ -161,6 +176,39 @@ function check_options () {
         usage
     fi
 
+    # make sure we really want to add results to this run
+    if [[ "${DISPLAY_CMD:=n}" != "y" ]] ; then
+
+        # call local find_run.py script to get existing run info
+        local existing_run_info=$( python find_run.py "${disease}" "${run_name}" 2>/dev/null )
+
+        if [[ -n "${existing_run_info}" ]] ; then
+
+            existing_run_id=$( echo $existing_run_info | cut -f 1 -d = )
+            existing_run_count=$( echo $existing_run_info | cut -f 2 -d = )
+            existing_run_start=$( echo $existing_run_info | cut -f 3 -d = )
+
+            local plain_name=$( echo -n $run_name | base64 -d )
+            # TODO get the previously-used output_folder for this run and re-use it, overriding any option provided here
+            echo "---> confirm: do you really want to add results to the run named ${plain_name} (id ${existing_run_id}, started at ${existing_run_start} with ${existing_run_count} results) ?"
+            select confirm in yes no ; do
+                case "${confirm}" in
+                    yes)
+                        break
+                        ;;
+                    no)
+                        echo "ok, exiting."
+                        exit 0
+                        ;;
+                    *)
+                        echo "eh?"
+                        ;;
+                esac
+            done
+        fi
+    fi
+
+    # create result folder if this is a real run
     if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
         echo "(would be making folder $result_folder in a real run)" >&2
     else
@@ -222,7 +270,13 @@ function run_scenarios () {
                 burn_in_time_cmd="-b ${burn_in_time}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -o ${output_folder} -p ${source_data_path} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
+            if [[ -z "${output_folder:=}" ]] ; then
+                output_folder_cmd=""
+            else
+                output_folder_cmd="-o ${output_folder}"
+            fi
+
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path} ${output_folder_cmd} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
@@ -230,8 +284,6 @@ function run_scenarios () {
             else
                 execute "$group" "$iu" "$full_scenario" "$cmd"
             fi
-
-            exit 0
 
         done
 
@@ -356,7 +408,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:i:n:o:k:K:p:r:f:g:b:ulh" opts ; do
+while getopts ":d:s:i:n:N:e:o:k:K:p:r:f:g:b:ulh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done

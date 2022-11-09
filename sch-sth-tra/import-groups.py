@@ -17,7 +17,9 @@ AND lower(d.species) = %s
 insert_sql = '''
 INSERT INTO iu_disease_group ( iu_id, disease_id, group_id )
 VALUES ( %s, %s, %s )
-ON CONFLICT( iu_id, disease_id, group_id ) DO NOTHING
+ON CONFLICT( iu_id, disease_id, group_id ) DO UPDATE
+SET iu_id = EXCLUDED.iu_id, disease_id = EXCLUDED.disease_id, group_id = EXCLUDED.group_id
+RETURNING iu_id
 '''
 
 # importer function
@@ -52,7 +54,7 @@ def import_iu_disease_groups_from_file( file, DB ):
         group_id = int( df.loc[ rowIndex ][ 'group' ] )
 
         insert_params = ( iu_id, disease_id, group_id )
-        res = DB.insert( insert_sql, insert_params )
+        res = DB.insert( insert_sql, insert_params, 'iu_id' )
        
         ius_added_to_groups = ius_added_to_groups + 1
         

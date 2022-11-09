@@ -15,6 +15,7 @@ setuptools.setup(
         'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master', # the Trachoma model
         'google-cloud-storage', 'gcsfs==2022.7.1', 'fsspec', # for cloud storage inc. via pandas/pickle
         'psycopg2-binary', # for checking IUs/groups and storing results
+        'python-slugify', # for creating friendly run-name-output-folders
         'mysql-connector-python==8.0.28' # for storing results
     ],
     include_package_data=True
