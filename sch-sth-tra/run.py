@@ -35,6 +35,10 @@ def get_cli_options():
     parser.add_option( '-r', '--read-pickle-file-suffix', dest='readPickleFileSuffix', type='string', default=None )
     parser.add_option( '-f', '--save-pickle-file-suffix', dest='savePickleFileSuffix', type='string', default=None )
     parser.add_option( '-b', '--burn-in-time', dest='burnInTime', type='int', default=None )
+    parser.add_option( '--model-name', dest='modelName', type='string', default=None )
+    parser.add_option( '--model-path', dest='modelPath', type='string', default=None )
+    parser.add_option( '--model-branch', dest='modelBranch', type='string', default=None )
+    parser.add_option( '--model-commit', dest='modelCommit', type='string', default=None )
 
     ( options, args ) = parser.parse_args()
 
@@ -56,6 +60,11 @@ def check_options( run_options ):
     # ensure there's an email address for the owner of the run
     if run_options.personEmail == None:
         print( "xx> you must supply an email address for the instigator of this run." )
+        sys.exit( 1 )
+
+    # make sure all necessary model info is provided
+    if None in [ run_options.modelName, run_options.modelPath, run_options.modelBranch, run_options.modelCommit ]:
+        print( "xx> model info not supplied." )
         sys.exit( 1 )
 
     # default to using the sanitized run name for the output folder
@@ -144,6 +153,10 @@ def run_main():
         'readPickleFileSuffix': options.readPickleFileSuffix,
         'savePickleFileSuffix': options.savePickleFileSuffix,
         'burnInTime': options.burnInTime,
+        'modelName': options.modelName,
+        'modelPath': options.modelPath,
+        'modelBranch': options.modelBranch,
+        'modelCommit': options.modelCommit,
     } )
 
     check_options( run_options )

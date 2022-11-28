@@ -26,6 +26,10 @@ out_of=""
 burn_in_time=""
 uncompressed=""
 local_storage=""
+model_name=""
+model_path=""
+model_branch=""
+model_commit=""
 
 # map of e.g. Tra -> 'trachoma' for source data URL paths
 declare -A DISEASE_SHORT_NAMES_TO_CODES
@@ -34,6 +38,13 @@ DISEASE_SHORT_NAMES_TO_CODES["Tri"]="sth-whipworm"
 DISEASE_SHORT_NAMES_TO_CODES["Asc"]="sth-roundworm"
 DISEASE_SHORT_NAMES_TO_CODES["Hook"]="sth-hookworm"
 DISEASE_SHORT_NAMES_TO_CODES["Man"]="sch-mansoni"
+
+declare -A DISEASE_SHORT_NAMES_TO_MODEL
+DISEASE_SHORT_NAMES_TO_MODEL["Tra"]="trachoma"
+DISEASE_SHORT_NAMES_TO_MODEL["Tri"]="sch_simulation"
+DISEASE_SHORT_NAMES_TO_MODEL["Asc"]="sch_simulation"
+DISEASE_SHORT_NAMES_TO_MODEL["Hook"]="sch_simulation"
+DISEASE_SHORT_NAMES_TO_MODEL["Man"]="sch_simulation"
 
 function usage() {
     echo "usage: ${0}"
@@ -57,6 +68,19 @@ function get_options () {
 
         d)
             disease=${OPTARG}
+
+            # good point to get the model info
+            echo "-> fetching model info ..." >&2
+            model_name="${DISEASE_SHORT_NAMES_TO_MODEL[${disease}]}"
+            model_info=$( python3 model_info.py "$model_name" | base64 -d ) 2>/dev/null
+            model_path=$( echo $model_info | jq -r .path )
+            model_branch=$( echo $model_info | jq -r .branch )
+            model_commit=$( echo $model_info | jq -r .commit )
+            echo "   name: ${model_name}" >&2
+            echo "   path: ${model_path}" >&2
+            echo "   branch: ${model_branch}" >&2
+            echo "   commit: ${model_commit}" >&2
+
             ;;
 
         i)
@@ -180,7 +204,7 @@ function check_options () {
     if [[ "${DISPLAY_CMD:=n}" != "y" ]] ; then
 
         # call local find_run.py script to get existing run info
-        local existing_run_info=$( python find_run.py "${disease}" "${run_name}" 2>/dev/null )
+        local existing_run_info=$( python3 find_run.py "${disease}" "${run_name}" 2>/dev/null )
 
         if [[ -n "${existing_run_info}" ]] ; then
 
@@ -190,7 +214,7 @@ function check_options () {
 
             local plain_name=$( echo -n $run_name | base64 -d )
             # TODO get the previously-used output_folder for this run and re-use it, overriding any option provided here
-            echo "---> confirm: do you really want to add results to the run named ${plain_name} (id ${existing_run_id}, started at ${existing_run_start} with ${existing_run_count} results) ?"
+            echo "---> confirm: do you really want to add results to the run named \"${plain_name}\" (id ${existing_run_id}, started at ${existing_run_start} with ${existing_run_count} existing results) ?"
             select confirm in yes no ; do
                 case "${confirm}" in
                     yes)
@@ -222,6 +246,8 @@ function check_options () {
 }
 
 function run_scenarios () {
+
+    echo "-> running scenarios, got model info: $model_name $model_path $model_branch $model_commit"
 
     for scenario in ${scenarios//,/ } ; do
 
@@ -276,7 +302,7 @@ function run_scenarios () {
                 output_folder_cmd="-o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path} ${output_folder_cmd} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path} ${output_folder_cmd} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${uncompressed} ${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
