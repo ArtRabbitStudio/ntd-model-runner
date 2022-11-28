@@ -78,6 +78,10 @@ class db(object):
     #   saveIntermediateResults=False
     #   coverageFileName='SCH_params/mansoni_coverage_scenario_1_2.xlsx'
     #   paramFileName='SCH_params/mansoni_scenario_1_2.txt'
+    #   modelName='sch_simulation'
+    #   modelPath='/ntd-modelling-consortium/ntd-model-sch'
+    #   modelBranch='Endgame_v2'
+    #   modelCommit='5610d55814dac3fea76bc01436e9ca6041cb669d'
     #
     # file_name:
     #   ./data/output/ntd/whatever2/sch-mansoni/scenario_1_2/group_059/ETH18692/
@@ -148,12 +152,14 @@ class db(object):
         INSERT INTO run (
             description, disease_id, started, num_sims, demography_name, person_email,
             source_bucket, source_data_path, destination_bucket, output_folder,
-            read_pickle_file_suffix, save_pickle_file_suffix, burn_in_years
+            read_pickle_file_suffix, save_pickle_file_suffix, burn_in_years,
+            model_name, model_path, model_branch, model_commit
         )
         VALUES (
             %s, ( SELECT id FROM disease WHERE short = %s ), NOW(), %s, %s, %s,
             %s, %s, %s, %s,
-            %s, %s, %s
+            %s, %s, %s,
+            %s, %s, %s, %s
         )
         ON CONFLICT ( description, disease_id )
         DO UPDATE
@@ -164,7 +170,8 @@ class db(object):
         params = (
             run_options.runName, run_options.disease, run_options.numSims, run_info.demogName, run_options.personEmail,
             run_options.sourceBucket, run_options.sourceDataPath, run_options.destinationBucket, run_options.outputFolder,
-            run_options.readPickleFileSuffix, run_options.savePickleFileSuffix, run_options.burnInTime
+            run_options.readPickleFileSuffix, run_options.savePickleFileSuffix, run_options.burnInTime,
+            run_options.modelName, run_options.modelPath, run_options.modelBranch, run_options.modelCommit
         )
         run_id = self.insert( sql, params )
 
