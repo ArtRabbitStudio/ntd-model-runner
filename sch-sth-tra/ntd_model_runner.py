@@ -241,7 +241,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # store metadata in flow db
     if run_options.useCloudStorage:
-        write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IHME, ihme_file_name, compression, DB )
+        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IHME, ihme_file_name, compression )
 
     # run IPM transforms
     ipm_df = next( transformer )
@@ -250,7 +250,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # store metadata in flow db
     if run_options.useCloudStorage:
-        write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IPM, ipm_file_name, compression, DB )
+        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IPM, ipm_file_name, compression )
 
     os.remove( coverageTextFileStorageName )
 
@@ -439,158 +439,3 @@ def transform_results( results, iu, type, species, scenario, numSims, keys ):
 
     return values
 
-##########################
-# run_info:
-#   type='sch'
-#   species='Mansoni'
-#   short='Man'
-#   iu_code='ETH18692'
-#   disease_id=1
-#   iu_id=1426
-#   demogName='KenyaKDHS'
-#
-# run_options:
-#   iuList=['ETH18692']
-#   numSims=1
-#   runName='descriptive name for "this run"'
-#   personEmail='igor@artrabbit.com'
-#   disease='Man'
-#   demogName='KenyaKDHS'
-#   useCloudStorage=False
-#   outputFolder='whatever2' // result files go in gs://<destinationBucket>/ntd/<outputFolder>
-#   sourceBucket='input_bucket'
-#   destinationBucket='output_bucket'
-#   groupId=59
-#   scenario='1_2'
-#   compress=True
-#   sourceDataPath='source-data'
-#   readPickleFileSuffix='202209b_burn_in'
-#   savePickleFileSuffix=None
-#   burnInTime=43
-#   saveIntermediateResults=False
-#   coverageFileName='SCH_params/mansoni_coverage_scenario_1_2.xlsx'
-#   paramFileName='SCH_params/mansoni_scenario_1_2.txt'
-#   modelName='sch_simulation'
-#   modelPath='/ntd-modelling-consortium/ntd-model-sch'
-#   modelBranch='Endgame_v2'
-#   modelCommit='5610d55814dac3fea76bc01436e9ca6041cb669d'
-#
-# file_name: ./data/output/ntd/whatever2/sch-mansoni/scenario_1_2/group_059/ETH18692/ipm-ETH18692-mansoni-group_059-scenario_1_2-group_059-1_simulations.csv.bz2
-#
-# compression: bz2
-##########################
-#   CREATE TABLE public.run (
-#       id SERIAL NOT NULL PRIMARY KEY,
-#       started TIMESTAMP,
-#       ended TIMESTAMP,
-#       num_sims INTEGER,
-#       disease_id INTEGER, -- FK to 'disease'
-#       description CHARACTER VARYING,
-#       person_email CHARACTER VARYING,
-#       source_bucket CHARACTER VARYING,
-#       destination_bucket CHARACTER VARYING,
-#       output_folder CHARACTER VARYING,
-#       burn_in_years INTEGER,
-#       read_pickle_file_suffix CHARACTER VARYING,
-#       save_pickle_file_suffix CHARACTER VARYING,
-#       UNIQUE( description, disease_id )
-#   );
-#
-#   CREATE TABLE public.scenario (
-#       id SERIAL NOT NULL PRIMARY KEY,
-#       name CHARACTER VARYING,
-#       coverage_filename CHARACTER VARYING,
-#       parameters_filename CHARACTER VARYING,
-#       description CHARACTER VARYING,
-#       UNIQUE( name, coverage_filename, parameters_filename )
-#   );
-#
-#   CREATE TABLE public.result (
-#       id SERIAL NOT NULL PRIMARY KEY,
-#       started TIMESTAMP,
-#       ended TIMESTAMP,
-#       run_id INTEGER NOT NULL, -- FK to 'run'
-#       iu_id INTEGER NOT NULL, -- FK to 'iu'
-#       scenario_id INTEGER NOT NULL, -- FK to 'scenario'
-#       result_type institution,
-#       filename CHARACTER VARYING,
-#       demography_name demography,
-#       group_id INTEGER -- just an int
-#   );
-##########################
-def write_db_result_record( run_info, run_options, institution, file_name, compression, DB ):
-    print( f'-> writing db {institution} result record' )
-
-    # create or re-use existing 'scenario' record
-    sql = '''
-    INSERT INTO scenario ( name, disease_id, coverage_filename, parameters_filename )
-    VALUES ( %s, %s, %s, %s )
-    ON CONFLICT ( name, coverage_filename, parameters_filename )
-    DO UPDATE
-    SET name = EXCLUDED.name, coverage_filename = EXCLUDED.coverage_filename, parameters_filename = EXCLUDED.parameters_filename
-    RETURNING id
-    '''
-
-    params = (
-        run_options.scenario, run_info.disease_id,
-        run_options.coverageFileName, run_options.paramFileName
-    )
-    scenario_id = DB.insert( sql, params )
-
-    # create or re-use existing 'run' record
-    # TODO handle updates of existing runs better, and handle changes in model_commit
-    sql = '''
-    INSERT INTO run (
-        description, disease_id, started, num_sims, demography_name, person_email,
-        source_bucket, source_data_path, destination_bucket, output_folder,
-        read_pickle_file_suffix, save_pickle_file_suffix, burn_in_years,
-        model_name, model_path, model_branch, model_commit
-    )
-    VALUES (
-        %s, ( SELECT id FROM disease WHERE short = %s ), NOW(), %s, %s, %s,
-        %s, %s, %s, %s,
-        %s, %s, %s,
-        %s, %s, %s, %s
-    )
-    ON CONFLICT ( description, disease_id )
-    DO UPDATE
-    SET description = EXCLUDED.description, disease_id = EXCLUDED.disease_id
-    RETURNING id
-    '''
-
-    params = (
-        run_options.runName, run_options.disease, run_options.numSims, run_info.demogName, run_options.personEmail,
-        run_options.sourceBucket, run_options.sourceDataPath, run_options.destinationBucket, run_options.outputFolder,
-        run_options.readPickleFileSuffix, run_options.savePickleFileSuffix, run_options.burnInTime,
-        run_options.modelName, run_options.modelPath, run_options.modelBranch, run_options.modelCommit
-    )
-    run_id = DB.insert( sql, params )
-
-    # join run to scenario
-    sql = '''
-    INSERT INTO run_scenario ( run_id, scenario_id )
-    VALUES ( %s, %s )
-    ON CONFLICT( run_id, scenario_id )
-    DO UPDATE
-    SET run_id = EXCLUDED.run_id, scenario_id = EXCLUDED.scenario_id
-    RETURNING run_id
-    '''
-
-    params = ( run_id, scenario_id )
-    join_id = DB.insert( sql, params, 'run_id' )
-
-    # create new 'result' record
-    sql = '''
-    INSERT INTO result ( run_id, started, ended, iu_id, scenario_id, result_type, filename, group_id )
-    VALUES ( %s, %s, %s, ( SELECT id FROM iu WHERE code = %s ), %s, %s, %s, %s )
-    RETURNING id
-    '''
-
-    params = (
-        run_id, run_info.started, run_info.ended,
-        run_info.iu_code, scenario_id, institution,
-        file_name, run_options.groupId
-    )
-    result_id = DB.insert( sql, params )
-
-    DB.commit()
