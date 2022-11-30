@@ -8,16 +8,21 @@ from urllib.parse import urlparse
 
 from b64 import b64encode
 
-def get_model_info( model_name ):
+def get_model_info( model_name, encoded = True ):
     repo_uri = repo_uri_for_model_name( model_name )
     path, branch = repo_path_and_branch_for_uri( repo_uri )
     commit = current_commit_for_path_and_branch( path, branch )
-    json_info = json.dumps( {
+    info = {
         'path': path,
         'branch': branch,
         'commit': commit
-    } )
-    return b64encode( json_info )
+    }
+
+    if encoded == True:
+        json_info = json.dumps( info )
+        return b64encode( json_info )
+
+    return info
 
 def repo_uri_for_model_name( model_name ):
     setup = distutils.core.run_setup( "setup.py" )
