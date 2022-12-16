@@ -188,18 +188,36 @@ class db(object):
         params = ( run_id, scenario_id )
         join_id = self.insert( sql, params, 'run_id' )
 
-        # create new 'result' record
+        # create new or re-use existing 'result' record
         sql = '''
-        INSERT INTO result ( run_id, started, ended, iu_id, scenario_id, result_type, filename, group_id )
-        VALUES ( %s, %s, %s, ( SELECT id FROM iu WHERE code = %s ), %s, %s, %s, %s )
+        INSERT INTO result ( run_id, started, ended, iu_id, scenario_id, group_id )
+        VALUES ( %s, %s, %s, ( SELECT id FROM iu WHERE code = %s ), %s, COALESCE( %s, 0 ) )
+        ON CONFLICT( run_id, iu_id, scenario_id, group_id )
+        DO UPDATE
+        SET run_id = EXCLUDED.run_id, iu_id = EXCLUDED.iu_id, scenario_id = EXCLUDED.scenario_id, group_id = EXCLUDED.group_id
         RETURNING id
         '''
 
         params = (
             run_id, run_info.started, run_info.ended,
-            run_info.iu_code, scenario_id, institution,
-            file_name, run_options.groupId
+            run_info.iu_code, scenario_id, run_options.groupId
         )
+
         result_id = self.insert( sql, params )
+
+        # create new 'result_file' record
+        sql = '''
+        INSERT INTO result_file( result_id, result_type, filename )
+        VALUES( %s, %s, %s )
+        ON CONFLICT( result_id, result_type )
+        DO UPDATE
+        SET result_id = EXCLUDED.result_id, result_type = EXCLUDED.result_type
+        RETURNING id
+        '''
+
+        params = (
+            result_id, institution, file_name
+        )
+        result_file_id = self.insert( sql, params )
 
         self.commit()
