@@ -1,5 +1,6 @@
-import os
+import os, sys
 from google.cloud import storage
+from google.api_core import exceptions
 from google.auth.exceptions import DefaultCredentialsError
 
 class gcs:
@@ -23,8 +24,12 @@ class gcs:
     def get_blob( self, gcs_path ):
         print( f'-> fetching {gcs_path} from cloud storage' )
         blob = self._bucket.blob( gcs_path )
-        bytes = blob.download_as_bytes()
-        return bytes
+        try:
+            bytes = blob.download_as_bytes()
+            return bytes
+        except exceptions.NotFound as h:
+            print( f"xx> file not found in GCS: {gcs_path}" )
+            sys.exit( 1 )
 
     def blob_exists( self, gcs_path ):
         blob = self._bucket.blob( gcs_path )

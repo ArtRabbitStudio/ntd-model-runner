@@ -20,7 +20,7 @@ class db(object):
         except psycopg2.DatabaseError as d:
 
             print( f"xx> db error: {d}" )
-            sys.exit()
+            sys.exit( 1 )
 
         self._db_cur = self._db_connection.cursor( cursor_factory = psycopg2.extras.RealDictCursor )
 

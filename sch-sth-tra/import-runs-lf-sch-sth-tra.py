@@ -41,7 +41,7 @@ TRA result: {
     'institution': 'ihme',
     'simulations': '200'}
 '''
-import os, sys, json
+import os, sys, json, subprocess
 
 from types import SimpleNamespace
 from datetime import datetime
@@ -98,11 +98,12 @@ disease_types_by_disease = {
 
 diseases = [ 'sch-mansoni', 'sth-hookworm', 'sth-roundworm', 'sth-whipworm', 'trachoma', 'lf' ]
 
-# ['355930', '2022-09-06T10:49:09Z', 'gs:', '', 'ntd-endgame-result-data', 'ntd', '202206', 'sth-hookworm', 'scenario_3', 'group_170', 'BDI06375', 'ipm-BDI06375-hookworm-group_170-scenario_3-group_170-200_simulations.csv.bz2\n']
 
 file_disease_index = 7
 
 file_mapping = {
+
+    # ['351152', '2022-08-12T17:56:24Z', 'gs:', '', 'ntd-endgame-result-data', 'ntd', '202208a', 'lf', 'scenario_1', 'AGO02049', 'ihme-AGO02049-lf-scenario_1-200_simulations.csv.bz2']
     'lf': {
         'size': 0,
         'ended': 1,
@@ -111,8 +112,9 @@ file_mapping = {
         'disease': 7,
         'scenario': 8,
         'iu': 9,
-        'file': 11
+        'file': 10
     },
+
     'trachoma': {
         'size': 0,
         'ended': 1,
@@ -124,6 +126,8 @@ file_mapping = {
         'iu': 10,
         'file': 11
     },
+
+    # ['355930', '2022-09-06T10:49:09Z', 'gs:', '', 'ntd-endgame-result-data', 'ntd', '202206', 'sth-hookworm', 'scenario_3', 'group_170', 'BDI06375', 'ipm-BDI06375-hookworm-group_170-scenario_3-group_170-200_simulations.csv.bz2\n']
     'default': {
         'size': 0,
         'ended': 1,
@@ -166,7 +170,7 @@ def import_file( import_file_path ):
     try:
         model_info = SimpleNamespace( **get_model_info( model_name, False ) ) # don't return json/b64-encoded version
     except KeyError as k:
-        sys.stderr.write( f"xx> unknown model name {model_name}\n" )
+        sys.stderr.write( f"xx> unknown model name {model_name} (2) {k}\n" )
         sys.exit( 1 )
 
     # only create one local db connection
@@ -297,6 +301,9 @@ def save_result_to_db( result, model_name, model_info, DB ):
     disease_species = disease_species_by_disease[ result.disease ]
     disease_type = disease_types_by_disease[ result.disease ]
 
+    coverage_filename = get_coverage_filename( disease_type, disease_species, result.scenario, result.iu )
+    param_filename = get_param_filename( disease_type, disease_species, result.scenario, result.iu, coverage_filename )
+
     compression = True
 
     run_options = SimpleNamespace( **{
@@ -311,8 +318,8 @@ def save_result_to_db( result, model_name, model_info, DB ):
         'groupId': int( result.group ) if hasattr( result, 'group' ) else None,
         
         'scenario': result.scenario,
-        'coverageFileName': get_coverage_filename( disease_type, disease_species, result.scenario ),
-        'paramFileName': get_param_filename( disease_type, disease_species, result.scenario ),
+        'coverageFileName': coverage_filename,
+        'paramFileName': param_filename,
 
         'sourceBucket': 'ntd-disease-simulator-data',
         'sourceDataPath': 'source-data',
@@ -344,19 +351,27 @@ def save_result_to_db( result, model_name, model_info, DB ):
         run_info.started = run_info.ended = result.ended
         DB.write_db_result_record( run_info, run_options, result.institution, result.file, compression )
 
-def get_coverage_filename( disease_type, disease_species, scenario ):
+def get_coverage_filename( disease_type, disease_species, scenario, iu ):
     if disease_type == 'tra':
         return f'coverage/scen{scenario}.xlsx'
 
-    return f'{disease_type.upper()}_params/{disease_species.lower()}_coverage_scenario_{scenario}.xlsx'
+    elif disease_type == 'lf':
+        lf_run_dir = '../../ntd-model-lf/run'
+        p = subprocess.Popen( f'ag -l --nocolor {scenario}_{iu} {lf_run_dir}/scenarios | tr -d "\n\'"', stdout = subprocess.PIPE, shell = True )
+        ( stdout, stderr ) = p.communicate()
+        scenario_file_name = f'run/scenarios/{stdout.decode().split( "/" ).pop()}'
+        return scenario_file_name
 
-def get_param_filename( disease_type, disease_species, scenario ):
+    else:
+        return f'{disease_type.upper()}_params/{disease_species.lower()}_coverage_scenario_{scenario}.xlsx'
+
+def get_param_filename( disease_type, disease_species, scenario, iu, coverage_filename ):
     if disease_type == 'tra':
         return f'coverage/scen{scenario}.csv'
 
     elif disease_type == 'lf':
-        sys.stderr.write( f"xx> unimplemented disease type {disease_type}\n" )
-        sys.exit( 1 )
+        iu_id = coverage_filename.split( '/' ).pop().split( '.' )[ 0 ][ 14: ]
+        return f'parameters/RandomParamIU{iu_id}.txt'
 
     else:
         return f'{disease_type.upper()}_params/{disease_species.lower()}_scenario_{scenario}.txt'

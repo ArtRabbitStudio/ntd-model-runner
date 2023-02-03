@@ -65,6 +65,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     sourceBucket = run_options.sourceBucket if hasattr( run_options, 'sourceBucket' ) else 'ntd-disease-simulator-data'
     destinationBucket = run_options.destinationBucket if hasattr( run_options, 'destinationBucket' ) else 'ntd-endgame-result-data'
     sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
+    surveyType = run_options.surveyType if hasattr( run_options, 'surveyType' ) else 'KK2'
 
     # construct cloud path for this disease/species
     GcsSpecies = {
@@ -266,7 +267,7 @@ run forward in time 23 years and give back results
 def run_model(
     InSimFilePath=None, RkFilePath=None,
     coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
-    demogName='Default', paramFileName='sch_example.txt',
+    demogName='Default', surveyType='KK2', paramFileName='sch_example.txt',
     numSims=None, cloudModule=None, runningBurnIn=False, burnInTime=None
 ):
 
@@ -309,6 +310,9 @@ def run_model(
     # add coverage data to parameters file
     params = readCoverageFile(coverageTextFileStorageName, params)
 
+    # add vector control data to parameters
+    params = parse_vector_control_input(coverageFileName, params)
+
     # count number of processors
     num_cores = multiprocessing.cpu_count()
     print( f'-> running {numSims} simulations on {num_cores} cores' )
@@ -323,7 +327,7 @@ def run_model(
 
         print( f'-> running burn-in, not reading pickle data (from {InSimFilePath})' )
         res = Parallel(n_jobs=num_cores)(
-            delayed(BurnInSimulations)(params,simparams, i) for i in range(numSims)
+            delayed(BurnInSimulations)(params,simparams, i, surveyType) for i in range(numSims)
         )
 
     # run simulations in parallel starting from specified pickled state
@@ -334,7 +338,7 @@ def run_model(
         pickleData = pickle.loads( cloudModule.get_blob( InSimFilePath ) ) if cloudModule != None else pickle.load( open( InSimFilePath, 'rb' ) )
 
         res = Parallel(n_jobs=num_cores)(
-            delayed(multiple_simulations_after_burnin)(params, pickleData, simparams, indices, i, burnInTime) for i in range(numSims)
+            delayed(multiple_simulations_after_burnin)(params, pickleData, simparams, indices, i, burnInTime, surveyType) for i in range(numSims)
         )
 
     results = [ item[ 0 ] for item in res ]

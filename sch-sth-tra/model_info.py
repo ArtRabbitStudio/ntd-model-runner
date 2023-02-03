@@ -25,6 +25,9 @@ def get_model_info( model_name, encoded = True ):
     return info
 
 def repo_uri_for_model_name( model_name ):
+    if model_name == 'lf':
+        return 'git+https://github.com/NTD-Modelling-Consortium/LF.git@main'
+
     setup = distutils.core.run_setup( "setup.py" )
     l = list( map( lambda x: x.split(), setup.install_requires ) )
     libs = [ x for x in l if x[ 0 ].endswith( '@' ) ]
@@ -67,5 +70,5 @@ if __name__ == "__main__":
     try:
         print( get_model_info( model_name ) )
     except KeyError as k:
-        sys.stderr.write( f"xx> unknown model name '{model_name}' {k}\n" )
+        sys.stderr.write( f"xx> model_info found unknown model name '{model_name}': {k}\n" )
         sys.exit( 1 )

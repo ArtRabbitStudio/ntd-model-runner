@@ -13,6 +13,7 @@ setuptools.setup(
     install_requires=[
         'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@Endgame_v2', # the SCH model
         'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master', # the Trachoma model
+        # 'lf @ git+https://github.com/ntd-modelling-consortium/LF.git@master', # the LF model
         'google-cloud-storage', 'gcsfs==2022.7.1', 'fsspec', # for cloud storage inc. via pandas/pickle
         'psycopg2-binary', # for checking IUs/groups and storing results
         'python-slugify', # for creating friendly run-name-output-folders
