@@ -1,0 +1,1000 @@
+  272  ps uxfw
+  273  nohup bash run-sch-mansoni-scenarios-groups-64-68.bash > /dev/null < /dev/null &
+  274  ps uxfw
+  275  fg
+  276  vi run-sch-mansoni-scenarios-groups-64-68.bash 
+  277  tail results/20220805121840/s3a_1-g064-UGA49732.out
+  278  cd ntd-model-runner/
+  279  cd sch-sth/
+  280  ls -ltr iu-disease-data/
+  281  vi db.py 
+  282  echo DB_HOST
+  283  echo $DB_HOST
+  284  vi ~/.profile 
+  285  python import-ius.py 
+  286  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  287  history|grep ntd.sql
+  288  history|grep mysql
+  289  mysql
+  290  mysql -h ${DB_HOST} -pntd ntd
+  291  mysql -h ${DB_HOST} -u ntd -pntd ntd
+  292  mysql -h ${DB_HOST} -u ntd -pntd ntd < ntd.sql 
+  293  vi ntd.sql
+  294  mysqladmin -h ${DB_HOST} -u ntd -pntd version
+  295  mysql -h ${DB_HOST} -u ntd -pntd ntd < ntd.sql 
+  296  vi ntd.sql 
+  297  mysql -h ${DB_HOST} -u ntd -pntd ntd < ntd.sql 
+  298  vi ntd.sql 
+  299  mysql -h ${DB_HOST} -u ntd -pntd ntd < ntd.sql 
+  300  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  301  vi import-ius.py 
+  302  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  303  fg
+  304  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  305  fg
+  306  mysql -h ${DB_HOST} -u ntd -pntd ntd < ntd.sql 
+  307  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  308  fg
+  309  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  310  tail results/20220805121840/s3a_1-g064-UGA49732.out
+  311  nohup bash run-sch-mansoni-scenarios-groups-64-68.bash > /dev/null < /dev/null &
+  312  ps xufw
+  313  tail results/20220805135718/s1_1-g064-UGA49732.out
+  314  ps
+  315  ps ux
+  316  vi run-sch-mansoni-scenarios-groups-64-68.bash
+  317  ps uxfw|grep .out
+  318  tail -f results/20220805135718/s1_1-g064-UGA49732.out
+  319  ls -l results/20220805135718/
+  320  ps uxfw|grep .out
+  321  ls -ltr results/
+  322  ls -ltr results/20220805135718/
+  323  tail results/20220805135718/s1_2-g068-MWI28953.out
+  324  tail -20 results/20220805135718/s1_2-g068-MWI28953.out
+  325  ls -ltr results/20220805135718/
+  326  tar jcvf sch-mansoni-timings-20220805.tbz results/20220805135718/
+  327  mv sch-mansoni-timings-20220805.tbz ~
+  328  fg
+  329  cd ntd-model-runner/
+  330  git fetch
+  331  git pull origin master
+  332  cd sch-sth/
+  333  ls -ltr
+  334  vi run-sch-mansoni-scenarios-groups-64-68.bash 
+  335  ag RWA38141 iu-disease-data/
+  336  ag RWA38141 iu-disease-data/*ansoni*.csv
+  337  fg
+  338  history|grep mysql
+  339  mysql -h ${DB_HOST} -u ntd -pntd ntd
+  340  pwe
+  341  ag RWA38141
+  342  ag RWA38141 iu-disease-data/*ansoni*
+  343  ag -l RWA38141 iu-disease-data/*ansoni*
+  344  vi iu-disease-data/sch-Mansoni-Man.txt 
+  345  vi iu-disease-data/scen_grp_ref_mansoni.csv
+  346  vi iu-disease-data/mansoniIUs-groups-64-68.csv 
+  347  fg
+  348  mysql -h ${DB_HOST} -u ntd -pntd ntd
+  349  history|tail -100
+  350  vi iu-disease-data/ius-with-disease-data.tbz
+  351  mysql -h ${DB_HOST} -u ntd -pntd ntd
+  352  python import-groups iu-disease-data/
+  353  python import-groups.py iu-disease-data/
+  354  mysql -h ${DB_HOST} -u ntd -pntd ntd
+  355  python import-groups.py iu-disease-data/
+  356  mysql -h ${DB_HOST} -u ntd -pntd ntd
+  357  fg
+  358  bash run-sch-mansoni-scenarios-group-50.bash 
+  359  fg
+  360  bash run-sch-mansoni-scenarios-group-50.bash 
+  361  fg
+  362  bash run-sch-mansoni-scenarios-group-50.bash 
+  363  fg
+  364  nohup bash run-sch-mansoni-scenarios-group-50.bash > /dev/null < /dev/null &
+  365  tail -f results/20220811201931/s1_1-g050-RWA38141.out
+  366  history|grep nohup
+  367  cat ntd-model-runner/sch-sth/run-sch-mansoni-scenarios-group-50.bash 
+  368  cat ntd-model-runner/sch-sth/iu-disease-data/mansoniIUs-group-50.csv 
+  369  history|grep nohup
+  370  vi ntd-model-runner/sch-sth/run-sch-mansoni-scenarios-using-3b-iu-file.bash
+  371  fg
+  372  vi ntd-model-runner/sch-sth/iu-disease-data/mansoniIUs-group-50.csv 
+  373  vi run-sch-mansoni-scenarios-using-3b-iu-file.bash
+  374  vi ntd-model-runner/sch-sth/run-sch-mansoni-scenarios-using-3b-iu-file.bash
+  375  vi ntd-model-runner/sch-sth/iu-disease-data/mansoniIUs_scenario3b.csv 
+  376  ls -ltr
+  377  cd ntd-model-runner/sch-sth/
+  378  ls -l
+  379  cd ..
+  380  git fetch
+  381  git pull origin master
+  382  git diff sch-sth/import-ius.py 
+  383  git checkout sch-sth/import-ius.py
+  384  git pull origin master
+  385  gl
+  386  git fetch
+  387  git pull origin master
+  388  cd sch-sth/
+  389  ls -ltr
+  390  ls -l results/
+  391  vi run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  392  bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  393  fg
+  394  echo ${DISPLAY_CMD:=default}
+  395  DISPLAY_CMD=pog
+  396  echo ${DISPLAY_CMD:=default}
+  397  if [[ ${DISPLAY_CMD:=default} = 'default' ]] ; then echo 'it is default' ; else echo 'no it is not' ; fi
+  398  if [[ ${DISPLAY_CMD:=default} != 'default' ]] ; then echo 'it is default' ; else echo 'no it is not' ; fi
+  399  fg
+  400  if [[ ${DISPLAY_CMD:=n} != 'y' ]] ; then echo 'it is default' ; else echo 'no it is not' ; fi
+  401  DISPLAY_CMD=y
+  402  if [[ ${DISPLAY_CMD:=n} != 'y' ]] ; then echo 'it is default' ; else echo 'no it is not' ; fi
+  403  fg
+  404  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  405  fg
+  406  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  407  fg
+  408  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  409  unset DISPLAY_CMD
+  410  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  411  DISPLAY_CMD=n bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  412  bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  413  pip uninstall sch_simulation
+  414  pip install .
+  415  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/SCH_params
+  416  pip uninstall sch_simulation
+  417  pip install .
+  418  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/SCH_params
+  419  bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  420  mkdir tonkotsu && cp ./data/output/ntd/202208b/sch-mansoni/scenario_0_2/group_001/ETH18945/ihme-ETH18945-mansoni-group_001-scenario_0_2-group_001-200_simulations.csv ./data/output/ntd/202208b/sch-mansoni/scenario_0_2/group_001/ETH18945/ipm-ETH18945-mansoni-group_001-scenario_0_2-group_001-200_simulations.csv ./data/output/ntd/202208b/sch-mansoni/scenario_0_1/group_001/NAM34260/ihme-NAM34260-mansoni-group_001-scenario_0_1-group_001-200_simulations.csv ./data/output/ntd/202208b/sch-mansoni/scenario_0_1/group_001/NAM34260/ipm-NAM34260-mansoni-group_001-scenario_0_1-group_001-200_simulations.csv tonkotsu && cd tonkotsu
+  421  ls -l
+  422  tar jcvf sch-mansoni-scenario-0-samples-20220819a.tbz *.csv
+  423  whoami
+  424  fg
+  425  y
+  426  yes
+  427  cd ntd-model-runner/
+  428  git diff
+  429  fg
+  430  git stash show
+  431  git stash 
+  432  git fetch
+  433  git pull origin master
+  434  git stash pop
+  435  vi sch-sth/run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  436  git status
+  437  git diff 
+  438  cd sch-sth/
+  439  vi run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  440  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+  441  ls -ltr results/
+  442  htop -d 3
+  443  ls -ltr
+  444  ls -l tonkotsu/
+  445  ls -l tonkotsu/ipm-NAM34260-mansoni-group_001-scenario_0_1-group_001-200_simulations.csv 
+  446  vi tonkotsu/ipm-NAM34260-mansoni-group_001-scenario_0_1-group_001-200_simulations.csv
+  447  cd ntd-model-runner/
+  448  ls -ltr
+  449  cd sch-sth/
+  450  ls -ltr
+  451  cd ..
+  452  ls -ltr
+  453  rm -rf __pycache__/
+  454  ls -l data/
+  455  ls -l data/input/
+  456  ls -l data/output/
+  457  ls -l data/output/ntd/sch-002/sch-mansoni/scenario_1_1/
+  458  ls -l data/output/ntd/sch-002/sch-mansoni/scenario_1_1/group_046/
+  459  rm -rf data/
+  460  cd sch-sth/
+  461  ls -ltr
+  462  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+  463  vi run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+  464  nohup bash run-sch-mansoni-scenarios-0-1-2-3a-3b.bash >/dev/null </dev/null &
+  465  ps uxfw
+  466  tail -f results/20220819151716/s0_2-g001-ETH18945.out
+  467  ps uxf
+  468  gsutil ls gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_046/
+  469  gsutil -m ls gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_046
+  470  gsutil -m rm gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_046/*
+  471  gsutil -m ls gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_046/*.bz2
+  472  gsutil -m ls gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_046/**/*.bz2
+  473  gsutil -m ls gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_104/**/*.bz2
+  474  gsutil -m rm gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_104/**/*.bz2
+  475  gsutil -m rm gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_46/**/*.bz2
+  476  gsutil -m rm gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_*/group_046/**/*.bz2
+  477  ls -ltr
+  478  cd ntd-model-runner/
+  479  git fetch
+  480  git pull origin master
+  481  git status
+  482  git diff
+  483  git status
+  484  git reset
+  485  git diff sch-sth/ntd.sql 
+  486  git fetch 
+  487  git pull origin master
+  488  git status
+  489  git diff sch-sth/run-sch-mansoni-scenarios-0-1-2-3a-3b.bash 
+  490  git checkout sch-sth/run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+  491  git status
+  492  git diff sch-sth/run-sch-mansoni-scenarios-groups-64-68.bash
+  493  git pull origin master
+  494  cd sch-sth/
+  495  ls -ltr
+  496  cp run-sch-mansoni-scenarios-0-1-2-3a-3b.bash run-sch-mansoni-scenarios-group-46-104.bash
+  497  vi run-sch-mansoni-scenarios-group-46-104.bash
+  498  ls -l iu-disease-data/mansoniIUs*
+  499  fg
+  500  head iu-disease-data/mansoniIUs_scenario0.csv 
+  501  fg
+  502  vi run-sch-mansoni-scenarios-group-46-104.bash
+  503  DISPLAY_CMD=1 bash run-sch-mansoni-scenarios-group-46-104.bash
+  504  ls -ltr
+  505  ls -l iu-disease-data/
+  506  vi mansoniIUs-groups-64-104.csv
+  507  vi iu-disease-data/mansoniIUs-groups-64-104.csv 
+  508  vi run-sch-mansoni-scenarios-group-46-104.bash
+  509  DISPLAY_CMD=1 bash run-sch-mansoni-scenarios-group-46-104.bash
+  510  fg
+  511  vi run-sch-mansoni-scenarios-group-46-104.bash
+  512  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-group-46-104.bash
+  513  nohup bash run-sch-mansoni-scenarios-group-46-104.bash > /dev/null < /dev/null &
+  514  ps uxf
+  515  fg
+  516  vi run-sch-mansoni-scenarios-group-46-104.bash 
+  517  DISPLAY_CMD=y bash run-sch-mansoni-scenarios-group-46-104.bash
+  518  nohup bash run-sch-mansoni-scenarios-group-46-104.bash > /dev/null < /dev/null &
+  519  ps uxf
+  520  tail -f results/20220830093848/s0_1-g046-TZZ51897.out
+  521  ls -l
+  522  htop -d 3
+  523  cd ntd-model-runner/
+  524  git fetch
+  525  git pull origin master
+  526  git diff
+  527  git checkout 
+  528  git pull origin master
+  529  git checkout sch-sth/ntd.sql sch-sth/run-sch-mansoni-scenarios-groups-64-68.bash
+  530  git pull origin master
+  531  ls -ltr
+  532  ls -l results/
+  533  rm -rf results/
+  534  ls -ltr
+  535  ls -l sch-sth
+  536  ls -l sch-sth-tra/
+  537  ls -l sch-sth/tonkotsu/
+  538  git status .
+  539  rm -rf sch-sth
+  540  git status
+  541  cd sch-sth-tra/
+  542  cd ntd-model-runner/sch-sth-tra/
+  543  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209c -b 43
+  544  exit
+  545  cd ntd-model-runner/sch-sth-tra/
+  546  # DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209c -b 43
+  547  cat > iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  548  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209c -b 43
+  549  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  550  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 -u -l
+  551  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 1 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43 -u -l
+  552  ls -ltr
+  553  pip install .
+  554  pip uninstall sch_simulation
+  555  pip install .
+  556  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 1 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43 -u -l
+  557  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 1 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  558  ag write_string_to_file
+  559  cd ntd-model-runner/
+  560  git fetch
+  561  git pull origin master
+  562  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 -u -l
+  563  cd sch-sth-tra/
+  564  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 -u -l
+  565  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  566  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 1 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  567  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 1 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  568  ls -l iu-disease-data/
+  569  history|grep nohup
+  570  ls -l
+  571  ls -l old-runners/
+  572  ls -l old-runners/run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+  573  vi old-runners/run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+  574  vi run.py 
+  575  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  576  ls -ltr 
+  577  vi run-sch-sth-tra.bash 
+  578  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 1 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  579  ps uxf
+  580  tail -f results/20220916130618/s0_burn_in_2-g047-KEN54048.out
+  581  ps uxf
+  582  fg
+  583  vi iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv 
+  584  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  585  ps xufw
+  586  tail -f results/20220916131243/s0_burn_in_1-g081-UGA49745.out
+  587  ps uxfw
+  588  tail -f results/20220916131243/s0_burn_in_1-g081-UGA49745.out
+  589  ps uxfw
+  590  tail -f results/20220916131243/s0_burn_in_1-g081-UGA49745.out
+  591  fg
+  592  ps uxfw
+  593  vi iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv 
+  594  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  595  ps uxfw
+  596  tail -f results/20220916132529/s0_burn_in_2-g059-ETH18692.out
+  597  ps xufw
+  598  ps ufxw
+  599  fg
+  600  DISPLAY_CMD=y nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  601  fg
+  602  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  603  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43
+  604  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  605  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  606  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  607  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  608  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  609  gsutil cp gs://ntd-disease-simulator-data/diseases/sch-mansoni/source-data/ETH/ETH18692/Man_ETH18692_202209b_burn_in.p Man_ETH18692_202209b_burn_in.p
+  610  python
+  611  history|tail
+  612  cd ntd-model-runner/sch-sth-tra/
+  613  pip list
+  614  pip uninstall pandas
+  615  pip install .
+  616  pip list
+  617  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  618  history|grep nohup
+  619  DISPLAY_CMD=y nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  620  cat nohup.out 
+  621  DISPLAY_CMD=y  bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  622  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null >/dev/null &
+  623  ps uxfw
+  624  cat iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  625  ps uxfw
+  626  cat iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  627  ls -ltr results/
+  628  ls -ltr results/20220916141628/
+  629  tail -0f s0_burn_in_2-g047-KEN54048.out
+  630  tail -0f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  631  tail -f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  632  pip list
+  633  vi setup.py 
+  634  ps uxfw
+  635  tail -f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  636  ps uxfw
+  637  tail -f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  638  ps uxfw
+  639  tail -f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  640  ps uxfw
+  641  tail -f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  642  htop -d 3
+  643  tail -f results/20220916141628/s0_burn_in_2-g047-KEN54048.out
+  644  ps uxfw
+  645  cat iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  646  ps uxfw
+  647  nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null >/dev/null &
+  648  ps uxfw
+  649  tail -f results/20220916163805/s0_2-g059-ETH18692.out
+  650  tail -2000f results/20220916163805/s0_2-g059-ETH18692.out
+  651  ls -ltr results/
+  652  ls -1tr results/|tail -1
+  653  ls -l results/$(ls -1tr results/|tail -1)
+  654  ls -ltr results/$(ls -1tr results/|tail -1)
+  655  ps uxfw
+  656  tail results/20220916163805/s0_2-g047-KEN54048.out
+  657  tail -f results/20220916163805/s0_2-g047-KEN54048.out
+  658  ps uxfw
+  659  tail -f results/20220916163805/s0_2-g047-KEN54048.out
+  660  ps uxfw
+  661  ls -ltr results/20220916163805/
+  662  wc -l iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv 
+  663  tail -f results/20220916163805/s0_1-g081-UGA49745.out
+  664  ps uxf
+  665  ls -ltr results/20220916163805/
+  666  tail -f results/20220916163805/s0_1-g146-UGA49801.out
+  667  tail -200f results/20220916163805/s0_1-g146-UGA49801.out
+  668  tail -300f results/20220916163805/s0_1-g146-UGA49801.out
+  669  tail -500f results/20220916163805/s0_1-g146-UGA49801.out
+  670  ls -ltr results/20220916163805/
+  671  wc -l iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv 
+  672  ag gs:// results/20220916163805/
+  673  ag --no-filename gs:// results/20220916163805/
+  674  ag --no-filename gs:// results/20220916163805/ | ag -v reading
+  675  ag --no-filename gs:// results/20220916163805/ | ag -v reading|sed '/^$/d'
+  676  ag --no-filename gs:// results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $3}'
+  677  ag --no-filename gs:// results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $4}'
+  678  ag --no-filename writing gs:// results/20220916163805/
+  679  ag --no-filename writingresults/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $3}'
+  680  ag --no-filename writing results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $3}'
+  681  ag --no-filename writing results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $5}'
+  682  ag --no-filename writing results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $6}'
+  683  ag --no-filename writing results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $7}'
+  684  curl -I https://storage.googleapis.com/ntd-disease-simulator-data/endgame-exports/002/sch-mansoni-burn-in-samples-outputs-and-pickles-20220916b.tbz
+  685  fg
+  686  cd ntd-model-runner/sch-sth-tra/
+  687  pip uninstall sch_simulation
+  688  pip install .
+  689  vi run-sch-sth-tra.bash 
+  690  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 
+  691  j
+  692  fg
+  693  gl
+  694  git log
+  695  cd ntd-model-runner/sch-sth-tra/
+  696  history|grep nohup
+  697  DISPLAY_CMD=y nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43
+  698  cat nohup.out 
+  699  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 -u -l
+  700  ls -l data/input/
+  701  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 -u -l
+  702  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  703  history|grep nohup
+  704  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  705  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_burn_in_2 -n 200 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  706  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 -u -l
+  707  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 10 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 -u -l
+  708  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43 -u -l
+  709  time python3 -u run.py -d Man -g 59 -i ETH18692 -s 0_2 -n 10 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  710  history|tail -200|less
+  711  whoami
+  712  ls -ltr
+  713  rm Man_ETH18692_202209b_burn_in.p 
+  714  ls -l
+  715  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  716  nohup ( echo 'hi this is number one' && echo 'ok this is number two') >/dev/null </dev/null &
+  717  nohup ( echo 'hi this is number one' && echo 'ok this is number two' ) >/dev/null </dev/null  &
+  718  history|grep nohup
+  719  vi test.bash
+  720  nohup bash test.bash >/dev/null </dev/null &
+  721  tail nohup.out 
+  722  nohup bash test.bash >pogpogpog </dev/null &
+  723  cat pogpogpog 
+  724  fg
+  725  vi test.bash
+  726  nohup bash test.bash >pogpogpog </dev/null &
+  727  ps
+  728  cat pogpogpog 
+  729  fg
+  730  rm pogpogpog test.bash 
+  731  history|grep nohup
+  732  cat > runit.bash
+  733  DISPLAY_CMD=Y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  734  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -f 202209b_burn_in -b 43
+  735  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43
+  736  nohup bash runit.bash >/dev/null </dev/null &
+  737  ps uxf
+  738  tail -1000f results/20220916223317/s0_burn_in_2-g059-ETH18692.out
+  739  ls -ltr results/
+  740  ls -ltr results/20220916223317
+  741  history|grep twat
+  742  ps uxfw
+  743  tail -1000f results/20220916223317/s0_burn_in_2-g059-ETH18692.out
+  744  head results/20220916223317/s0_burn_in_2-g059-ETH18692.out
+  745  ps uxfw
+  746  ps uxfww
+  747  cat runit.bash 
+  748  cd ntd-model-runner/sch-sth-tra/
+  749  ps uxf
+  750  git fetch
+  751  git pull origin master
+  752  git diff run-sch-sth-tra.bash 
+  753  git checkout run-sch-sth-tra.bash
+  754  git pull origin master
+  755  vi run-sch-sth-tra.bash
+  756  ps uxfw
+  757  ls -ltr results/
+  758  ls -ltr results/20220916223317
+  759  ls -ltr results/20220916223317/s0_burn_in_2-g059-ETH18692.out
+  760  tail -20 results/20220916223317/s0_burn_in_2-g059-ETH18692.out
+  761  tail -40 results/20220916223317/s0_burn_in_2-g059-ETH18692.out
+  762  cat runit.bash 
+  763  ps uxfw
+  764  tail -f results/20220916223317/s0_burn_in_1-g006-GNQ16428.out
+  765  ps uxf
+  766  tail -f results/20220916223317/s0_burn_in_2-g047-KEN54048.out
+  767  cd ntd-model-runner/sch-sth-tra/
+  768  ps uxf
+  769  tail -f results/20220916223317/s0_burn_in_2-g047-KEN54048.out
+  770  ps uxfw
+  771  cat iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  772  cd ntd-model-runner/sch-sth-tra/
+  773  cat iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  774  history|grep awek
+  775  history|grep awk
+  776  ls -ltr results/
+  777  ls -ltr results/20220917002548
+  778  ag --no-filename gs:// results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $4}'
+  779  ag --no-filename writing results/20220916163805/ | ag -v reading|sed '/^$/d'|awk '{print $7}'
+  780  history|grep nohup
+  781  pip list
+  782  history|grep nohup
+  783  cd ntd-model-runner/sch-sth-tra/
+  784  git fetch
+  785  git pull origin master
+  786  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xac.csv -p source-data -f 202209b_burn_in -b 43
+  787  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xac.csv -p source-data -f 202209b_burn_in -b 43 | head -1
+  788  time python3 -u run.py -d Man -g 67 -i LBR26829 -s 0_burn_in_1 -n 200 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  789  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xac.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  790  ps uxfw
+  791  tail -f results/20220917213118/s0_burn_in_1-g067-LBR26829.out
+  792  htop -d 3
+  793  cd ntd-model-runner/sch-sth-tra/results/
+  794  ls -ltr
+  795  ls -ltr 20220917213118/
+  796  ls -ltr 20220917213118/s0_burn_in_1-g072-NER35328.out
+  797  tail -f s0_burn_in_1-g072-NER35328.out
+  798  tail -f 20220917213118/s0_burn_in_1-g072-NER35328.out
+  799  cd ntd-model-runner/sch-sth-tra/
+  800  git status
+  801  cd ntd-model-runner/sch-sth-tra/
+  802  ls -ltr results/
+  803  ls -ltr results/20220917002548/
+  804   results/2022091[^7]*
+  805  rm -rf results/2022091[^7]*
+  806  fg
+  807  ls -ltr results/20220917213118/
+  808  ls -1tr results/20220917213118/|wc -l
+  809  ps
+  810  ps uxfw
+  811  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213118/
+  812  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213118/s0_burn_in_2-g107-BFA53005.out
+  813  tail ntd-model-runner/sch-sth-tra/results/20220917213118/s0_burn_in_2-g107-BFA53005.out
+  814  cd ntd-model-runner/sch-sth-tra/
+  815  ls -ltr results/
+  816  history|grep nohup
+  817  DISPLAY_CMD=y nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 | head -1
+  818  fg
+  819  cat nohup.out 
+  820  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv -p source-data -r 202209b_burn_in -b 43 | head -1
+  821  ls -ltr iu-disease-data/mansoniIUs_burn_in_minus_samples.csv 
+  822  git status iu-disease-data/mansoniIUs_burn_in_minus_samples.csv
+  823  vi iu-disease-data/mansoniIUs_burn_in_minus_samples.csv
+  824  vi -O iu-disease-data/mansoniIUs_burn_in_minus_samples.csv iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv 
+  825  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_minus_samples.csv -p source-data -r 202209b_burn_in -b 43 | head -1
+  826  history|grep nohup
+  827  time python3 -u run.py -d Man -g 1 -i ETH18945 -s 0_2 -n 200 -m KenyaKDHS -o 202209b -p source-data -r 202209b_burn_in -b 43
+  828  nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_minus_samples.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  829  ps uxfw
+  830  tail -f results/20220918020254/s0_2-g001-ETH18945.out
+  831  tail -200f results/20220918020254/s0_2-g001-ETH18945.out
+  832  tail -f results/20220918020254/s0_2-g001-ETH18945.out
+  833  wc -l iu-disease-data/mansoniIUs_burn_in_minus_samples.csv
+  834  ps uxfw
+  835  ls -ltr results/
+  836  ls -ltr results/20220918020254/
+  837  ag real results/20220918020254/
+  838  ps uxfw
+  839  ls -ltr ntd-model-runner/sch-sth-tra/results/|tail -1
+  840  ls -ltr ntd-model-runner/sch-sth-tra/results/20220918020254/
+  841  ls -1 ntd-model-runner/sch-sth-tra/results/20220918020254/|wc -l
+  842  date && ls -1 ntd-model-runner/sch-sth-tra/results/20220918020254/|wc -l
+  843  ps uxf
+  844  ps uxf|grep tee
+  845  ag MWI28959 ntd-model-runner/sch-sth-tra/iu-disease-data/mansoniIUs_scenario0.csv 
+  846  ps uxf|grep tee
+  847  ps uxf
+  848  ls -ltr
+  849  mkdidr sch-mansoni-202209b
+  850  mkdir sch-mansoni-202209b
+  851  cd sch-mansoni-202209b
+  852  gsutil ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/scenario_*/
+  853  gsutil ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/scenario_*/**/*.bz2 | wc -l
+  854  gsutil ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/**/*.bz2 | wc -l
+  855  gsutil ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/**/*.bz2
+  856  gsutil cp gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/**/*.bz2 .
+  857  ls -1 | wc -l
+  858  pbzip2 --help
+  859  sudo apt-get install pbzip2
+  860  pbzip2 --help
+  861  pbzip2 -d *.bz2
+  862  ls -1 | wc -l
+  863  ls 
+  864  cd ..
+  865  mv sch-mansoni-202209b/
+  866  mv sch-mansoni-202209b endgame-ihme-ipm-outputs-mansoni-export-20220918a
+  867  tar --use-compress-program pbzip2 -cvf endgame-ihme-ipm-outputs-mansoni-export-20220918a.tbz endgame-ihme-ipm-outputs-mansoni-export-20220918a
+  868  ls -ltr
+  869  ls -lh
+  870  gsutil -, cp endgame-ihme-ipm-outputs-mansoni-export-20220918a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20220918a.tbz 
+  871  gsutil -m cp endgame-ihme-ipm-outputs-mansoni-export-20220918a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20220918a.tbz 
+  872  tar --use-compress-program pbzip2 -tvf endgame-ihme-ipm-outputs-mansoni-export-20220918a.tbz
+  873  ls -ltr
+  874  cd ntd-model-runner/
+  875  ls -ltr
+  876  git feth
+  877  git fetct
+  878  git fetch
+  879  git pull origin master
+  880  cd sch-sth-tra/
+  881  ls -ltr
+  882  vi iu-disease-data/mansoniIUs_scenario0.csv 
+  883  diff iu-disease-data/mansoniIUs_scenario0.csv iu-disease-data/mansoniIUs_burn_in_minus_samples.csv 
+  884  diff iu-disease-data/mansoniIUs_burn_in_minus_samples.csv iu-disease-data/mansoniIUs_scenario0.csv 
+  885  diff <$(tr -d '"' <iu-disease-data/mansoniIUs_burn_in_minus_samples.csv) iu-disease-data/mansoniIUs_scenario0.csv 
+  886  diff <$(tr -d '"' iu-disease-data/mansoniIUs_burn_in_minus_samples.csv) iu-disease-data/mansoniIUs_scenario0.csv 
+  887  diff <(tr -d '"' iu-disease-data/mansoniIUs_burn_in_minus_samples.csv) iu-disease-data/mansoniIUs_scenario0.csv 
+  888  vi -O iu-disease-data/mansoniIUs_burn_in_minus_samples.csv iu-disease-data/mansoniIUs_scenario0.csv 
+  889  tr -d '"' iu-disease-data/mansoniIUs_burn_in_minus_samples.csv 
+  890  tr -d '"' < iu-disease-data/mansoniIUs_burn_in_minus_samples.csv 
+  891  diff <(tr -d '"' < iu-disease-data/mansoniIUs_burn_in_minus_samples.csv) iu-disease-data/mansoniIUs_scenario0.csv 
+  892  pip uninstall sch_simulation
+  893  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/SCH_params/mansoni*
+  894  cd ntd-model-runner/sch-sth-tra/
+  895  nohup bash ./run-sch-sth-tra.bash -d Man -s 3a -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  896  ps uxfw
+  897  tail -200f results/20220919125221/s3a_2-g001-ETH18945.out
+  898  ps uxfw
+  899  ls -l results/20220919125221/
+  900  cd ntd-model-runner/sch-sth-tra/
+  901  ls -l results/20220919125221/
+  902  ls -1 results/20220919125221/|wc -l
+  903  ag real s3a_1-g001-NAM34260.out
+  904  cd results/20220919125221/
+  905  ag real s3a_1-g001-NAM34260.out
+  906  history|grep nohup
+  907  ag kfg
+  908  fg
+  909  ps uxfw
+  910  cd ntd-model-runner/sch-sth-tra/results/
+  911  ls -l
+  912  ls -ltr 
+  913  cd 20220919125221
+  914  ls -ltr
+  915  cd ..
+  916  ls -ltr
+  917  cd 20220919125221
+  918  ls -ltr
+  919  cd ntd-model-runner/sch-sth-tra/results/
+  920  ls -ltr
+  921  cd 20220919125221/
+  922  ls -ltr
+  923  ls -1 | wc -l
+  924  cd ntd-model-runner/sch-sth-tra/results/20220919125221/
+  925  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}' | sort -V
+  926  ls -ltr | tail -1
+  927  cd ntd-model-runner/sch-sth-tra/results/20220919125221/
+  928  ls -ltr
+  929  ps ax|grep sch-sth
+  930  ls -ltr
+  931  tail s3a_1-g082-NGA37060.out
+  932  ps ax|grep sch-sth
+  933  kill -9 27545
+  934  ps uxfw
+  935  ps ax|grep sch-sth
+  936  ps uxfw
+  937  tail s3a_1-g082-NGA37060.out
+  938  ps uxfw|less
+  939  kill -9 75065
+  940  ps uxfw|less
+  941  tail s3a_1-g082-NGA37060.out
+  942  ps uxfw
+  943  cd ntd-model-runner/
+  944  git status
+  945  git fetch
+  946  git pull origin master
+  947  rm sch-sth-tra/iu-disease-data/mansoniIUs_scenario0_burn_in_sample.csv
+  948  git status
+  949  git pull origin master
+  950  cd sch-sth-tra/
+  951  cd ..
+  952  git status .
+  953  cd sch-sth-tra/
+  954  shuf -n 10 < iu-disease-data/mansoniIUs_scenario0.csv 
+  955  cat > iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv
+  956  ls -ltr
+  957  history|grep bash
+  958  gsutil ls gs://ntd-endgame-result-data
+  959  gsutil ls gs://ntd-endgame-result-data/ntd/
+  960  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data 
+  961  bash ./run-sch-sth-tra.bash 
+  962  gsutil ls gs://ntd-disease-simulator-data/
+  963  gsutil ls gs://ntd-disease-simulator-data/diseases/sch-mansoni/
+  964  gsutil ls gs://ntd-disease-simulator-data/diseases/sch-mansoni/source-data
+  965  gsutil ls gs://ntd-disease-simulator-data/diseases/
+  966  gsutil ls gs://ntd-disease-simulator-data/diseases/sch-mansoni/source-data/
+  967  gsutil ls gs://ntd-endgame-result-data/ntd/
+  968  history|grep bash
+  969  find . -name '*0_burn_in*'
+  970  ls -l ./data/output/ntd/202209b/sch-mansoni/scenario_0_burn_in_2/
+  971  history|grep burn_in
+  972  ls -l iu-disease-data/mansoniIUs_scenario0*.csv
+  973  history|grep burn_in
+  974  bash ./run-sch-sth-tra.bash 
+  975  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 3a -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43
+  976  vi iu-disease-data/mansoniIUs_scenario0.csv 
+  977  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data 
+  978  gsutil ls gs://ntd-disease-simulator-data/diseases/sch-mansoni/
+  979  gsutil ls gs://ntd-disease-simulator-data/diseases/sch-mansoni/source-data/
+  980  gsutil ls gs://ntd-disease-simulator-data/diseases/sch-mansoni/source-data/ETH/ETH18692
+  981  history|grep bash|grep burn_in
+  982  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43
+  983  bash ./run-sch-sth-tra.bash 
+  984  time python3 -u run.py -d Man -g 144 -i UGA49789 -s 1_1 -n 200 -m KenyaKDHS -o 202210a -p source-data -r 202209b_burn_in -b 43
+  985  vi iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv
+  986  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43
+  987  nohup bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  988  ps uxfw
+  989  tail -f results/20221017155451/s1_1-g040-TCD10716.out
+  990  ps uxfw
+  991  tail -f results/20221017155451/s1_1-g040-TCD10716.out
+  992  ls -l
+  993  ls -l results/
+  994  find .. -name results/20221017155451/s1_1-g040-TCD10716.out
+  995  fg
+  996  vi run-sch-sth-tra.bash 
+  997  nohup bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  998  ps uxfw
+  999  tail -f results/20221017155612/s1_1-g040-TCD10716.out
+ 1000  ls -l results/
+ 1001  fg
+ 1002  vi run-sch-sth-tra.bash 
+ 1003  find .. -name 20221017155612 -type d
+ 1004  fg
+ 1005  vi run-sch-sth-tra.bash 
+ 1006  nohup bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+ 1007  ps uxfw
+ 1008  tail -f results/20221017155817/s1_1-g040-TCD10716.out
+ 1009  fg
+ 1010  ls -l results/
+ 1011  fg
+ 1012  export LC_ALL=C
+ 1013  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43
+ 1014  bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43
+ 1015  fg
+ 1016  vi run-sch-sth-tra.bash 
+ 1017  bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43
+ 1018  fg
+ 1019  nohup bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+ 1020  ps ufwx
+ 1021  tail -f results/20221017160151/s1_1-g040-TCD10716.out
+ 1022  cat iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv 
+ 1023  ps uxfw|grep tee
+ 1024  ls -ltr results/20221017160151/
+ 1025  ag real results/20221017160151/
+ 1026  ls -ltr results/20221017160151/
+ 1027  ag real results/20221017160151/
+ 1028  ls -ltr results/20221017160151/
+ 1029  ls -ltr results/20221017160151/s1_1-g104-TZZ51892.out 
+ 1030  tail -f results/20221017160151/s1_1-g104-TZZ51892.out
+ 1031  ag real results/20221017160151/
+ 1032  ls -ltr results/20221017160151/s1_1-g104-TZZ51892.out 
+ 1033  ls -ltr results/20221017160151/
+ 1034  ls -ltr results/202210*/*
+ 1035  rm -rf results/20221017160047/
+ 1036  ls -ltr results/202210*/*
+ 1037  ag real results/20221017160151/
+ 1038  less iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv +/TCD10716
+ 1039  ls -ltr results/202210*/*
+ 1040  less iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv +/ETH18656
+ 1041  cat iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv
+ 1042  ls -ltr results/202210*/*
+ 1043  ag real results/20221017160151/
+ 1044  ag -l real results/20221017160151/ | wc -l
+ 1045  ag real results/20221017160151/
+ 1046  ag -l real results/20221017160151/ | wc -l
+ 1047  while true ; do ag -l real results/20221017160151/ | wc -l ; sleep 20 ; done
+ 1048  ag real results/20221017160151/
+ 1049  while true ; do ag -l real results/20221017160151/ | wc -l ; sleep 20 ; done
+ 1050  ps uxfw
+ 1051  ls -ltr
+ 1052  cd ..
+ 1053  ls -ltr
+ 1054  cd ..
+ 1055  ls -ltr
+ 1056  mkdir endgame-ihme-ipm-outputs-mansoni-export-20221017a
+ 1057  cd endgame-ihme-ipm-outputs-mansoni-export-20221017a
+ 1058  gsutil ls gs://ntd-endgame-result-data/ntd/202210a/
+ 1059  gsutil ls gs://ntd-endgame-result-data/ntd/202210a/sch-mansoni/**/*.tbz
+ 1060  gsutil ls gs://ntd-endgame-result-data/ntd/202210a/sch-mansoni/**/*.bz2
+ 1061  gsutil -m cp  gs://ntd-endgame-result-data/ntd/202210a/sch-mansoni/**/*.bz2 .
+ 1062  ls -ltr
+ 1063  pbzip2 --help
+ 1064  pbzip2 -d *.bz2
+ 1065  ls -ltr
+ 1066  cd ..
+ 1067  man tar
+ 1068  tar -I pbzip2 endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz endgame-ihme-ipm-outputs-mansoni-export-20221017a
+ 1069  tar -I pbzip2 -cf endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz endgame-ihme-ipm-outputs-mansoni-export-20221017a
+ 1070  ls -ltr
+ 1071  tar jtvf endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz
+ 1072  tar -I pbzip2  -tvf endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz
+ 1073  gsutil -m cp endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz
+ 1074  curl -I https://storage.googleapis.com/ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz
+ 1075  cd ntd-model-runner/
+ 1076  ls -ltr
+ 1077  cd sch-sth-tra/
+ 1078  ls -ltr
+ 1079  pip uninstall sch_simulation
+ 1080  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/SCH_params/mansoni_scenario_*.txt
+ 1081  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/SCH_params/mansoni_scenario_1.txt
+ 1082  pip uninstall sch_simulation
+ 1083  pip install .
+ 1084  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/SCH_params/mansoni_scenario_1.txt
+ 1085  cd ../../
+ 1086  ls -ltr
+ 1087  rm -rf endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz endgame-ihme-ipm-outputs-mansoni-export-20221017a/*.csv
+ 1088  ls -l
+ 1089  cd -
+ 1090  nohup bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+ 1091  ps uxfw
+ 1092  tail -f results/20221017165036/s1_1-g040-TCD10716.out
+ 1093  ps
+ 1094  ps uxfw
+ 1095  cd ntd-model-runner/
+ 1096  ls -ltr sch-sth-tra/results/
+ 1097  ls -ltr sch-sth-tra/results/20221017165036/
+ 1098  history|grep time
+ 1099  history|less +/984
+ 1100  cd ../endgame-ihme-ipm-outputs-mansoni-export-2022
+ 1101  cd ../endgame-ihme-ipm-outputs-mansoni-export-20221017a/
+ 1102  gsutil -m cp  gs://ntd-endgame-result-data/ntd/202210a/sch-mansoni/**/*.bz2 .
+ 1103  ls -l ihme-*
+ 1104  cd -
+ 1105  cd sch-sth-tra/
+ 1106  time python3 -u run.py -d Man -g 144 -i UGA49789 -s 1_1 -n 200 -m KenyaKDHS -o 202210a -p source-data -r 202209b_burn_in -b 43
+ 1107  cd -
+ 1108  cd ../endgame-ihme-ipm-outputs-mansoni-export-20221017a/
+ 1109  ls -ltr
+ 1110  gsutil -m cp  gs://ntd-endgame-result-data/ntd/202210a/sch-mansoni/**/*.bz2 .
+ 1111  ls -ltr
+ 1112  pbzip2 -d *.bz2
+ 1113  cd ..
+ 1114  ls -lt
+ 1115  tar -I pbzip2 -cf endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz endgame-ihme-ipm-outputs-mansoni-export-20221017a
+ 1116  tar -I pbzip2  -tvf endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz
+ 1117  gsutil -m cp endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz
+ 1118  cd ntd-model-runner/sch-sth-tra/
+ 1119  bash run-sch-sth-tra.bash 
+ 1120  env
+ 1121  ls -ltr
+ 1122  mkdir endgame-ihme-ipm-outputs-mansoni-export-20221018a
+ 1123  rm -rf endgame-ihme-ipm-outputs-mansoni-export-20221017a endgame-ihme-ipm-outputs-mansoni-export-20221017a.tbz 
+ 1124  cd ntd-model-runner/sch-sth-tra/
+ 1125  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data >/dev/null </dev/null &
+ 1126  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1127  history|grep shuf
+ 1128  shuf -n 1 < iu-disease-data/mansoniIUs_scenario0.csv 
+ 1129  vi iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv 
+ 1130  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1131  vi /etc/environment 
+ 1132  env
+ 1133  unset LC_ALL
+ 1134  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1135  vi run-sch-sth-tra.bash 
+ 1136  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1137  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data | wc -l
+ 1138  fg
+ 1139  vi run-sch-sth-tra.bash 
+ 1140  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data | wc -l
+ 1141  nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data >/dev/null </dev/null &
+ 1142  ps uxfw
+ 1143  ls -l results/20221018072623/s0_2-g018-GHA21554.out
+ 1144  cat results/20221018072623/s0_2-g018-GHA21554.out
+ 1145  bash ./run-sch-sth-tra.bash 
+ 1146  fg
+ 1147  vi run-sch-sth-tra.bash 
+ 1148  ps
+ 1149  history|tail -20
+ 1150  ls -ltr
+ 1151  cd ntd-model-runner/sch-sth-tra/
+ 1152  vi run-sch-sth-tra.bash 
+ 1153  vi .vimrc 
+ 1154  which vim
+ 1155  sudo apt-get install vim
+ 1156  fg
+ 1157  vim run-sch-sth-tra.bash 
+ 1158  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1159  ag 'must be different'
+ 1160  vi run.py 
+ 1161  fg
+ 1162  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1163  fg
+ 1164  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1165  fg
+ 1166  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1167  fg
+ 1168  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1169  fg
+ 1170  echo $LC_ALL 
+ 1171  sudo localedef -i en_GB -f UTF-8 en_GB.UTF-8
+ 1172  sudo apt-get install locales
+ 1173  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1174  cd ntd-model-runner/sch-sth-tra/
+ 1175  bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1176  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data
+ 1177  nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data >/dev/null </dev/null &
+ 1178  ps uxfw
+ 1179  tail -f results/20221018075524/s0_2-g018-GHA21554.out
+ 1180  fg
+ 1181  head 
+ 1182  cd ntd-model-runner/
+ 1183  tail results/20221018072623/s0_2-g018-GHA21554.out
+ 1184  tail -f results/20221018075524/s0_2-g018-GHA21554.out
+ 1185  cd sch-sth-tra/
+ 1186  tail -f results/20221018075524/s0_2-g018-GHA21554.out
+ 1187  vi results/20221018075524/s0_2-g018-GHA21554.out
+ 1188  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py
+ 1189  vi results/20221018075524/s0_2-g018-GHA21554.out
+ 1190  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py +1544
+ 1191  vi run.py 
+ 1192  vi ntd_model_runner.py 
+ 1193  DISPLAY_CMD=y./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data >/dev/null </dev/null
+ 1194  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data >/dev/null </dev/null
+ 1195  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data 
+ 1196  time python3 -u run.py -d Man -g 18 -i GHA21554 -s 0_2 -n 200 -m KenyaKDHS -o 202210a -p source-data
+ 1197  fg
+ 1198  time python3 -u run.py -d Man -g 18 -i GHA21554 -s 0_2 -n 200 -m KenyaKDHS -o 202210a -p source-data
+ 1199  fg
+ 1200  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data 
+ 1201  time python3 -u run.py -d Man -g 18 -i GHA21554 -s 0_2 -n 200 -m KenyaKDHS -o 202210a -p source-data
+ 1202  fg
+ 1203  nohup bash ./run-sch-sth-tra.bash -d Man -s 0 -n 200 -o 202210a -i iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv -p source-data >/dev/null </dev/null &
+ 1204  ps uxfw
+ 1205  tail -f results/20221018083430/s0_2-g018-GHA21554.out
+ 1206  ps uxfw
+ 1207  ls -ltr results/
+ 1208  ls -ltr results/20221018083430/
+ 1209  git status
+ 1210  git diff ntd_model_runner.py 
+ 1211  git diff run-sch-sth-tra.bash 
+ 1212  git diff run.py 
+ 1213  git diff run.py run-sch-sth-tra.bash
+ 1214  ps uxfw
+ 1215  ls -ltr results/20221018083430/
+ 1216  ls -1tr results/20221018083430/
+ 1217  ls -1tr results/20221018083430/|wc -l
+ 1218  cd ../../
+ 1219  ls -ltr
+ 1220  cd endgame-ihme-ipm-outputs-mansoni-export-20221018a/
+ 1221  ls -ltr
+ 1222  gsutil -m cp  gs://ntd-endgame-result-data/ntd/202210a/sch-mansoni/**/*.bz2 .
+ 1223  pbzip2 -d *.bz2
+ 1224  cd ..
+ 1225  ls -ltr
+ 1226  tar -I pbzip2 -cf endgame-ihme-ipm-outputs-mansoni-export-20221018a.tbz endgame-ihme-ipm-outputs-mansoni-export-20221018a
+ 1227  ls -ltr
+ 1228  gsutil -m cp endgame-ihme-ipm-outputs-mansoni-export-20221018a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20221018a.tbz
+ 1229  tar -I pbzip2  -tvf endgame-ihme-ipm-outputs-mansoni-export-20221018a.tbz
+ 1230  history
+ 1231  history|grep nohup
+ 1232  cd ntd-model-runner/
+ 1233  ls
+ 1234  cd sch-sth-tra/
+ 1235  ls
+ 1236  cd old-runners/
+ 1237  ls -ltr
+ 1238  cat run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+ 1239  vi run-sch-mansoni-scenarios-0-1-2-3a-3b.bash
+ 1240  cd ..
+ 1241  vi run-sch-sth-tra.bash 
+ 1242  history|grep nohup
+ 1243  cd ntd-model-runner/sch-sth-tra/
+ 1244  cat iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv
+ 1245  cat iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv| awk -F , '{print $3}'
+ 1246  cat iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv| awk -F , '{print $3}' | sort
+ 1247  cat iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv| awk -F , '{print $3}' | sort > ~/mansoni-pickle-file-urls.txt
+ 1248  vi ~/mansoni-pickle-file-urls.txt
+ 1249  for s in $(cat ~/mansoni-pickle-file-urls.txt); do curl -I $s ; done
+ 1250  for s in $(cat ~/mansoni-pickle-file-urls.txt); do curl -I $s |grep -E '^HTTP' ; done 
+ 1251  cat ~/mansoni-pickle-file-urls.txt
+ 1252  vi ~/mansoni-pickle-file-urls.txt
+ 1253  for s in $(cat ~/mansoni-pickle-file-urls.txt); do curl -s -I $s |grep -E '^HTTP' ; done 
+ 1254  fg
+ 1255  for s in $(cat ~/mansoni-pickle-file-urls.txt); do curl -s -I $s |grep -E '^HTTP' ; done 
+ 1256  fg
+ 1257  cat ~/mansoni-pickle-file-urls.txt
+ 1258  cd ntd-model-runner/
+ 1259  git status
+ 1260  git diff sch-sth-tra/run-sch-sth-tra.bash
+ 1261  git diff sch-sth-tra/ntd_model_runner.py
+ 1262  vi sch-sth-tra/runit.bash 
+ 1263  git diff sch-sth-tra/run.py
+ 1264  vi sch-sth-tra/run.py
+ 1265  git diff sch-sth-tra/run-sch-sth-tra.bash 
+ 1266  git stauts
+ 1267  git status
+ 1268  git diff sch-sth-tra/ntd_model_runner.py 
+ 1269  cat sch-sth-tra/iu-disease-data/mansoniIUs_scenario0_10_random_IUs.csv
+ 1270  fg
+ 1271  history > $(hostname)-history.txt

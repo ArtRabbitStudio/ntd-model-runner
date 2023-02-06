@@ -1,0 +1,68 @@
+    1  cd ntd-model-runner/
+    2  git fetch && git pull origin master
+    3  pip uninstall -f sch_simulation && pip install .
+    4  pip uninstall sch_simulation && pip install .
+    5  vi test-runs-hookworm.bash 
+    6  git checkout .
+    7  git status
+    8  rm test-hookworm-8-core-runs.bash 
+    9  git pull origin master
+   10  vi test-runs-hookworm-8-core-d.bash 
+   11  bash test-runs-hookworm-8-core-d.bash | less
+   12  fg
+   13  nohup bash test-runs-hookworm-8-core-d.bash > /dev/null < /dev/null &
+   14  tail -f results/20220617163548/s2_g130_ZMB50839.out | ag finishing
+   15  tail -f results/20220617163548/s2_g130_ZMB50839.out 
+   16  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; tail -1 $f ; echo ; sleep 10 ; done
+   17  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   18  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   19  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   20  ls -ltr results/
+   21  ls -ltr results/20220617163548/
+   22  tail -f results/20220617163548/s2_g170_BDI06375.out 
+   23  date
+   24  cd ntd-model-runner/
+   25  ls -ltr
+   26  vi test-runs-hookworm-8-core-ETH18864.bash
+   27  bash test-runs-hookworm-8-core-ETH18864.bash
+   28  fg
+   29  nohup bash test-runs-hookworm-8-core-ETH18864.bash > /dev/null < /dev/null &
+   30  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   31  htop -d 3
+   32  ls -ltr results/20220618003739/
+   33  ls -ltr results/20220618003739/s1_g9_ETH18864.out 
+   34  ag finishing results/20220618003739/s1_g9_ETH18864.out | wc -l
+   35  htop -d 3
+   36  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   37  htop -d 3
+   38  ag finishing results/20220618003739/s1_g9_ETH18864.out | wc -l
+   39  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   40  ag starting results/20220618003739/s1_g9_ETH18864.out | wc -l
+   41  ag starting results/20220618003739/s1_g9_ETH18864.out | tail -1
+   42  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   43  htop -d 3
+   44  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   45  cd ntd-model-runner/
+   46  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   47  ag starting results/20220618003739/s1_g9_ETH18864.out | tail -1
+   48  ag finishing results/20220618003739/s1_g9_ETH18864.out | tail -1
+   49  ag finishing results/20220618003739/s1_g9_ETH18864.out | wc -l
+   50  cd ntd-model-runner/
+   51  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163548/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   52  ps uxfw
+   53  ls -ltr results/20220617163548/s2_g1
+   54  ls -ltr results/20220617163548/*
+   55  ls -ltr results/20220618003739/s1_g9_ETH18864.out 
+   56  tail results/20220618003739/s1_g9_ETH18864.out
+   57  tail -20 ÷
+   58  tail -20 results/20220618003739/s1_g9_ETH18864.out
+   59  cd ntd-model-runner/results/
+   60  ls -l
+   61  ls -l 20220618003739/s1_g9_ETH18864.out 
+   62  ag -w real 20220618003739/s1_g9_ETH18864.out
+   63  ls -l
+   64  for s in 20220617*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done | wc -l
+   65  for s in 20220617*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done | sort
+   66  cd ..
+   67  vi test-runs-hookworm-8-core-d.bash 
+   68  history>$(hostname)-history.txt

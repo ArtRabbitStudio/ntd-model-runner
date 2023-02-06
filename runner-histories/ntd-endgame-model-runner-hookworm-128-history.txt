@@ -1,0 +1,555 @@
+    1  cd ntd-model-runner/
+    2  git fetch
+    3  git pull origin master
+    4  nohup bash test-runs-hookworm.bash > /dev/null < /dev/null &
+    5  ps ufx
+    6  fg
+    7  bg
+    8  ps ufx
+    9  tail -f results/20220525145257/s1_g1_NGA36997.out
+   10  ls -l results/
+   11  ps uxf
+   12  cd ntd-model-runner/
+   13  tail -f results/20220525145257/s1_g1_NGA36997.out
+   14  cd ntd-model-runner/
+   15  ls -ltr results/20220525145257/
+   16  ps uxf
+   17  cd ntd-model-runner/
+   18  ls -ltr results/20220525145257/|tail -5
+   19  cd ntd-model-runner/results/
+   20  cd 20220525145257/
+   21  ag 'ValueError' 
+   22  ag -l 'ValueError' 
+   23  ps uxf
+   24  ag -l 'ValueError' 
+   25  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq
+   26  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq | wc -l
+   27  ps uxf
+   28  ag -l 'ValueError'
+   29  cd ntd-model-runner/results/
+   30  ag -l 'ValueError'
+   31  ag -l 'ValueError'|sort
+   32  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq | wc -l
+   33  ag -l 'ValueError'|sort|uniq
+   34  ag https $(ag -l 'ValueError'|sort|uniq)
+   35  ag -l 'ValueError'|sort|uniq
+   36  vi 20220525145257/s1_g109_MOZ33134.out
+   37  ag 'cloud storage' $(ag -l 'ValueError'|sort|uniq)
+   38  ag 'from cloud storage' $(ag -l 'ValueError'|sort|uniq)
+   39  cd 20220525145257/
+   40  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq 
+   41  parp=$(ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq); echo ${parp/$/.out} )
+   42  parp=$(ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq); echo ${parp/$/.out}
+   43  parp=$(ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq); echo ${parp/^/.out}
+   44  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq
+   45  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed 's/^/*/g'
+   46  ls -l ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/*/g' -e 's/$/.out/'
+   47  ls -l $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/*/g' -e 's/$/.out/')
+   48  ls -l $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/')
+   49  ag 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/')
+   50  ag --no-name 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') 
+   51  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') 
+   52  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed 's/^.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g'
+   53  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed -e 's/^.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g' -e 's/ from cloud storage//g'
+   54  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed -e 's/^.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g' -e 's/ from cloud storage//g'|tr -d '\n'
+   55  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed -e 's/^.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g' -e 's/ from cloud storage//g'
+   56  vi 20220525145257/s1_g109_MOZ33134.out
+   57  vi s1_g109_MOZ33134.out 
+   58  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') 
+   59  vi s1_g109_MOZ33134.out 
+   60  ag --no-filename 'reading in parameters' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') 
+   61  ag --no-filename 'reading in parameters' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed 's/.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g'
+   62  ps uxf
+   63  cd ntd-model-runner/results/20220525145257/
+   64  ag --no-filename 'reading in parameters' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed 's/.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g'
+   65  ps uxf
+   66  cd ntd-model-runner/results/
+   67  ls -ltr
+   68  cd 20220525145257/
+   69  ls -ltr
+   70  cd ../..
+   71  tar jcvf hookworm-results-20220525145257.tbz results/
+   72  pwd
+   73  ls -ltr
+   74  cd ntd-model-runner/
+   75  git fetch
+   76  pip uninstall sch_simulation
+   77  pip install .
+   78  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   79  cd results/20220525145257/
+   80  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq
+   81  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq| wc -l
+   82  cd -
+   83  cp test-runs-hookworm.bash test-runs-hookworm-reruns.bash 
+   84  cd -
+   85  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq >> ../../test-runs-hookworm-reruns.bash
+   86  vi ../../test-runs-hookworm-reruns.bash
+   87  cd -
+   88  vi test-runs-hookworm-reruns.bash 
+   89  nohup bash test-runs-hookworm-reruns.bash > /dev/null < /dev/null &
+   90  ps uxf
+   91  tail -f results/20220527075804/s1_g109_MOZ33134.out
+   92  history|grep -w ag
+   93  tail -f results/20220527075804/s1_g109_MOZ33134.out
+   94  ps uxf
+   95  tail -f results/20220527075804/s1_g12_RWA38129.out
+   96  cd ntd-model-runner/results/20220527075804/
+   97  ag ValueError
+   98  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq
+   99  vi ../../test-runs-hookworm-reruns.bash 
+  100  cd ntd-model-runner/
+  101  git fetch
+  102  git pull origin mas
+  103  git pull origin master
+  104  ls -ltr
+  105  pip uninstall sch_simulation
+  106  pip install .
+  107  vi test-runs-hookworm-reruns.bash 
+  108  history|grep nohup
+  109  vi test-runs-hookworm-reruns.bash 
+  110  ls -l results/
+  111  fg
+  112  vi test-runs-hookworm-reruns.bash 
+  113  vi test-runs-hookworm.bash 
+  114  bash test-runs-hookworm.bash
+  115  fg
+  116  bash test-runs-hookworm.bash
+  117  fg
+  118  bash test-runs-hookworm.bash
+  119  fg
+  120  history|grep nohup
+  121  ls -ltr results/
+  122  rm -rf results/20220616153344 results/20220616153348 results/20220616153206
+  123  nohup bash test-runs-hookworm-reruns.bash > /dev/null < /dev/null &
+  124  ls -ltr results/
+  125  ls -ltr results/20220616153515/
+  126  ls -ltr results/20220616153515/s1_g109_MOZ33134.out 
+  127  taill -f results/20220616153515/s1_g109_MOZ33134.out
+  128  tail -f results/20220616153515/s1_g109_MOZ33134.out
+  129  tail -2000f results/20220616153515/s1_g109_MOZ33134.out
+  130  ls -ltr results/20220616153515/
+  131  tail -f results/20220616153515/s1_g109_MOZ33134.out 
+  132  htop -d 3
+  133  tail -f results/20220616153515/s1_g109_MOZ33134.out 
+  134  fg
+  135  bg
+  136  josb
+  137  jobs
+  138  vi test-runs-hookworm.bash 
+  139  ps ux
+  140  killall python
+  141  fg
+  142  ps 
+  143  ps ux
+  144  ls -ltr results/20220616153515/s1_g109_MOZ33134.out 
+  145  tail results/20220616153515/s1_g109_MOZ33134.out
+  146  rm -rf results/20220616153515/
+  147  nohup bash test-runs-hookworm.bash > /dev/null < /dev/null &
+  148  ls -ltr results/
+  149  ls -ltr results/20220616154036/
+  150  ls -l results/20220616154036/
+  151  ls -l results/20220616154036/s1_g1_NGA36997.out 
+  152  tail -f results/20220616154036/s1_g1_NGA36997.out
+  153  ag starting results/20220616154036/s1_g1_NGA36997.out
+  154  tail -f results/20220616154036/s1_g1_NGA36997.out
+  155  ls -ltr
+  156  vi test-runs-hookworm.bash 
+  157  jobs
+  158  htop -d 3
+  159  ls -ltr ntd-model-runner/results/
+  160  ls -ltr ntd-model-runner/results/20220616154036/
+  161  tail s1_g8_GNB23646.out
+  162  tail ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out
+  163  tail -20 ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out
+  164  tail -20 ntd-model-runner/results/20220616154036/s1_g9_ETH18864.out
+  165  ag finishing ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out | wc -l
+  166  tail -20 ntd-model-runner/results/20220616154036/s1_g9_ETH18864.out
+  167  ls -l ntd-model-runner/results/20220616154036/s1_g9_ETH18864.out
+  168  ps ux
+  169  ag finishing ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out | sort | less
+  170  ag --no-line-numbers finishing ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out | sort | less
+  171  ag --no-numbers finishing ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out | sort | less
+  172  ag --no-numbers finishing ntd-model-runner/results/20220616154036/s1_g8_GNB23646.out | sort -V | less
+  173  ag --no-numbers finishing ntd-model-runner/results/20220616154036/s1_g9_ETH18864.out | sort -V | less
+  174  ps 
+  175  vi ntd-model-runner/results/20220616154036/s1_g9_ETH18864.out
+  176  fg
+  177  cd ntd-model-runner/
+  178  vi test-runs-hookworm.bash 
+  179  which unbuffer
+  180  vi /usr/bin/unbuffer 
+  181  tail -20 results/20220616154036/s1_g9_ETH18864.out
+  182  ag --no-numbers finishing ntd-model-runner/results/20220616154036/s1_g9_ETH18864.out | wc -l
+  183  ag --no-numbers finishing results/20220616154036/s1_g9_ETH18864.out | wc -l
+  184  ag --no-numbers finishing results/20220616154036/s1_g8_GNB23646.out | wc -l
+  185  tail -20 results/20220616154036/s1_g9_ETH18864.out
+  186  ag --no-numbers 'finishing sim' results/20220616154036/s1_g8_GNB23646.out | wc -l
+  187  ag --no-numbers 'finishing sim' results/20220616154036/s1_g9_ETH18864.out | wc -l
+  188  ag --no-numbers finishing results/20220616154036/s1_g8_GNB23646.out | wc -l
+  189  ag --no-numbers 'finishing sim' results/20220616154036/s1_g9_ETH18864.out | wc -l
+  190  ag --no-numbers 'finishing sim' results/20220616154036/s1_g9_ETH18864.out | sort -V | less
+  191  ag --no-numbers 'finishing sim' results/20220616154036/s1_g9_ETH18864.out | sort -V | awk '{print $5}'
+  192  ag --no-numbers 'finishing sim' results/20220616154036/s1_g9_ETH18864.out | sort -V | awk '{print $5}' | cut -f 1 -d :
+  193  ag --no-numbers 'finishing sim' results/20220616154036/s1_g9_ETH18864.out | sort -V | awk '{print $5}' | cut -f 1 -d : | vi -R -
+  194  ag real: results/20220616154036/*.out
+  195  ag real results/20220616154036/*.out
+  196  ag --no-names real results/20220616154036/*.out | 
+  197  cd ntd-model-runner/
+  198  ag --no-names real results/20220616154036/*.out
+  199  ag --no-filename real results/20220616154036/*.out
+  200  ag --no-filename real results/20220616154036/*.out | ag real
+  201  ag --no-filename real results/20220616154036/*.out | ag real | awk '{print 2}'
+  202  ag --no-filename real results/20220616154036/*.out | ag real | awk '{print $2}'
+  203  ag --no-names real results/20220616154036/*.out
+  204  ag real results/20220616154036/*.out
+  205  ag -l real results/20220616154036/*.out
+  206  ag -l real results/20220616154036/*.out 
+  207  ag -l real results/20220616154036/*.out | cut -f 3 -d _
+  208  ag -l results/20220616154036/*.out | cut -f 3 -d _ | sed 's/\.out//g'
+  209  vi
+  210  fg
+  211  ag real results/20220616154036/*.out
+  212  cat pog
+  213  ps ux
+  214  cd ntd-model-runner/
+  215  tail -20 results/20220616154036/s1_g9_ETH18864.out
+  216  history|grep -w ag
+  217  ag --no-numbers finishing results/20220616154036/s1_g9_ETH18864.out | wc -l
+  218  ag --no-numbers finishing results/20220616154036/s1_g9_ETH18864.out | sort -V
+  219  ps
+  220  ps ux
+  221  tail -20 results/20220616154036/s1_g9_ETH18864.out
+  222  ps uxf
+  223  tail -20 results/20220616154036/s1_g9_ETH18864.out
+  224  ps uxf
+  225  kill 242210
+  226  ps uxf
+  227  ls -ltr results/20220616154036/
+  228  ls -ltr results/20220616154036/s1_g10_MDG27943.out 
+  229  tail results/20220616154036/s1_g10_MDG27943.out
+  230  tail -f results/20220616154036/s1_g10_MDG27943.out
+  231  ls -ltr results/20220616154036/
+  232  tail -f results/20220616154036/s1_g11_MRT31039.out 
+  233  ag finishing results/20220616154036/s1_g11_MRT31039.out | wc -l
+  234  tail -f results/20220616154036/s1_g11_MRT31039.out 
+  235  ag finishing results/20220616154036/s1_g11_MRT31039.out | wc -l
+  236  tail -f results/20220616154036/s1_g11_MRT31039.out 
+  237  ag finishing results/20220616154036/s1_g11_MRT31039.out | wc -l
+  238  tail -f results/20220616154036/s1_g11_MRT31039.out 
+  239  ls -ltr
+  240  cd ntd-model-runner/
+  241  ls -ltr results/
+  242  ls -ltr results/20220616154036/
+  243  tail -f results/20220616154036/s1_g23_ERI17440.out
+  244  ag finishing results/20220616154036/s1_g23_ERI17440.out 
+  245  ag finishing results/20220616154036/s1_g23_ERI17440.out | wc -l
+  246  ls -ltr results/20220616154036/
+  247  ag finishing results/20220616154036/s1_g23_ERI17440.out 
+  248  ag finishing results/20220616154036/s1_g23_ERI17440.out | wc -l
+  249  ps uxf
+  250  tail -f results/20220616154036/s1_g23_ERI17440.out
+  251  cd ntd-model-runner/
+  252  tail -f results/20220616154036/s1_g38_GHA21411.out 
+  253  ag finishing results/20220616154036/s1_g38_GHA21411.out 
+  254  ps uxf
+  255  fg
+  256  kill -9 29635
+  257  ps uxf
+  258  kill -9 2676184
+  259  ps uxf
+  260  echo %(( 892 % 60 ))
+  261  echo $(( 892 % 60 ))
+  262  ls -ltr
+  263  ls -l ntd-model-runner/
+  264  gcloud compute instances list
+  265  whoami
+  266  ls -l ntd-model-runner/results/20220616154036/
+  267  ls -l ntd-model-runner/results/20220616154036/|wc -l
+  268  for s in ntd-model-runner/results/20220616154036/s1_g8* ; do ag finishing $s | less ; done
+  269  for s in ntd-model-runner/results/20220616154036/s1_g8* ; do ag finishing $s | sort -V | less ; done
+  270  for s in ntd-model-runner/results/20220616154036/s1_g8* ; do ag --no-numbers finishing $s | sort -V | less ; done
+  271  ps ux
+  272  history|grep nohup
+  273  ps ux
+  274  ps uxfw
+  275  ps uxfw | grep tee
+  276  ps uxfw | grep tee | grep -v tee | grep -v grep
+  277  ps uxfw | grep tee | grep -v grep
+  278  ls -ltr ntd-model-runner/results/20220616154036/
+  279  ls -ltr ntd-model-runner/results/20220616154036/s1_g99_CMR07482.out
+  280  tail -10 ntd-model-runner/results/20220616154036/s1_g99_CMR07482.out
+  281  ag finishing ntd-model-runner/results/20220616154036/s1_g99_CMR07482.out | wc -l
+  282  tail -f ntd-model-runner/results/20220616154036/s1_g99_CMR07482.out
+  283  cd ntd-model-runner/
+  284  ls -ltr results/20220616154036/
+  285  vi test-runs-hookworm.bash 
+  286  fg
+  287  bash test-runs-hookworm.bash 
+  288  fg
+  289  vi test-runs-hookworm.bash 
+  290  nohup bash test-runs-hookworm.bash > /dev/null < /dev/null &
+  291  ls -ltr results/
+  292  ls -ltr results/20220617172803/
+  293  ls -ltr results/20220616154036/|tail 
+  294  ls -ltr results/20220616154036/s1_g100_CMR07530.out 
+  295  tail results/20220616154036/s1_g100_CMR07530.out
+  296  vi results/20220616154036/s1_g100_CMR07530.out
+  297  rm results/20220616154036/s1_g100_CMR07530.out
+  298  ls -ltr results/20220617172803/s1_g100_CMR07530.out 
+  299  tail -f results/20220617172803/s1_g100_CMR07530.out
+  300  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617172803/*.out | wc -l) $f" ; date ; tail -1 $f ; echo ; sleep 10 ; done
+  301  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617172803/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+  302  ls -ltr results/20220617172803/ 
+  303  ls -ltr results/20220617172803/s1_g100_CMR07530.out
+  304  tail results/20220617172803/s1_g100_CMR07530.out
+  305  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617172803/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+  306  ls -ltr results/
+  307  ls -ltr results/2022061*
+  308  ls -ltrd results/2022061*
+  309  ls -ltr results/20220616154036/
+  310  ls -ltr results/20220616154036/|wc -l
+  311  ls -ltr results/20220617172803/|wc -l
+  312  sudo su -
+  313  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617172803/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+  314  ls -l results/20220616154036/
+  315  ls -l results/20220616154036/| wc -l
+  316  ls -ltr results/20220616154036/| wc -l
+  317  ls -ltr results/20220616154036/
+  318  ls -ltr results/20220616154036/s1_g9_ETH18864.out
+  319  tail results/20220616154036/s1_g9_ETH18864.out
+  320  fg
+  321  bg
+  322  ps ux
+  323  ps uxf
+  324  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617172803/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+  325  ps uxfw
+  326  ls -ltr
+  327  git status
+  328  git fetch
+  329  git status
+  330  git diff test-runs-hookworm.bash 
+  331  git checkout test-runs-hookworm.bash
+  332  git pull origin mas
+  333  git pull origin master
+  334  vi test-runs-hookworm-8-core-a.bash 
+  335  bash test-runs-hookworm-8-core-a.bash > /dev/null < /dev/null &
+  336  ps uxfw
+  337  tail -f results/20220618003042/s1_g9_ETH18864.out
+  338  htop -d 3 
+  339  tail -f results/20220618003042/s1_g9_ETH18864.out
+  340  htop -d 3 
+  341  ls -l results/20220618003042/
+  342  ls -l results/20220617172803/
+  343  ls -ltr results/20220617172803/
+  344  cat test-runs-hookworm-8-core-a.bash 
+  345  fg
+  346  ls -ltr
+  347  htop -d 3
+  348  cd ntd-model-runner/
+  349  tail -f results/20220617172803/s1_g162_BDI06414.out
+  350  ls -ltr results/20220617172803/
+  351  ls -ltr results/20220617172803/s1_g169_BDI06419.out
+  352  tail -f results/20220617172803/s1_g169_BDI06419.out
+  353  ps ux
+  354  ps uxw
+  355  ps uxwf
+  356  vi test-runs-hookworm.bash 
+  357  git status test-runs-hookworm.bash
+  358  git diff test-runs-hookworm.bash
+  359  date
+  360  ls -ltr
+  361  cd ntd-model-runner/
+  362  ls -ltr
+  363  history|grep awk
+  364  ls -l
+  365  cd results/
+  366  ls -ltr
+  367  cd ntd-model-runner/results/
+  368  ls -ltr
+  369  ls -ld 2022061*
+  370  ls -ld 20220618003042/
+  371  ls -ld 20220618003042/s1_g9_ETH18864.out 
+  372  tail 20220618003042/s1_g9_ETH18864.out
+  373  ag -w real 2022061[67]*/*
+  374  ag --no-numbers -w real 2022061[67]*/*
+  375  for s in 2022061[67]*/* ; do echo $s ; ag --no-numbers --no-name -w real $s 
+  376  cd ntd-model-runner/results/
+  377  for s in 2022061[67]*/* ; do echo $s ; ag --no-numbers --no-name -w real $s ; done
+  378  for s in 2022061[67]*/* ; do echo $s ; ag --no-numbers --no-filename -w real $s ; done
+  379  for s in 2022061[67]*/* ; do ag --no-numbers --no-filename -w real $s ; done
+  380  for s in 2022061[67]*/* ; do ag --no-numbers --no-filename -w real $s | awk '{print $2}' ; done
+  381  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; echo $s $time ; done
+  382  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; echo $s $TIME ; done
+  383  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; echo ${s:14:} $TIME ; done
+  384  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; echo ${s:14:6} $TIME ; done
+  385  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; echo ${s:14:8} $TIME ; done
+  386  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; echo ${s:15:8} $TIME ; done
+  387  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:10} ; echo $IU $TIME ; done
+  388  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:10}) ; echo $IU $TIME ; done
+  389  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo $s}) ; echo $IU $TIME ; done
+  390  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo $s{:15:0}}) ; echo $IU $TIME ; done
+  391  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo $s{:15:10}}) ; echo $IU $TIME ; done
+  392  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:0}}) ; echo $IU $TIME ; done
+  393  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:0}) ; echo $IU $TIME ; done
+  394  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:10}) ; echo $IU $TIME ; done
+  395  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-0}) ; echo $IU $TIME ; done
+  396  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-1}) ; echo $IU $TIME ; done
+  397  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:4}) ; echo $IU $TIME ; done
+  398  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}) ; echo $IU $TIME ; done
+  399  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-5}) ; echo $IU $TIME ; done
+  400  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-3}) ; echo $IU $TIME ; done
+  401  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}) ; echo $IU $TIME ; done
+  402  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done
+  403  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done | sort
+  404  for s in 2022061[67]*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done | wc -l
+  405  vi 20220616154036/s1_g9_ETH18864.out 
+  406  cd ntd-model-runner/
+  407  git fetch
+  408  git pull origin master
+  409  pip uninstall sch_simulation
+  410  pip install .
+  411  vi run-sth-hookworm-scenarios.bash 
+  412  fg
+  413  bash run-sth-hookworm-scenarios.bash
+  414  fg
+  415  history|grep nohup
+  416  fg
+  417  vi run-sth-hookworm-scenarios.bash 
+  418  fg
+  419  bash run-sth-hookworm-scenarios.bash
+  420  ls -l data/output/ntd/sth-001/sth-hookworm/
+  421  ls -l data/output/ntd/sth-001/sth-hookworm/scenario_1/
+  422  ls -l data/output/ntd/sth-001/sth-hookworm/scenario_1/group_001/
+  423  ls -l data/output/ntd/sth-001/sth-hookworm/scenario_1/group_001/NGA36997/ihme-NGA36997-hookworm-group_001-scenario_1-group_001-5_simulations.csv 
+  424  vi data/output/ntd/sth-001/sth-hookworm/scenario_1/group_001/NGA36997/ihme-NGA36997-hookworm-group_001-scenario_1-group_001-5_simulations.csv
+  425  rm -rf data/output/ntd/
+  426  fg
+  427  nohup bash run-sth-hookworm-scenarios.bash > /dev/null < /dev/null &
+  428  ps uxfw
+  429  tail -f results/20220712131746/s1-g001-NGA36997.out
+  430  vi results/20220712131746/s1-g001-NGA36997.out
+  431  tail -f results/20220712131746/s1-g001-NGA36997.out
+  432  ps uxfw
+  433  ps uxfw | grep .out | grep -v grep
+  434  ls -l results/
+  435  ls -l results/20220712131627/
+  436  rm -rf results/20220712131627/
+  437  ps uxfw | grep .out | grep -v grep
+  438  ls -l results/20220712131746/
+  439  tail -f results/20220712131746/s1-g003-SDN53276.out
+  440  ls -l results/20220712131746/
+  441  tail -f s1-g004-ETH18986.out
+  442  ls -l results/20220712131746/s1-g004-ETH18986.out
+  443  tail -f s1-g004-ETH18986.out
+  444  tail -f results/20220712131746/s1-g004-ETH18986.out
+  445  vi results/20220712131746/s1-g004-ETH18986.out
+  446  history|tail -100
+  447  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+  448  ag -w real results/20220712131746/
+  449  ps uxfw | grep .out | grep -v grep
+  450  tail -0f results/20220712131746/s1-g014-KEN54081.out
+  451  tail -f results/20220712131746/s1-g014-KEN54081.out
+  452  ps uxfw | grep .out | grep -v grep
+  453  fg
+  454  ps uxfw
+  455  kill -9 7392
+  456  ps uxfw
+  457  kill -9 2329027
+  458  ps uxfw
+  459  ls -l ntd-model-runner/data/output/
+  460  ls -ltr\
+  461  cd ntd-model-runner/
+  462  ls -ltr
+  463  ls -l *.tbz
+  464  cd ..
+  465  find . -name '*.tbz'
+  466  cd ntd-model-runner/
+  467  git fetch
+  468  git pull origin master
+  469  pip uninstall sch_simulation
+  470  pip install .
+  471  vi run-sth-hookworm-scenarios.bash 
+  472  bash run-sth-hookworm-scenarios.bash
+  473  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/STH_params/
+  474  fg
+  475  fg
+  476  vi run-sth-hookworm-scenarios.bash 
+  477  nohup bash run-sth-hookworm-scenarios.bash > /dev/null < /dev/null &
+  478  ps uxfw | grep .out | grep -v grep
+  479  tail -f results/20220714152515/s1-g001-NGA36997.out
+  480  htop -d 3
+  481  rm ~/.config/htop/htoprc 
+  482  htop -d 3
+  483  ps uxfw
+  484  cd ntd-model-runner/results/
+  485  ls -ltr
+  486  tar jcvf ../sth-hookworm-results-002.tbz 20220714152515
+  487  cd ntd-model-runner/
+  488  git status
+  489  git fetch
+  490  git reset --hard HEAD
+  491  git status
+  492  rm hookworm-results-20220525145257.tbz pog sth-hookworm-results-002.tbz test-runs-hookworm-reruns.bash 
+  493  git pull origin master
+  494  cd sch-sth-tra/
+  495  pip uninstall sch_simulation trachoma gcsfs pandas
+  496  pip install .
+  497  pip list
+  498  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xab.csv -p source-data -f 202209b_burn_in -b 43 | head -1
+  499  time python3 -u run.py -d Man -g 30 -i CIV15409 -s 0_burn_in_1 -n 200 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  500  vi iu-disease-data/mansoniIUs_burn_in_xab.csv
+  501  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xab.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  502  ps uxfw
+  503  tail -f results/20220917213052/s0_burn_in_1-g031-NGA36837.out
+  504  htop -d 3
+  505  cd ntd-model-runner/sch-sth-tra/results/
+  506  ls -ltr
+  507  ls -ltr 20220917213052/
+  508  tail -f 20220917213052/s0_burn_in_1-g035-NGA36889.out
+  509  tail -f 20220917213052/s0_burn_in_1-g036-UGA49748.out
+  510  ls -ltr ntd-model-runner/sch-sth-tra/results/
+  511  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213052/
+  512  date
+  513  cd ntd-model-runner/sch-sth-tra/
+  514  ls -ltr results/20220917213052/
+  515  ls -ltr results/
+  516  ls -1 results/20220917213052/|wc -l
+  517  ps
+  518  jobs
+  519  ls -ltr ntd-model-runner/sch-sth-tra/results/
+  520  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213052/
+  521  cd ntd-model-runner/sch-sth-tra/
+  522  git fetch
+  523  git pull origin master
+  524  pip list
+  525  pip list pandas gcsfs sch_simulation
+  526  nohup bash ./run-sch-sth-tra.bash -d Man -s 2 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  527  os uxfw
+  528  ps uxfw
+  529  tail -200f results/20220919125019/s2_2-g001-ETH18945.out
+  530  cd ntd-model-runner/sch-sth-tra/results/
+  531  ls -ltr
+  532  cd 20220919125019/
+  533  ls -ltr
+  534  ls -1 | wc -l
+  535  cd ntd-model-runner/sch-sth-tra/results/20220919125019/
+  536  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}' | sort -V
+  537  ps uxfw|grep tee|grep -v grep
+  538  ps ax|grep sch-sth|grep -v grep
+  539  ls -ltr | tail -1
+  540  cd ntd-model-runner/sch-sth-tra/results/20220919125019/
+  541  ls -ltr | tail -1
+  542  ps ax|grep sch-sth|grep -v grep
+  543  ls -ltr | tail -1
+  544  ls -ltr | tail -2
+  545  ls -ltr | tail -1
+  546  tail -f s2_2-g069-TZA46504.out
+  547  ps uxfw
+  548  tail -f results/20220919125019/s2_1-g070-MOZ33202.out
+  549  tail -f s2_1-g070-MOZ33202.out
+  550  ps uxwf
+  551  kill -9 2148
+  552  ps uxwf
+  553  kill -9 56076
+  554  ps uxwf
+  555  history > $(hostname)-history.txt

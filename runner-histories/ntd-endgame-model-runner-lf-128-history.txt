@@ -1,0 +1,801 @@
+    1  sudo apt-get update -y
+    2  sudo apt-get install -y -y         build-essential         vim curl git htop         silversearcher-ag         libxml2-utils         parallel         gsl-bin libgsl-dev         time
+    3  ls -ltr
+    4  git clone https://github.com/NTD-Modelling-Consortium/LF.git ntd-model-lf
+    5  ssh-keygen -t rsa 
+    6  cat github-deploy-key.pub 
+    7  vi ~/.ssh/config
+    8  fg
+    9  git clone https://github.com/NTD-Modelling-Consortium/LF.git ntd-model-lf
+   10  git clone git@github.com:NTD-Modelling-Consortium/LF.git ntd-model-lf
+   11  ls -ltr
+   12  cd ntd-model-lf/
+   13  ls -ltr
+   14  g++ *.cpp tinyxml/*.cpp -o transfil_N -g -I. -I./tinyxml $(gsl-config --libs) $(gsl-config --cflags) -lstdc++fs -Wall -O3 -std=c++11
+   15  cd src/
+   16  g++ *.cpp tinyxml/*.cpp -o transfil_N -g -I. -I./tinyxml $(gsl-config --libs) $(gsl-config --cflags) -lstdc++fs -Wall -O3 -std=c++11
+   17  ls -l
+   18  vi ~/.profile 
+   19  vi ~/.bashrc 
+   20  vi ~/.profile 
+   21  ls -ltr
+   22  mkdir ~/bin
+   23  cp transfil_N ~/bin
+   24  fg
+   25  transfil_N 
+   26  whoami
+   27  cd ntd-model-lf/run
+   28  ls -ltr
+   29  tar jxf parameters.tbz scenarios.tbz 
+   30  tar jxf parameters.tbz 
+   31  tar jxf scenarios.tbz 
+   32  ls -l
+   33  git status
+   34  git fetch
+   35  git pull origin main
+   36  git config pull.rebase false
+   37  ls -ltr
+   38  vi run-in-parallel.bash 
+   39  bash run-in-parallel.bash 202208b
+   40  vi run-lf-model.bash 
+   41  cp ../src/Pop_Distribution.csv .
+   42  bash run-in-parallel.bash 202208b
+   43  ls -ltr
+   44  ls -l combined_output/ntd/202208b/lf/scenario_1/*/
+   45  rm -rf combined_output/
+   46  ls -ltr
+   47  ls -l res
+   48  ls -l results/
+   49  ls -l results/41/
+   50  fg
+   51  vi run-lf-model.bash 
+   52  rm -rf results/ res_endgame/
+   53  ls -l
+   54  rm *.csv
+   55  ls -l
+   56  cp ../src/Pop_Distribution.csv .
+   57  ls -l
+   58  df -h
+   59  cd 
+   60  cat .ssh/
+   61  ls -ltr
+   62  apt-cache search libcsv
+   63  apt-cache madison libcsv3
+   64  apt-cache madison libcsv
+   65  sudo apt-get install libcsv libcsv-dev
+   66  sudo apt-get install libcsv3 libcsv-dev
+   67  man libcsv
+   68  man 3 libcsv
+   69  man 3 libcsv3
+   70  man libcsv3
+   71  man csv
+   72  man 3 csv
+   73  ls -l
+   74  htop -d 3
+   75  ls -ltr
+   76  cd ntd-model-lf/
+   77  git fetch
+   78  git pull origin main
+   79  git diff
+   80  git checkout run/run-lf-model.bash 
+   81  git pull origin main
+   82  vi run/run-lf-model.bash
+   83  vi Dockerfile 
+   84  ls -ltr
+   85  cd run
+   86  ls -ltr
+   87  which python
+   88  sudo apt-get install -y python3 pip
+   89  pip install .
+   90  pip
+   91  python3 combine-lf-outputs.py 
+   92  bash run-lf-model.bash test 1
+   93  vi run/run-lf-model.bash
+   94  vi run-lf-model.bash
+   95  bash run-lf-model.bash test 2
+   96  ag combined_output
+   97  git fetch
+   98  git pull origin main
+   99  git diff run-lf-model.bash 
+  100  git checkout run-lf-model.bash
+  101  git pull origin main
+  102  bash run-lf-model.bash test 3
+  103  ls -l 
+  104  rm -rf combined_output/
+  105  find output -type f
+  106  nohup NUM_JOBS=4 NUM_SIMULATIONS=200 bash run-in-parallel.bash 202208b > lf.out 2> lf.err &
+  107  tail lf.err 
+  108  cat lf.err
+  109  rm lf.*
+  110  NUM_JOBS=4 NUM_SIMULATIONS=200 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err &
+  111  tail -f lf.*
+  112  fg
+  113  NUM_JOBS=4 NUM_SIMULATIONS=200 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err < /dev/null &
+  114  tail -f lf.*
+  115  fg
+  116  ls -l output/
+  117  ls 
+  118  ls -l
+  119  rm [a-z]*.csv
+  120  ls -l
+  121  ls -l results/
+  122  ls -l results/5/
+  123  vi run-lf-model.bash 
+  124  ls -l results/6
+  125  rm -rf res_endgame/ results/ output/
+  126  ls -l
+  127  cat lf.err 
+  128  cat lf.out
+  129  fg
+  130  vi combine-lf-outputs.py 
+  131  fg
+  132  NUM_JOBS=4 NUM_SIMULATIONS=100 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err < /dev/null &
+  133  tail -f lf.*
+  134  fg
+  135  vi combine-lf-outputs.py 
+  136  NUM_JOBS=4 NUM_SIMULATIONS=100 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err < /dev/null &
+  137  tail -f lf.*
+  138  cat lf.err 
+  139  cat lf.out 
+  140  ls -ltr
+  141  rm -rf res_endgame/ results/ output/
+  142  fg
+  143  rm -rf res_endgame/ results/ output/
+  144  ls -ltr
+  145  rm [a-z]*.csv
+  146  ls -l
+  147  rm lf.*
+  148  ls -l
+  149  ls -ltr
+  150  cd ntd-model-lf/
+  151  ls -ltr
+  152  which transfil_N
+  153  ls -ltr
+  154  cd run
+  155  python combine-lf-outputs.py 
+  156  python3 combine-lf-outputs.py 
+  157  ls -ltr
+  158  df -h
+  159  nohup NUM_JOBS=128 NUM_SIMULATIONS=200 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err < /dev/null &
+  160  cat lf.err 
+  161  rm lf.*
+  162  NUM_JOBS=128 NUM_SIMULATIONS=200 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err < /dev/null &
+  163  tail -f lf.*
+  164  ls -ltr
+  165  ps
+  166  ps u
+  167  ls -l output/ntd/202208b/lf/scenario_1/
+  168  fg
+  169  ls -1 output/ntd/202208b/lf/scenario_1/* |wc -l
+  170  fg
+  171  vi fg
+  172  fg
+  173  cd ntd-model-lf/run
+  174  ls -l
+  175  vi Pop_Distribution.csv 
+  176  df -h
+  177  ls -l
+  178  cd ntd-model-lf/run
+  179  ls -ltr
+  180  rm -rf output/
+  181  rm lf.*
+  182  git fetch
+  183  git pull origin main
+  184  git diff combine-lf-outputs.py 
+  185  git checkout combine-lf-outputs.py
+  186  git pull origin main
+  187  vi combine-lf-outputs.py
+  188  NUM_JOBS=126 NUM_SIMULATIONS=200 nohup bash run-in-parallel.bash 202208b > lf.out 2> lf.err < /dev/null &
+  189  tail -f lf.*
+  190  ls -l output/ntd/202208b/lf/scenario_2/ERI/
+  191  ls -l output/ntd/202208b/lf/scenario_2/MLI/
+  192  ls -l results/
+  193  find ./results -empty -type d
+  194  ls -l results/1
+  195  ls -lr results/
+  196  df -h
+  197  df -h .
+  198  du -sh output/
+  199  ls -l res_endgame/
+  200  ls -l res_endgame/IHME_scen1/
+  201  ls -l res_endgame/IHME_scen1/ | wc -l
+  202  ls -1 res_endgame/IHME_scen1/ | wc -l
+  203  find res_endgame/* -type d -maxdepth 1 -mindepth 1
+  204  find res_endgame/* -type d -maxdepth 1 -mindepth 1 -atime +1m
+  205  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime +1m
+  206  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime +1
+  207  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime +1h
+  208  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime 1h
+  209  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime +1
+  210  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime +2
+  211  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime -2
+  212  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime -1
+  213  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime -1 | wc -l
+  214  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime -2 | wc -l
+  215  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -atime -3 | wc -l
+  216  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -ctime -3 | wc -l
+  217  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -ctime +1 | wc -l
+  218  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -ctime 1 | wc -l
+  219  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -ctime 2 | wc -l
+  220  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -ctime 2m | wc -l
+  221  man find
+  222  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin 2 | wc -l
+  223  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin 5 | wc -l
+  224  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin 1 | wc -l
+  225  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin 0 | wc -l
+  226  man find
+  227  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +1 | wc -l
+  228  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +2 | wc -l
+  229  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +3 | wc -l
+  230  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +4 | wc -l
+  231  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +5 | wc -l
+  232  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +10 | wc -l
+  233  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +10
+  234  find output -type d -name 'SDN53202'
+  235  find output -type d -name 'SDN53202' -exec ls -l {} \;
+  236  man find
+  237  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20
+  238  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 -exec ls -l {} \;
+  239  pwd
+  240  ls -ltr res_endgame/IHME_scen1/1_BFA05314/
+  241  find ./res_endgame -type f | wc -l
+  242  du -sh res_endgame/
+  243  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 -exec ls -l {} \;
+  244  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 
+  245  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 | wc -l
+  246  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 | awk -F - '{print $NF}'
+  247  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 | awk -F _ '{print $NF}'
+  248  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 
+  249  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 | wc -l
+  250  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +10 | wc -l
+  251  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +10 | wc -l
+  252  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +20 | wc -l
+  253  find output/ntd/202208b/lf/scenario_1/ -type d
+  254  find output/ntd/202208b/lf/scenario_1/???/ -type d
+  255  find output/ntd/202208b/lf/scenario_1/???/ -mindepth 1 -type d
+  256  df -h
+  257  du -sh res_endgame/
+  258  du -sh output/
+  259  find output/ntd/202208b/lf/scenario_1/ -type f | wc -l
+  260  find output/ntd/202208b/lf/scenario_3c/ -type f | wc -l
+  261  ls -l results/
+  262  ls -l results/|wc -l
+  263  ls -l results/632
+  264  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +20 | wc -l
+  265  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +20 | less
+  266  find output/ntd -type f -name '*SEN40200*'
+  267  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | less
+  268  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | wc -l
+  269  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | less
+  270  find output/ntd -type f -name '*MLI29992*'
+  271  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 
+  272  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | less
+  273  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +10 | wc -l
+  274  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +20 | wc -l
+  275  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +30 | wc -l
+  276  find res_endgame/* -maxdepth 1 -mindepth 1  -type d -cmin +30 | less
+  277  find output/ntd -type f -name '*SEN40200*'
+  278  rm -rf res_endgame/IHME_scen1/1_SEN40200
+  279  du -sh res_endgame/
+  280  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -cmin +30 -exec rm -rf {} \;
+  281  tail -f lf.*
+  282  du -sh res_endgame/
+  283  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -cmin +20 | wc -l
+  284  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +20 | less
+  285  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | less
+  286  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | wc -l
+  287  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 -exec rm -f {} \;
+  288  du -sh res_endgame/
+  289  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -cmin +30 -exec rm -rf {} \;
+  290  du -sh res_endgame/
+  291  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -cmin +30 | wc -l
+  292  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -cmin +20 | wc -l
+  293  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -cmin +10 | wc -l
+  294  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 | wc -l
+  295  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +30 -exec rm -f {} \;
+  296  du -sh res_endgame/
+  297  ps ux|grep python|wc -l
+  298  ps 
+  299  ps ux|grep python|wc -l
+  300  find res_endgame/* -maxdepth 2 -mindepth 2  -type f -cmin +10 | wc -l
+  301  du -sh
+  302  du -sh res_endgame/
+  303  du -sh output/
+  304  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +15 -exec rm -f {} \;
+  305  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -empty | wc -l
+  306  find res_endgame/* -maxdepth 1 -mindepth 1 -type d -empty -exec rmdir {} \;
+  307  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +15 | wc -l
+  308  du -sh output/
+  309  du -sh res_endgame/
+  310  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +20 | wc -l
+  311  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +30 | wc -l
+  312  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +40 | wc -l
+  313  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 | wc -l
+  314  man unlink
+  315  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 | wc -l
+  316  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 -exec rm -f {} \;
+  317  du -sh res_endgame/
+  318  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 -exec rm -f {} \;
+  319  du -sh res_endgame/
+  320  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +40 -exec rm -f {} \;
+  321  while true ; do find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 -exec rm -f {} \; sleep 1 ; done
+  322  while true ; do find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 -exec rm -f {} \; ; sleep 1 ; done
+  323  while true ; do find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; sleep 1 ;  done
+  324  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +45 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; sleep 1 ;  done
+  325  find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +40 -exec rm -f {} \;
+  326  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +40 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; sleep 1 ;  done
+  327  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +35 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; sleep 1 ;  done
+  328  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +35 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; echo ; sleep 1 ;  done
+  329  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +30 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; echo ; sleep 1 ;  done
+  330  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +25 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; echo ; sleep 1 ;  done
+  331  while true ; do time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +20 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; echo ; sleep 1 ;  done
+  332  while true ; do date ; time find res_endgame/* -maxdepth 2 -mindepth 2 -type f -cmin +20 -exec rm -f {} \; ; sleep 1 ; du -sh res_endgame ; echo ; sleep 1 ;  done
+  333  df -h
+  334  ls -l output/ntd/202208b/lf/scenario_1/ZWE/ZWE52956/
+  335  echo $(( $(find ./output/ntd -type f | wc -l ) / 2))
+  336  find ./output/ntd -type f | wc -l
+  337  cd output/
+  338  ls -ltr
+  339  gsutil ls gs://ntd-endgame-result-data/ntd 
+  340  ls -l ntd/202208b/
+  341  cd ntd/202208b/
+  342  gsutil ls gs://ntd-endgame-result-data/ntd/202208b
+  343  mkdir test
+  344  touch test/one
+  345  gsutil -m rsync -r test gs://ntd-endgame-result-data/ntd/202208b/test
+  346  gsutil -m rm -r gs://ntd-endgame-result-data/ntd/202208b/test
+  347  time gsutil -m rsync -r lf gs://ntd-endgame-result-data/ntd/202208b/lf
+  348  find lf/scenario_1/ -name 'ihme*.bz2' -type f | wc -l
+  349  find lf/scenario_1/ -name 'ipm*.bz2' -type f | wc -l
+  350  find lf/scenario_1/ -name 'ihme*.bz2' -type f | shuf -n 5
+  351  mkdir ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  352  cp lf/scenario_1/MOZ/MOZ33196/ihme-MOZ33196-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  353  cp lf/scenario_1/KEN/KEN54145/ihme-KEN54145-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  354  cp lf/scenario_1/NGA/NGA36404/ihme-NGA36404-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  355  cp lf/scenario_1/KEN/KEN54068/ihme-KEN54068-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  356  cp lf/scenario_1/ETH/ETH18657/ihme-ETH18657-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  357  cp lf/scenario_1/MOZ/MOZ33196/ipm-MOZ33196-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  358  cp lf/scenario_1/KEN/KEN54145/ipm-KEN54145-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  359  cp lf/scenario_1/NGA/NGA36404/ipm-NGA36404-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  360  cp lf/scenario_1/KEN/KEN54068/ipm-KEN54068-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  361  cp lf/scenario_1/ETH/ETH18657/ipm-ETH18657-lf-scenario_1-200.csv.bz2 ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  362  cd ~/endgame-ihme-ipm-outputs-lf-sample-20220823a
+  363  ls -ltr
+  364  parallel bunzip2 ::: *.bz2
+  365  ls -ltr
+  366  vi -o *MOZ*
+  367  whoami
+  368  ls -ltr
+  369  cd ..
+  370  tar jcvf endgame-ihme-ipm-outputs-lf-sample-20220823a.tbz endgame-ihme-ipm-outputs-lf-sample-20220823a
+  371  parallel bzip2 --best ::: *.csv
+  372  ls -ltr
+  373  cd endgame-ihme-ipm-outputs-lf-sample-20220823a
+  374  parallel bzip2 --best ::: *.csv
+  375  ls -ltr
+  376  cd ..
+  377  ls -ltr
+  378  gsutil cp endgame-ihme-ipm-outputs-lf-sample-20220823a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-lf-sample-20220823a.tbz 
+  379  ls -ltr
+  380  exit
+  381  cd ntd-model-lf/run
+  382  du -sh output/
+  383  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 | wc -l
+  384  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 | less
+  385  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | less
+  386  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l
+  387  find output/ntd/202208b/lf/scenario_1 -maxdepth 3 -mindepth 3 -type f | wc -l
+  388  echo $((2276 / 2))
+  389  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l
+  390  ps axu|grep bash|wc -l
+  391  du -sh output/
+  392  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l
+  393  ls -1 results/|wc -l
+  394  ls -l results/1591/
+  395  find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l
+  396  while true ; do find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 10 ; done
+  397  while true ; do find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 60 ; done
+  398  while true ; do find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  399  du -sh output/
+  400  du -sh output | tr -d '\n'
+  401  while true ; do du -sh output | tr -d '\n' ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  402  while true ; do du -sh output | tr -d '\n' ; echo -n "\t" find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  403  while true ; do du -sh output | tr -d '\n' ; echo -n '\t' find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  404  while true ; do du -sh output | tr -d '\n' ; echo -n '\t' ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  405  while true ; do du -sh output | tr -d '\n' ; echo -n 	 ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  406  while true ; do du -sh output | tr -d '\n' ; echo -n "	" ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  407  while true ; do du -sh ./output | tr -d '\n' ; echo -n "	" ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  408  while true ; do date | tr -d '\n' ; du -sh ./output | tr -d '\n' ; echo -n "	" ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  409  while true ; do date | tr -d '\n' ; echo -n "	" ; du -sh ./output | tr -d '\n' ; echo -n "	" ; find output/ntd/202208b/lf/scenario_1 -maxdepth 2 -mindepth 2 -type d | wc -l ; sleep 300 ; done
+  410  date
+  411  ls -l output/
+  412  ls -l output/ntd/202208b/test/
+  413  rm -rf output/ntd/202208b/test
+  414  ls -l output/ntd/202208b/lf/
+  415  ls -l output/ntd/202208b/lf/scenario_1/
+  416  ls -l output/ntd/202208b/lf/scenario_1/AGO/
+  417  ls -l output/ntd/202208b/lf/scenario_1/AGO/AGO02049/
+  418  ls -l output/ntd/202208b/lf/scenario_1/AGO/AGO02049/ihme-AGO02049-lf-scenario_1-200.csv.bz2 
+  419  vi output/ntd/202208b/lf/scenario_1/AGO/AGO02049/ihme-AGO02049-lf-scenario_1-200.csv.bz2
+  420  htop -d 3
+  421  rm -rf ~/.config/htop/
+  422  htop -d 3
+  423  htop -d 5
+  424  ps uxf
+  425  ps uxfw
+  426  ps uxfww
+  427  htop -d 5
+  428  vmstat 1 1
+  429  vmstat 1 
+  430  ps 
+  431  px ufxw
+  432  ps ufxw
+  433  vmstat 1 
+  434  htop -d 3
+  435  ls -ltr
+  436  cd ntd-model-lf/
+  437  ls -ltr
+  438  cd run
+  439  ls -ltr
+  440  du -sh output/
+  441  find output/ -type f | less
+  442  find ./output -type f -name '*.bz2' -print0 | less
+  443  find ./output -type f -name '*.bz2' -print0
+  444  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  445  find . -name ipm-TZA46627-lf-scenario_3b-200.csv
+  446  find . -name ipm-TZA46627-lf-scenario_3b-200.csv.bz2
+  447  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  448  find ./output -type f -name '*.bz2' | wc -l
+  449  find ./output -type f -name '*.csv' | wc -l
+  450  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  451  find ./output -type f -name '*.csv' | wc -l
+  452  find ./output -type f -name '*.bz2' | wc -l
+  453  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} ::: {}
+  454  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  455  find ./output -type f -name '*.bz2' | wc -l
+  456  find ./output -type f -name '*.csv' | wc -l
+  457  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  458  find ./output -type f -name '*.csv' | wc -l
+  459  find ./output -type f -name '*.bz2' | wc -l
+  460  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  461  find ./output -type f -name '*.bz2' | wc -l
+  462  find ./output -type f -name '*.csv' | wc -l
+  463  find ./output -type f -name '*.bz2' -print0 | parallel -0 bunzip2 {/.} {}
+  464  find ./output -type f -name '*.csv' | wc -l
+  465  find ./output -type f -name '*.csv' | head
+  466  vi ./output/ntd/202208b/lf/scenario_3b/GNQ/GNQ16423/ihme-GNQ16423-lf-scenario_3b-200.csv
+  467  ls -lh ./output/ntd/202208b/lf/scenario_3b/GNQ/GNQ16423/ihme-GNQ16423-lf-scenario_3b-200.csv
+  468  find ./output -type f -name '*.csv' | shuf -n 10
+  469  vi ./output/ntd/202208b/lf/scenario_3b/ETH/ETH18748/ihme-ETH18748-lf-scenario_3b-200.csv
+  470  vi ./output/ntd/202208b/lf/scenario_3c/NGA/NGA36583/ipm-NGA36583-lf-scenario_3c-200.csv
+  471  du -sh output/
+  472  du -sh output/ntd/
+  473  cd output/ntd/202208b/lf/
+  474  df -h
+  475  mkdir flat
+  476  find . -type f
+  477  find . -type f | wc -l
+  478  time find . -type f -exec mv {} ./flat \;
+  479  ls -l flat/
+  480  ls -1 flat/| wc -l
+  481  find . -not -path './flat/*' -print | wc -l
+  482  find . -path './flat/*' -print | wc -l
+  483  comm -12 <(find . -path './flat/*' -print) <(find . -not -path './flat/*' -print) 
+  484  comm -12 <(find . -path './flat/*' -print | sort ) <(find . -not -path './flat/*' -print | sort) 
+  485  comm -13 <(find . -path './flat/*' -print | sort ) <(find . -not -path './flat/*' -print | sort) 
+  486  comm -13 <(find . -type f -path './flat/*' -print | sort ) <(find . -type f -not -path './flat/*' -print | sort) 
+  487  comm -12 <(find . -type f -path './flat/*' -print | sort ) <(find . -type f -not -path './flat/*' -print | sort) 
+  488  comm -3 <(find . -type f -path './flat/*' -print | sort ) <(find . -type f -not -path './flat/*' -print | sort) 
+  489  time find . -type f -not -path './flat/*' -exec mv {} ./flat \;
+  490  find . -type f -not -path './flat/*' 
+  491  find . -type f  -path './flat/*' | wc -l 
+  492  mv flat endgame-ihme-ipm-outputs-lf-export-20220824a
+  493  sudo apt-get install pbzip2
+  494  pbzip2 --help
+  495  man tar
+  496  tar -I pbzip2 -9 cf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz endgame-ihme-ipm-outputs-lf-export-20220824a
+  497  pbzip2 -9
+  498  pbzip2 -h
+  499  tar -I "pbzip2 -9" cf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz endgame-ihme-ipm-outputs-lf-export-20220824a
+  500  tar -I pbzip2 -9 -cf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz endgame-ihme-ipm-outputs-lf-export-20220824a
+  501  tar --usage
+  502  tar --use-compress-program=pbzip2 -9 -cf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz endgame-ihme-ipm-outputs-lf-export-20220824a
+  503  tar --use-compress-program="pbzip2 -9" -cf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz endgame-ihme-ipm-outputs-lf-export-20220824a
+  504  ls -lh endgame-ihme-ipm-outputs-lf-export-20220824a.tbz 
+  505  gsutil -m cp endgame-ihme-ipm-outputs-lf-export-20220824a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-lf-export-20220824a.tbz
+  506  ls -lh ntd-model-lf/run/output/ntd/202208b/lf/
+  507  ps uxf
+  508  htop -d 3
+  509  ps uxf
+  510  pwd
+  511  cd ntd-model-lf/run/output/ntd/202208b/lf/
+  512  ls -l
+  513  ls -lh
+  514  date
+  515  ls -ltr
+  516  mkdir mansoni-export
+  517  cd mansoni-export
+  518  gsutil cp gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20220822a.tbz .
+  519  ls -ltr
+  520  tar -I pbzip2 tf endgame-ihme-ipm-outputs-mansoni-export-20220822a.tbz 
+  521  tar -I pbzip2 -tf endgame-ihme-ipm-outputs-mansoni-export-20220822a.tbz 
+  522  tar  -jtvf endgame-ihme-ipm-outputs-mansoni-export-20220822a.tbz 
+  523  tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-mansoni-export-20220822a.tbz 
+  524  gsutil cp gs://ntd-endgame-result-data/ntd/202208b/sch-mansoni/scenario_0_1/group_122/NGA36509/ihme-NGA36509-mansoni-group_122-scenario_0_1-group_122-200_simulations.csv.bz2 .
+  525  ls -ltr
+  526  bunzip2 ihme-NGA36509-mansoni-group_122-scenario_0_1-group_122-200_simulations.csv.bz2
+  527  ls -l
+  528  ls -lh
+  529  cd ..
+  530  rm -rf mansoni-export/
+  531  ps ux
+  532  htop -d 3
+  533  cd endgame-ihme-ipm-exports-trachoma-export-20220908a/
+  534  ls -l ../
+  535  ls -1 *.csv | wc -l
+  536  ls -1 *.bz2 | wc -l
+  537  ls -1 *.csv | wc -l
+  538  ps ux
+  539  htop -d 3
+  540  cd ..
+  541  ls -ltr
+  542  tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-trachoma-export-20220908a.tbz
+  543  ls -ltr
+  544  mkdir endgame-ihme-ipm-exports-trachoma-export-20220908a
+  545  cd endgame-ihme-ipm-exports-trachoma-export-20220908a
+  546  gsutil -m cp gs://ntd-endgame-result-data/ntd/202209a/trachoma/**/*.bz2 .
+  547  ls -1 | wc -l
+  548  sudo apt-get install parallel
+  549  parallel bunzip2 ::: *.bz2
+  550  tar -
+  551  sudo apt-get install pbzip2
+  552  cd ..
+  553  mv endgame-ihme-ipm-exports-trachoma-export-20220908a endgame-ihme-ipm-outputs-trachoma-export-20220908a
+  554  tar -I pbzip2 -cf endgame-ihme-ipm-outputs-trachoma-export-20220908a.tbz endgame-ihme-ipm-outputs-trachoma-export-20220908a
+  555  ls -l
+  556  ls -lh
+  557  gsutil -m cp endgame-ihme-ipm-outputs-trachoma-export-20220908a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-trachoma-export-20220908a.tbz
+  558  ls -ltr
+  559  df -h
+  560  du -sh endgame-ihme-ipm-outputs-trachoma-export-20220908a
+  561  du -sh endgame-ihme-ipm-outputs-lf-sample-20220823a
+  562  ls -ltr
+  563  mkdir endgame-ihme-ipm-outputs-mansoni-export-20220919a
+  564  cd endgame-ihme-ipm-outputs-mansoni-export-20220919a
+  565  gsutil -m ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/scenario_${s}*/**/*.csv.bz2
+  566  gsutil -m ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/**/*.csv.bz2
+  567  gsutil -m ls gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/**/*.csv.bz2 | wc -l
+  568  gsutil -m cp gs://ntd-endgame-result-data/ntd/202209b/sch-mansoni/**/*.csv.bz2 .
+  569  ls -1 | wc -l
+  570  pbzip2 --help
+  571  pbzip2 -v -d *.bz2
+  572  ls -ltr
+  573  cd ..
+  574  tar --use-compress-program pbzip2 -cvf endgame-ihme-ipm-outputs-mansoni-export-20220919a.tbz endgame-ihme-ipm-outputs-mansoni-export-20220919a
+  575  rm endgame-ihme-ipm-outputs-mansoni-export-20220919a.tbz 
+  576  time tar --use-compress-program pbzip2 -cvf endgame-ihme-ipm-outputs-mansoni-export-20220919a.tbz endgame-ihme-ipm-outputs-mansoni-export-20220919a
+  577  ls -lthr
+  578  gsutil -m cp endgame-ihme-ipm-outputs-mansoni-export-20220919a.tbz gs://ntd-disease-simulator-data/endgame-exports/002/endgame-ihme-ipm-outputs-mansoni-export-20220919a.tbz
+  579  history
+  580  history|grep nohup
+  581  cd ntd-model-lf/
+  582  ls -ltr
+  583  cd run
+  584  ls -ltr
+  585  vi run-lf-model.bash 
+  586  history
+  587  history|grep nohup
+  588  ls -ltr
+  589  cd ntd-model-lf/
+  590  ls -ltr
+  591  cd
+  592  hostname
+  593  history > $(hostname)-history.txt
+  594  vi $(hostname)-history.txt
+  595  cat $(hostname)-history.txt
+  596  ls -ltr 
+  597  ls -l bin/
+  598  cd ntd-model-lf/
+  599  gl
+  600  git log --pretty=oneline
+  601  git pull origin main
+  602  ls -ltr
+  603  bash setup.sh 
+  604  sudo apt-get install pipenv
+  605  bash setup.sh 
+  606  vi setup.sh
+  607  cd src/
+  608  vi Makefile 
+  609  uname
+  610  vi Makefile 
+  611  fg
+  612  vi Makefile 
+  613  make
+  614  fg
+  615  make
+  616  fg
+  617  make
+  618  fg
+  619  make
+  620  fg
+  621  make
+  622  fg
+  623  make
+  624  fg
+  625  make
+  626  fg
+  627  make
+  628  fg
+  629  make
+  630  fg
+  631  make
+  632  fg
+  633  make
+  634  fg
+  635  make
+  636  fg
+  637  ag make ../README.md 
+  638  ag Make ../README.md 
+  639  git status
+  640  git log --pretty=oneline
+  641  fg
+  642  make
+  643  fg
+  644  make
+  645  fg
+  646  make clean
+  647  make
+  648  make clean
+  649  fg
+  650  make clean
+  651  make
+  652  fg
+  653  make clean
+  654  make
+  655  fg
+  656  make clean
+  657  make
+  658  fg
+  659  make clean
+  660  make
+  661  vi Scenario.cpp +15
+  662  sudo apt-get update -y
+  663  sudo apt-get upgrade build-essential
+  664  make clean
+  665  make
+  666  cat /etc/debian_version 
+  667  fg
+  668  make
+  669  fg
+  670  make
+  671  fg
+  672  make
+  673  make clean
+  674  make
+  675  fg
+  676  make
+  677  fg
+  678  make
+  679  fg
+  680  make clean
+  681  make
+  682  make clean
+  683  cd ..
+  684  git diff
+  685  fg
+  686  cd src/
+  687  make
+  688  git status
+  689  cd ..
+  690  ls -l run/lf.err 
+  691  cat run/lf.err
+  692  rm run/lf.err run/lf.out 
+  693  git status
+  694  git diff
+  695  git reset --hard HEAD
+  696  git pull origin main
+  697  cd src/
+  698  make clean
+  699  cd ..
+  700  bash setup.sh 
+  701  uname -s
+  702  NUM_CORES=1
+  703  case "$( uname -s )" in     Darwin)         NUM_CORES=$( sysctl -n hw.ncpu );         ;;     Linux)         NUM_CORES=$( awk '/^processor/ {++n} END {print n+1}' /proc/cpuinfo );         ;; esac
+  704  echo using $NUM_CORES cores.
+  705  awk '/^processor/ {++n} END {print n+1}' /proc/cpuinfo
+  706  awk '/^processor/ {++n} END {print n}' /proc/cpuinfo
+  707  NUM_CORES=1
+  708  case "$( uname -s )" in     Darwin)         NUM_CORES=$( sysctl -n hw.ncpu );         ;;     Linux)         NUM_CORES=$( awk '/^processor/ {++n} END {print n}' /proc/cpuinfo );         ;; esac
+  709  echo using $NUM_CORES cores.
+  710  # do the C++ build
+  711  echo -n "-> building C++ LF model ..."
+  712  NUM_CORES=1
+  713  case "$( uname -s )" in     Darwin)         NUM_CORES=$( sysctl -n hw.ncpu );         ;;     Linux)         NUM_CORES=$( awk '/^processor/ {++n} END {print n}' /proc/cpuinfo );         ;; esac
+  714  echo " using $NUM_CORES cores."
+  715  NUM_CORES=1
+  716  case "$( uname -s )" in     Darwin)         NUM_CORES=$( sysctl -n hw.ncpu );         ;;     Linux)         NUM_CORES=$( awk '/^processor/ {++n} END {print n}' /proc/cpuinfo );         ;; esac
+  717  echo "-> building C++ LF model using ${NUM_CORES} cores ..."
+  718  cd -
+  719  cd ..
+  720  ls -l run/scenarios/
+  721  ls -l run/parameters
+  722  ls -l run/running-id-list.txt 
+  723  vi -R run/running-id-list.txt
+  724  ls -ltr
+  725  mkdir lf-20230202a
+  726  bash run.sh -O lf-20230202a/ -o lf-20230202a -f
+  727  bash run.sh -O lf-20230202a/ -o lf-20230202a
+  728  bash run.sh -O lf-20230202a/ -o 202302a
+  729  tail -f /home/igor/ntd-model-lf/lf-run-20230202125624-output.txt
+  730  vi /home/igor/ntd-model-lf/lf-run-20230202125624-output.txt
+  731  htop -d 3
+  732  tail -f /home/igor/ntd-model-lf/lf-run-20230202125624-output.txt
+  733  sudo apt-get install locales
+  734  tail -f /home/igor/ntd-model-lf/lf-run-20230202125624-output.txt
+  735  ps ux
+  736  jobs
+  737  fg
+  738  git status
+  739  git fetch
+  740  sudo vi /etc/environment 
+  741  rm /etc/environment
+  742  sudo rm /etc/environment
+  743  sudo su -
+  744  tail -f /home/igor/ntd-model-lf/lf-run-20230202125624-output.txt
+  745  ls -l ntd-model-lf/lf-20230202a/
+  746  ls -l ntd-model-lf/lf-20230202a/202302a/
+  747  ls -l ntd-model-lf/lf-20230202a/202302a/lf/
+  748  find ntd-model-lf/lf-20230202a/202302a/lf -type f | wc -l
+  749  find ntd-model-lf/lf-20230202a/202302a/lf -type f | less
+  750  find ntd-model-lf/lf-20230202a/202302a/lf -type f | sort | less
+  751  ps ux
+  752  ps uxfw
+  753  htop -d 3
+  754  ps
+  755  ls -lh
+  756  tar jtvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  757  ls -lh
+  758  tar jtvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  759  tar jtvf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz
+  760  ls -lh
+  761  rm endgame-ihme-ipm-outputs-lf-export-20230202a.tbz
+  762  mkdir endgame-ihme-ipm-outputs-lf-export-20230202a
+  763  find ./ntd-model-lf/lf-20230202a/202302a/lf/scenario_* -type f -name '*.csv' | wc -l
+  764  find ./ntd-model-lf/lf-20230202a/202302a/lf/scenario_* -type f -name '*.csv' -exec mv {} endgame-ihme-ipm-outputs-lf-export-20230202a/ \; &
+  765  ls -l endgame-ihme-ipm-outputs-lf-export-20230202a/
+  766  ls -l endgame-ihme-ipm-outputs-lf-export-20230202a/ | wc -l
+  767  tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz | wc -l
+  768  tar -I "pbzip2 -d" -tvf endgame-ihme-ipm-outputs-lf-export-20220824a.tbz | wc -l
+  769  ls -l endgame-ihme-ipm-outputs-lf-export-20230202a/ | wc -l
+  770  ls -l endgame-ihme-ipm-outputs-lf-export-20230202a/* | wc -l
+  771  ls -l endgame-ihme-ipm-outputs-lf-export-20230202a/ | wc -l
+  772  find endgame-ihme-ipm-outputs-lf-export-20230202a -type f | wc -l
+  773  tar -I pbzip2 -jcf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz endgame-ihme-ipm-outputs-lf-export-20230202a &
+  774  tar -I pbzip2 -cvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz endgame-ihme-ipm-outputs-lf-export-20230202a 
+  775  bg
+  776  fg
+  777  rm endgame-ihme-ipm-outputs-lf-export-20230202a.tbz 
+  778  tar -I pbzip2 -cf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz endgame-ihme-ipm-outputs-lf-export-20230202a & 
+  779  ls -ltr
+  780  tar jtvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  781  tar -I pbzip2 tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  782  tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  783  time tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  784  time tar jtvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  785  jobs
+  786  htop -d 3
+  787  ls -lh
+  788  htop -d 3
+  789  ls -lh
+  790  time tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  791  ls -lh
+  792  time tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  793  ls -lh
+  794  ps uxfw
+  795  ls -lh
+  796  time tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head
+  797  time tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | head -100
+  798  time tar -I pbzip2 -tvf endgame-ihme-ipm-outputs-lf-export-20230202a.tbz | tail -20
+  799  gsutil -m cp endgame-ihme-ipm-outputs-lf-export-20230202a.tbz gs://ntd-disease-simulator-data/endgame-exports/20230202/endgame-ihme-ipm-outputs-lf-export-20230202a.tbz
+  800  fg
+  801  history > $(hostname)-history.txt

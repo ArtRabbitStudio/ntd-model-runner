@@ -1,0 +1,597 @@
+    1  ls -ltr
+    2  cd ntd-model-runner/
+    3  ls -ltr
+    4  bash test-runs-ascaris.bash 
+    5  ls -l results/
+    6  ls -l results/20220525144417/
+    7  git fetch
+    8  git pull origin master
+    9  rm -rf results/
+   10  nohup bash test-runs-ascaris.bash > /dev/null < /dev/null &
+   11  ps uxf
+   12  tail -0f results/20220525145245/s1_g1_ETH18630.out
+   13  ls -l results/
+   14  ps xuf
+   15  tail -0f results/20220525145245/s1_g1_ETH18630.out
+   16  cd ntd-model-runner/
+   17  tail -0f results/20220525145245/s1_g1_ETH18630.out
+   18  tail -0f results/20220525145245/s1_g1_ETH18630.out 
+   19  tail -f results/20220525145245/s1_g1_ETH18630.out 
+   20  ps uxf
+   21  ls -l results/20220525145245/
+   22  tail -f results/20220525145245/s1_g2_TZA46610.out
+   23  tail -f results/20220525145245/s1_g1_ETH18630.out 
+   24  cd ntd-model-runner/
+   25  ls -ltr results/20220525145245/
+   26  ps uxf
+   27  ps ux
+   28  ps uxf
+   29  ps uxfw
+   30  htop -d 3
+   31  exit
+   32  htop -d 3
+   33  top
+   34  ps axufww;
+   35  ps uxf
+   36  ps ux
+   37  cd ntd-model-runner/
+   38  ls -ltr results/20220525145245/|tail -5
+   39  cd ntd-model-runner/
+   40  ls -ltr results/20220525145245/|tail -5
+   41  ps uxf
+   42  vi test-runs-ascaris.bash 
+   43  tail results/20220525145245/s3_g4_GNQ16424.out 
+   44  ag "'a' cannot be empty unless no" results/
+   45  ag -l "'a' cannot be empty unless no" results/
+   46  ag -l "'a' cannot be empty unless no" results/|sort
+   47  tar jcvf ascaris-results-20220525145245.tbz results/20220525145245/
+   48  ls -ltr
+   49  cd ntd-model-runner/
+   50  ls -ltr
+   51  git fetch
+   52  git branch
+   53  pip uninstall sch_simulation
+   54  pip install .
+   55  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   56  cp test-runs-ascaris.bash test-runs-ascaris-reruns.bash 
+   57  vi test-runs-ascaris-reruns.bash
+   58  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   59  vi test-runs-ascaris-reruns.bash
+   60  history|grep -w ag
+   61  ag -l "'a' cannot be empty unless no" results/|sort
+   62  ag -l "'a' cannot be empty unless no" results/|sort|uniq
+   63  cd results/20220525145245/
+   64  ag -l "'a' cannot be empty unless no" results/|sort|uniq
+   65  ag -l "'a' cannot be empty unless no" |sort|uniq
+   66  ag -l "'a' cannot be empty unless no" |sed 's/^s[123]_//g' |sort|uniq
+   67  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_//g' -e 's/\.out$//g' |sort|uniq
+   68  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' |sort|uniq
+   69  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq
+   70  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq|wc -l
+   71  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq >> ../../test-runs-ascaris-reruns.bash
+   72  vi ../../test-runs-ascaris-reruns.bash
+   73  cd -
+   74  vi test-runs-ascaris-reruns.bash 
+   75  history|grep nohup
+   76  vi test-runs-ascaris-reruns.bash 
+   77  nohup bash test-runs-ascaris-reruns.bash > /dev/null < /dev/null &
+   78  ps uxf
+   79  tail -f results/20220527075729/s1_g12_ETH18560.out
+   80  ps uxf
+   81  tail -f results/20220527075729/s1_g135_SWZ45422.out
+   82  cd ntd-model-runner/results/20220527075729/
+   83  ls -ltr
+   84  ls -1 | wc -l
+   85  ag ValueError
+   86  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq
+   87  cd ntd-model-runner/
+   88  pip uninstall sch_simulation
+   89  pip install .
+   90  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   91  cp test-runs-ascaris-reruns.bash test-runs-ascaris-reruns-2.bash 
+   92  vi test-runs-ascaris-reruns-2.bash
+   93  nohup bash test-runs-ascaris-reruns-2.bash > /dev/null < /dev/null &
+   94  ps uxf
+   95  tail -0f results/20220527112805/s1_g135_SWZ45422.out
+   96  cd ntd-model-runner/results/20220527112805/
+   97  ls -l
+   98  ag ValueError
+   99  tail s1_g59_MDG27866.out 
+  100  ps uxf
+  101  tail -f results/20220527112805/s2_g135_SWZ45422.out
+  102  cd ../..
+  103  tail -f results/20220527112805/s2_g135_SWZ45422.out
+  104  ls -ltr
+  105  ps uxf
+  106  cat test-runs-ascaris-reruns-2.bash 
+  107  ps uxf
+  108  cat test-runs-ascaris-reruns-2.bash 
+  109  ps uxf
+  110  cat test-runs-ascaris-reruns-2.bash 
+  111  ps uxf
+  112  cat test-runs-ascaris-reruns-2.bash 
+  113  ag IUs= test-runs-ascaris-reruns-2.bash A
+  114  ag IUs= test-runs-ascaris-reruns-2.bash
+  115  ps uxf|grep .out
+  116  ps uxf|grep .out|grep -v grep
+  117  ag IUs= test-runs-ascaris-reruns-2.bash
+  118  ag ValueError results/20220527112805/
+  119  ps uxf|grep .out|grep -v grep
+  120  ag ValueError results/20220527112805/
+  121  ps uxf|grep .out|grep -v grep
+  122  ag IUs= test-runs-ascaris-reruns-2.bash
+  123  ps uxf|grep .out|grep -v grep
+  124  tail -0f results/20220527112805/s3_g59_MDG27866.out
+  125  cd ntd-model-runner/
+  126  git fetch
+  127  git pull origin master
+  128  ls -l results/
+  129  vi run-sth-ascaris-scenarios.bash
+  130  bash run-sth-ascaris-scenarios.bash 
+  131  ls -ltr results/
+  132  ls -ltr results/20220630154005/
+  133  fg
+  134  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  135  ls -ltr results/
+  136  ps uxfw
+  137  htop -d 3
+  138  tail -f results/20220630154128/s1-g001-ETH18630.out
+  139  htop -d 3
+  140  tail -f results/20220630154128/s1-g001-ETH18630.out
+  141  htop -d 3
+  142  rm ~/.config/htop/htoprc 
+  143  htop -d 3
+  144  ps uxfw|grep time
+  145  cd ntd-model-runner/results/
+  146  ls -ltr
+  147  tar jcvf sth-roundworm-001.tbz 20220630154128/
+  148  ls -ltr
+  149  ls -l ntd-model-runner/results/
+  150  mv ntd-model-runner/results/sth-roundworm-001.tbz ntd-model-runner/results/sth-roundworm-001-results.tbz 
+  151  cd ntd-model-runner/
+  152  ls -ltr
+  153  ls -ltr results/
+  154  ls -ltr results/20220630154005/
+  155  ls -ltr results/20220630154128/
+  156  ls -ltr results/20220630154128/s3b-g170-BDI06385.out 
+  157  tail results/20220630154128/s3b-g170-BDI06385.out
+  158  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/STH_params/
+  159  git fetch
+  160  git pull origin mas
+  161  git pull origin master
+  162  pip uninstall sch_simulation
+  163  pip install .
+  164  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/STH_params/
+  165  vi run-sth-ascaris-scenarios.bash 
+  166  bash run-sth-ascaris-scenarios.bash 
+  167  ls -l data/
+  168  ls -l data/input/
+  169  fg
+  170  git fetch
+  171  git diff
+  172  git checkout run-sth-ascaris-scenarios.bash 
+  173  git pull origin master
+  174  vi run-sth-ascaris-scenarios.bash
+  175  fg
+  176  git fetch
+  177  git pull origin master
+  178  vi run-sth-ascaris-scenarios.bash
+  179  git checkout run-sth-ascaris-scenarios.bash
+  180  git pull origin master
+  181  vi run-sth-ascaris-scenarios.bash
+  182  bash run-sth-ascaris-scenarios.bash 
+  183  fg
+  184  bash run-sth-ascaris-scenarios.bash 
+  185  ls -l data/input/Asc_ETH18630.p 
+  186  vi data/input/Asc_ETH18630.p
+  187  git statu
+  188  git status
+  189  git diff run-sth-ascaris-scenarios.bash 
+  190  git checkout run-sth-ascaris-scenarios.bash
+  191  git pull origin master
+  192  vi run-sth-ascaris-scenarios.bash
+  193  fg
+  194  bash run-sth-ascaris-scenarios.bash
+  195  vi ./data/input/Asc_ETH18630.p
+  196  ls -l  data/input/*Asc*
+  197  rm -f data/input/*Asc*
+  198  bash run-sth-ascaris-scenarios.bash
+  199  vi ./data/input/Asc_ETH18630.p
+  200  rm -f data/input/*Asc*
+  201  ls -l  data/input/*Asc*
+  202  git pull origin master
+  203  fg
+  204  git checkout run-sth-ascaris-scenarios.bash
+  205  git pull origin master
+  206  bash run-sth-ascaris-scenarios.bash
+  207  ls -l results/
+  208  ls -l results/202207030*/
+  209  rm -rf results/202207030*/
+  210  vi run-sth-ascaris-scenarios.bash
+  211  bash run-sth-ascaris-scenarios.bash
+  212  ls -l results/
+  213  ls -l results/20220703090235/
+  214  ls -l results/20220703090235/s1-g001-ETH18630.out 
+  215  vi results/20220703090235/s1-g001-ETH18630.out
+  216  rm -rf results/20220703090235/
+  217  fg
+  218  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  219  ls -ltr results/
+  220  ls -ltr results/20220703090335/
+  221  ls -ltr results/20220703090335/s3a-g001-ETH18630.out 
+  222  tail -f results/20220703090335/s3a-g001-ETH18630.out
+  223  cd ntd-model-runner/results/
+  224  ls -ltr
+  225  cd 20220703090335/
+  226  ls -ltr
+  227  tail s3a-g002-TZA46610.out 
+  228  ls -l
+  229  ag -w real
+  230  ls -ltr
+  231  cd ntd-model-runner/
+  232  ls -ltr
+  233  cd results/
+  234  ls
+  235  ls -ltr
+  236  history|grep tar|tail
+  237  tar jcvf sth-roundworm-001-s3-timings.tbz 20220703090335
+  238  ls -l
+  239  vi 20220703090335/s3b-g170-BDI06385.out 
+  240  history|grep awk|tail
+  241  history|grep find|tail
+  242  ls -ltr
+  243  cd ntd-model-runner/
+  244  cd iu-disease-data/
+  245  tar jtvf ~/check-ascaris-coverage-scenarios.tbz 
+  246  ls -l
+  247  cd ../
+  248  pip uninstall sch_simulation
+  249  cd /home/igor/.local/lib/python3.9/site-packages/sch_simulation/
+  250  ls -ltr
+  251  cd data/STH_params/
+  252  ls -ltr
+  253  tar jtvf ~/check-ascaris-coverage-scenarios.tbz 
+  254  cd -
+  255  cd
+  256  cd ntd-model-runner/
+  257  pip uninstall sch_simulation
+  258  pip install .
+  259  pipenv shell
+  260  pip install .
+  261  cd /home/igor/.local/lib/python3.9/site-packages/sch_simulation/*
+  262  cd /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/STH_params/
+  263  ls -ltr
+  264  tar jtvf ~/check-ascaris-coverage-scenarios.tbz 
+  265  for s in ascaris_coverage_scenario_*.xlsx ; do mv $s ${s}.old ; done
+  266  ls
+  267  ls -l
+  268  tar jxf ~/check-ascaris-coverage-scenarios.tbz 
+  269  ls -l
+  270  tar jtvf ~/check-ascaris-coverage-scenarios.tbz 
+  271  cd -
+  272  pwd
+  273  ls -ltr
+  274  git fetch
+  275  git pull origin master
+  276  ls -l
+  277  vi run-sth-ascaris-scenarios.bash 
+  278  vi iu-disease-data/check-ascarisIUs-20220712a.csv
+  279  fg
+  280  bash run-sth-ascaris-scenarios.bash 
+  281  fg
+  282  vi iu-disease-data/check-ascarisIUs-20220712a.csv
+  283  vi run-sth-ascaris-scenarios.bash 
+  284  history|grep nohup
+  285  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  286  ps uxfw
+  287  tail -f results/20220712110926/s3a-g010-AGO02096.out
+  288  fg
+  289  vi run-sth-ascaris-scenarios.bash 
+  290  fg
+  291  ps uxfw
+  292  whoami
+  293  ls -ltr
+  294  fg
+  295  vi run-sth-ascaris-scenarios.bash 
+  296  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  297  ps uxfw
+  298  ls -ltr results/202207*
+  299  rmdir results/20220712110829
+  300  ls -l results/
+  301  rm -rf results/20220712110926
+  302  ls
+  303  fg
+  304  bg
+  305  ps uxfw
+  306  tail -f results/20220712110926/s3a-g010-AGO02096.out
+  307  tail -f results/20220712111430/s3a-g010-AGO02096.out
+  308  ps uxfw
+  309  tail -f results/20220712111430/s3a-g010-AGO02096.out
+  310  ls -l results/20220712111430/
+  311  vi run-sth-ascaris-scenarios.bash 
+  312  ps 
+  313  ps uxfw
+  314  ps uxf|grep .out|grep -v grep
+  315  cat iu-disease-data/check-ascarisIUs-20220712a.csv 
+  316  ls -l data/output/ntd/sth-002/sth-roundworm/
+  317  find data/output/ntd/sth-002/sth-roundworm -type f
+  318  ps uxf|grep .out|grep -v grep
+  319  find data/output/ntd/sth-002/sth-roundworm -type f
+  320  du -h $(find data/output/ntd/sth-002/sth-roundworm -type f)
+  321  find data/output/ntd/sth-002/sth-roundworm -type f | xargs du -sh
+  322  ps uxf|grep .out|grep -v grep
+  323  find data/output/ntd/sth-002/sth-roundworm -type f
+  324  ps uxf|grep .out|grep -v grep
+  325  tail results/20220712111430/s3b-g144-NGA36890.out
+  326  tail -f results/20220712111430/s3b-g144-NGA36890.out
+  327  ps uxf|grep .out|grep -v grep
+  328  fg
+  329  vi run-sth-ascaris-scenarios.bash 
+  330  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  331  ps uxf|grep .out|grep -v grep
+  332  tail -f results/20220712115834/s1-g010-AGO02096.out
+  333  ls -l data/output/ntd/sth-002/sth-roundworm/
+  334  find data/output/ntd/sth-002/sth-roundworm -type f
+  335  ps uxf|grep .out|grep -v grep
+  336  cat iu-disease-data/check-ascarisIUs-20220712a.csv
+  337  ps uxf|grep .out|grep -v grep
+  338  gcloud compute instances list
+  339  ps uxf|grep .out|grep -v grep
+  340  find data/output/ntd/sth-002/sth-roundworm -type f
+  341  ps uxf|grep .out|grep -v grep
+  342  cat iu-disease-data/check-ascarisIUs-20220712a.csv
+  343  ls -l data/output/ntd/sth-002/sth-roundworm/
+  344  ps uxf|grep .out|grep -v grep
+  345  find data/output/ntd/sth-002/sth-roundworm -type f
+  346  mkdir ascaris-check-scenario-reruns-20220712a
+  347  find data/output/ntd/sth-002/sth-roundworm -type f -exec cp {} ascaris-check-scenario-reruns-20220712a \;
+  348  ls -l ascaris-check-scenario-reruns-20220712a
+  349  tar jcvf ascaris-check-scenario-reruns-20220712a.tbz ascaris-check-scenario-reruns-20220712a
+  350  ls -ltr
+  351  cd ntd-model-runner/
+  352  pip uninstall sch_simulation
+  353  cd /home/igor/.local/lib/python3.9/site-packages/sch_simulation/
+  354  ls -ltr
+  355  cd data/STH_params/
+  356  ls -l ascaris_*.xlsx ascaris_*.old
+  357  cat > /dev/null
+  358  cd ntd-model-runner/
+  359  ls -ltr
+  360  git fetch
+  361  git pull origin master
+  362  history|tail -20
+  363  history|grep nohup
+  364  vi run-sth-ascaris-scenarios.bash 
+  365  ls -ltr results/
+  366  ls -ltr results/20220712115834/
+  367  ls -ltr results/20220712111430
+  368  pip uninstall sch_simulation
+  369  rm -i /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/STH_params/*.old
+  370  ls -l /home/igor/.local/lib/python3.9/site-packages/sch_simulation/data/STH_params/
+  371  pip uninstall sch_simulation
+  372  pip install .
+  373  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+  374  vi run-sth-ascaris-scenarios.bash 
+  375  cat iu-disease-data/check-ascarisIUs-20220712a.csv
+  376  vi run-sth-ascaris-scenarios.bash 
+  377  bash run-sth-ascaris-scenarios.bash
+  378  fg
+  379  ls -l data/output/
+  380  ls -l data/output/ntd/
+  381  ls -l data/output/ntd/sth-002/
+  382  ls -l data/output/ntd/sth-002/sth-roundworm/
+  383  find data/output/ntd/sth-002/sth-roundworm -type f
+  384  find data/output/ntd/sth-002/sth-roundworm -type d
+  385  rm -rf data/output/ntd/sth-002/
+  386  fg
+  387  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  388  ps uxfw
+  389  tail -f results/20220713132819/s1-g010-AGO02096.out
+  390  ls -l data/output/
+  391  ls -l data/output/ntd/
+  392  ls -l data/output/ntd/sth-002/
+  393  ls -l data/output/ntd/sth-002/sth-roundworm/scenario_1/group_010/AGO02096/
+  394  ps uxfw
+  395  cd ntd-model-runner/
+  396  ls -l data/output/ntd/sth-002/sth-roundworm/scenario_3a/
+  397  ls -l data/output/ntd/sth-002/sth-roundworm/scenario_3a/group_010/
+  398  ls -l data/output/ntd/sth-002/sth-roundworm/scenario_3a/group_010/AGO02096/
+  399  ls -l data/output/ntd/sth-002/sth-roundworm/scenario_2/group_144/NGA36890/
+  400  find data/output/ntd/sth-002/sth-roundworm -type f
+  401  find data/output/ntd/sth-002/sth-roundworm -type f | wc -l
+  402  cd ntd-model-runner/
+  403  find data/output/ntd/sth-002/sth-roundworm -type f | wc -l
+  404  find data/output/ntd/sth-002/sth-roundworm -type f
+  405  ls -ltr
+  406  mkdir ascaris-check-scenario-reruns-20220713a
+  407  cd ascaris-check-scenario-reruns-20220713a
+  408  cd ../
+  409  find data/output/ntd/sth-002/sth-roundworm -type f
+  410  find data/output/ntd/sth-002/sth-roundworm -type f -exec cp {} ascaris-check-scenario-reruns-20220713a/ \; 
+  411  cd ascaris-check-scenario-reruns-20220713a
+  412  ls -ltr
+  413  vi ihme-ETH18630-ascaris-group_001-scenario_3b-group_001-200_simulations.csv
+  414  vi ipm-ETH18630-ascaris-group_001-scenario_3b-group_001-200_simulations.csv
+  415  whoami
+  416  ls -ltr
+  417  cd ..
+  418  tar jcvf ascaris-check-scenario-reruns-20220713a.tbz ascaris-check-scenario-reruns-20220713a
+  419  ls -ltr
+  420  history|grep 'gsutil cp'
+  421  history|grep 'gsutil'|grep cp
+  422  gsutil cp ascaris-check-scenario-reruns-20220713a.tbz gs://ntd-disease-simulator-data/ascaris-check-scenario-reruns-20220713a.tbz
+  423  cd ntd-model-runner/
+  424  gsutil cp ascaris-check-scenario-reruns-20220713a.tbz gs://ntd-disease-simulator-data/ascaris-check-scenario-reruns-20220713a.tbz
+  425  ls -ltr results/
+  426  ls -ltr results/20220713132819/
+  427  ag -w real results/20220713132819/
+  428  gh
+  429  vi run-sth-ascaris-scenarios.bash 
+  430  find data/output/ntd/sth-002/sth-roundworm -type f
+  431  cd ntd-model-runner/
+  432  ls -ltr
+  433  git fetch
+  434  git pull origin master
+  435  pip uninstall sch_simulation 
+  436  pip install .
+  437  vi run-sth-ascaris-scenarios.bash 
+  438  bash run-sth-ascaris-scenarios.bash
+  439  fg
+  440  nohup bash run-sth-ascaris-scenarios.bash > /dev/null < /dev/null &
+  441  ps uxfw | grep .out | grep -v grep
+  442  tail -f results/20220714152458/s1-g001-ETH18630.out
+  443  htop -d 3
+  444  ps uxfw
+  445  ls -ltr
+  446  cd ntd-model-runner/
+  447  ls -ltr
+  448  ls -ltr results/
+  449  ls -ltr results/20220714152458/|less
+  450  cd results/
+  451  ls -ltr results/20220714152458/|less
+  452  ls -ltr 20220714152458/|less
+  453  tar jcvf sth-ascaris-results-002.tbz 20220714152458
+  454  cd ntd-model-runner/
+  455  ls -ltr
+  456  git fetch
+  457  git pull origin master
+  458  git diff run-sth-ascaris-scenarios.bash 
+  459  git checkout run-sth-ascaris-scenarios.bash
+  460  git pull origin master
+  461  ls -l
+  462  git status
+  463  rm -rf __pycache__/ ascaris-check-scenario-reruns-2022071* ascaris-results-20220525145245.tbz 
+  464  ls -l
+  465  git status .
+  466  ls -l data/
+  467  ls -l data/output/
+  468  ls -l data/output/ntd/sth-002/
+  469  rm -rf data/ iu-disease-data/ test-runs-ascaris-reruns*
+  470  git status
+  471  cd sch-sth-tra/
+  472  ls -ltr
+  473  git status .
+  474  pip uninstall sch_simulation trachoma gcsfs pandas
+  475  pip install .
+  476  python run.py 
+  477  pip list
+  478  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xaa.csv -p source-data -f 202209b_burn_in -b 43 | head -1
+  479  time python3 -u run.py -d Man -g 1 -i ETH18945 -s 0_burn_in_2 -n 200 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  480  vi iu-disease-data/mansoniIUs_burn_in_xaa.csv
+  481  ps uxf
+  482  ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xaa.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  483  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xaa.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  484  ps uxfw
+  485  tail -f results/20220917213003/s0_burn_in_1-g001-NAM34260.out
+  486  htop -d 3
+  487  cd ntd-model-runner/sch-sth-tra/results/
+  488  ls -ltr
+  489  ls -ltr 20220917213003/
+  490  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213003/
+  491  cd ntd-model-runner/sch-sth-tra/
+  492  ls -ltr results/
+  493  ls -1 results/20220917213003/|wc -l
+  494  ps uxfw
+  495  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213003/
+  496  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213003/s0_burn_in_2-g030-MDG27873.out
+  497  tail ntd-model-runner/sch-sth-tra/results/20220917213003/s0_burn_in_2-g030-MDG27873.out
+  498  cd ntd-model-runner/sch-sth-tra/
+  499  git fetch
+  500  git pull origin master
+  501  pip list
+  502  ls -ltr
+  503  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43
+  504  nohup bash ./run-sch-sth-tra.bash -d Man -s 1 -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  505  ps uxfw
+  506  tail -f results/20220919124805/s1_2-g001-ETH18945.out
+  507  ls -ltr ntd-model-runner/sch-sth-tra/results/
+  508  ls -ltr ntd-model-runner/sch-sth-tra/results/20220919124805/
+  509  cd ntd-model-runner/sch-sth-tra/results/20220919124805/
+  510  ag real s1_2-g001-ETH18945.o
+  511  ag real s1_2-g001-ETH18945.out 
+  512  ag real s*.out
+  513  ls -ltr
+  514  ag real s*.out
+  515  tail s1_1-g003-SSD44325.out
+  516  tail -f s1_1-g003-SSD44325.out
+  517  ag real s*.out
+  518  echo $((5+4+5+4+6+4))
+  519  echo $((18+22+9+42+49+9+43))
+  520  echo "192 60 / p" | dc
+  521  echo "192 60 / p" | bc
+  522  echo $((192/60))
+  523  echo $((5+4+5+4+6+4+5))
+  524  cd ntd-model-runner/sch-sth-tra/results/20220919124805/
+  525  ls -ltr
+  526  ls -1
+  527  ls -1|wc -l
+  528  ls -ltr
+  529  ag real 
+  530  cd ntd-model-runner/sch-sth-tra/results/20220919124805/
+  531  ag real 
+  532  ag --no-filename real
+  533  ag --no-filename real |tr -d '\n'
+  534  ag --no-filename real |tr -d '\r'
+  535  ag --no-filename real |sed '/^$/d'
+  536  ag --no-filename real |sed '/^$/d'|wc -l
+  537  whoami
+  538  ls -ltr
+  539  cd ntd-model-runner/sch-sth-tra/results/
+  540  ls -ltr
+  541  cd 20220919124805/
+  542  ls -ltr
+  543  ls -1 | wc -l
+  544  head -50 ../../iu-disease-data/mansoniIUs_scenario0.csv 
+  545  ps ax|grep nohup
+  546  ps ax|grep bash
+  547  ps ax|grep run-sch-sth-tra.bash
+  548  ps ax|grep run-sch-sth-tra.bash|grep -v grep
+  549  ps uxfw|tail -20
+  550  ps uxfw|grep tee|grep -v grep
+  551  cd ntd-model-runner/sch-sth-tra/results/
+  552  ls -ltr
+  553  cd 20220919124805/
+  554  ls -ltr
+  555  ls -1 | wc -l
+  556  tail -f s1_1-g051-UGA49766.out
+  557  ls -l
+  558  ls -ltr
+  559  tail -f s1_2-g052-MDG27885.out
+  560  ls -1 | wc -l
+  561  ag real 
+  562  ag real | sed '/^$\n/d'
+  563  ag real | sed '/^$\n/d' | awk '{print $2}'
+  564  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}'
+  565  ag real | sed '/^$\n/d' | awk '{print $2}'
+  566  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}' | sort
+  567  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}'
+  568  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}' | sort -V
+  569  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}' | sort
+  570  ag real | sed '/^$\n/d' | awk '{print $2}' | awk -F m '{print $1}' | sort -V
+  571  ls -ltr | tail -1
+  572  ps uxfw|grep tee|grep -v grep
+  573  ps ax|grep sch-sth
+  574  ps ax|grep sch-sth|grep -v grep
+  575  ls -ltr | tail -1
+  576  ps ax|grep sch-sth|grep -v grep
+  577  ls -ltr | tail -1
+  578  tail -f s1_2-g068-MWI28953.out
+  579  ls -ltr | tail -1
+  580  tail -f s1_1-g069-NGA37045.out 
+  581  vi s1_1-g069-NGA37045.out
+  582  ag finishing s1_1-g069-NGA37045.out | sort
+  583  ag --no-numbers finishing s1_1-g069-NGA37045.out | sort
+  584  ag --no-numbers finishing s1_1-g069-NGA37045.out | sort -V
+  585  tail -f s1_1-g069-NGA37045.out 
+  586  ps uxfw
+  587  tail -f results/20220919124805/s1_2-g069-TZA46504.out
+  588  tail -f s1_2-g069-TZA46504.out
+  589  ps uxfw
+  590  kill -9 3038 57065
+  591  ps xufw
+  592  tail -f s1_2-g069-TZA46504.out
+  593  ls -ltr
+  594  tail -f s1_2-g069-TZA46504.out
+  595  ps xufw
+  596  exit
+  597  history > $(hostname)-history.txt

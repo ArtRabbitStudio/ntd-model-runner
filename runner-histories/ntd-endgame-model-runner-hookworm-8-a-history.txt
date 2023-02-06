@@ -1,0 +1,245 @@
+    1  cd ntd-model-runner/
+    2  git fetchj
+    3  git fetch
+    4  git pull origin master
+    5  pip uninstall sch_simulation && pip install .
+    6  vi test-runs-hookworm.bash 
+    7  git status
+    8  git pull origin master
+    9  history|grep nohup
+   10  vi test-runs-hookworm-8-core-a.bash 
+   11  bash test-runs-hookworm-8-core-a.bash | less
+   12  fg
+   13  nohup bash test-runs-hookworm-8-core-a.bash > /dev/null < /dev/null &
+   14  tail -0f results/20220617163513/s2_g1_NGA36997.out | ag finishing
+   15  tail -f results/20220617163513/s2_g1_NGA36997.out | ag finishing
+   16  tail -f results/20220617163513/s2_g1_NGA36997.out
+   17  pgrep
+   18  pgrep tee
+   19  ps -ef | grep 15135
+   20  ps -ef | grep tee | grep -v grep
+   21  ps -ef | grep tee | grep -v grep | awk '{print $7}'
+   22  ps -ef | grep tee | grep -v grep | awk '{print $10}'
+   23  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; tail $f ; sleep 5 ; done
+   24  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; tail -1 $f ; sleep 5 ; done
+   25  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; tail -1 $f ; sleep 5 ; done
+   26  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; tail -1 $f ; echo ; sleep 5 ; done
+   27  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; tail -1 $f ; echo ; sleep 10 ; done
+   28  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   29  ls -1 results/20220617163513/*.out | wc -l
+   30  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   31  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   32  ls -ltr results/20220617163513/|head
+   33  tail results/20220617163513/s2_g1_NGA36997.out 
+   34  ls -ltr results/20220617163513/|head
+   35  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   36  ls -ltr results/20220617163513/
+   37  tail results/20220617163513/s2_g9_ETH18864.out
+   38  ps xuf
+   39  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   40  ls -ltr
+   41  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   42  htop -d 3
+   43  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   44  htop -d 3
+   45  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   46  cd ntd-model-runner/
+   47  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   48  cd ntd-model-runner/
+   49  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   50  cd ntd-model-runner/
+   51  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   52  htop -d 3
+   53  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   54  ls -l results/20220617163513/s2_g*
+   55  ls -ltr results/20220617163513/s2_g*
+   56  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   57  cd ntd-model-runner/
+   58  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   59  tail -f results/20220617163513/s2_g1_NGA36997.out | ag finishing
+   60  ag finishing results/20220617163513/s2_g23_ERI17440.out |wc -l
+   61  cd ntd-model-runner/
+   62  ag finishing results/20220617163513/s2_g23_ERI17440.out |wc -l
+   63  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   64  cd ntd-model-runner/
+   65  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   66  htop -d 3
+   67  ps uxfw
+   68  ls -ltr ntd-model-runner/results/20220617163513/s2_g*
+   69  ls -ltr ntd-model-runner/results/20220617163513/s2_g* | wc -l
+   70  cd ntd-model-runner/
+   71  cd results/
+   72  ls -l
+   73  for s in 20220617*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done | sort
+   74  cd ntd-model-runner/
+   75  git fetch
+   76  git pull origin master
+   77  pip uninstall sch_simulation
+   78  pip install .
+   79  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   80  ls -l
+   81  ls -l results/
+   82  vi run-sch-scenario-1-3b.bash 
+   83  bash run-sch-scenario-1-3b.bash
+   84  ls -l results/
+   85  ls -l results/20220629185227/
+   86  fg
+   87  vi run-sch-scenario-1-3b.bash 
+   88  fg
+   89  bash run-sch-scenario-1-3b.bash
+   90  ls -l results/20220629185346/
+   91  ls -ltr results/20220629185346/
+   92  rm -rf results/20220629185*
+   93  vi run-sch-scenario-1-3b.bash 
+   94  git status
+   95  history|tail 
+   96  history|grep real
+   97  history|grep awk
+   98  history|grep find|tail\
+   99  history|grep awk|tail
+  100  cd ntd-model-runner/
+  101  git fetch
+  102  git pull origin master
+  103  ls -ltr
+  104  cd sch-sth-tra/
+  105  ls -ltr
+  106  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs.csv -p source-data-20220830-diggle -l
+  107  pip install .
+  108  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs.csv -p source-data-20220830-diggle -l
+  109  ls -ltr data/
+  110  ls -ltr
+  111  bash ./run-sch-sth-tra.bash -d Man -s 1,2b -n 10 -o 202208c -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -l
+  112  bash ./run-sch-sth-tra.bash -d Hook -s 1 -n 10 -o 202208c -i iu-disease-data/hookwormIUs.csv -p source-data -l
+  113  vi import-ius.py 
+  114  python import-ius.py 
+  115  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  116  fg
+  117  python import-ius.py iu-disease-data/ius-with-disease-data.tbz 
+  118  fg
+  119  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs.csv -p source-data-20220830-diggle -l
+  120  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs.csv -p source-data-20220830-diggle
+  121  fg
+  122  cd ntd-model-runner/
+  123  git fetch
+  124  git pull origin master
+  125  cd sch-sth-tra/
+  126  vi -o iu-disease-data/trachomaIUs.csv  iu-disease-data/trachomaIUs-sample.csv 
+  127  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l
+  128  ls -l data/input/
+  129  vi results/20220901131023/s2b-g001-SSD09234.out
+  130  vi results/20220901131023/s1-g001-SSD09234.out
+  131  fg
+  132  vi run-sch-sth-tra.bash 
+  133  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l
+  134  ls -l data/input/
+  135  rm -f data/input/*
+  136  fg 1
+  137  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l
+  138  ls -l pip uninstall trachoma
+  139  pip uninstall trachoma
+  140  pip install .
+  141  bash ./run-sch-sth-tra.bash -d Tra -s 1,2b -n 10 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l
+  142  ls -l /home/igor/.local/lib/python3.9/site-packages/trachoma/data/coverage/scen*.csv
+  143  rm -rf data/output/ntd/202208c/
+  144  bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l -u
+  145  ls -l data/output/ntd/202208c/trachoma/
+  146  rm -rf data/output/ntd/202208c/
+  147  fg
+  148  bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l -u
+  149  ls -l data/output/ntd/202208c/trachoma/scenario_1/
+  150  ls -l data/output/ntd/202208c/trachoma/scenario_1/COD/
+  151  ls -l data/output/ntd/202208c/trachoma/scenario_1/COD/COD14162/
+  152  cd data/output/ntd/202208c/
+  153  cd trachoma/
+  154  tar jcvf sample-trachoma-outputs-20220901a.tbz 
+  155  tar jcvf sample-trachoma-outputs-20220901a.tbz .
+  156  rm sample-trachoma-outputs-20220901a.tbz 
+  157  tar jcvf sample-trachoma-outputs-20220901a.tbz scenario_*
+  158  ls -l
+  159  mv sample-trachoma-outputs-20220901a.tbz ~
+  160  fg
+  161  cd ntd-model-runner/
+  162  git fetch
+  163  git pull origin master
+  164  cd sch-sth-tra/
+  165  rm -rf data/output/ntd/202208c/
+  166  nohup bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l -u 2>/dev/null </dev/null > trachoma-diggle-20220902a.out &
+  167  tail -f trachoma-diggle-20220902a.out 
+  168  fg
+  169  ps ux
+  170  ps uxfw
+  171  kill -9 1231 725
+  172  ps uxfw
+  173  kill -9 1401 1403
+  174  ps uxfw
+  175  ps
+  176  ps ux
+  177  cd ntd-model-runner/
+  178  ls -l data/output/ntd/
+  179  ls -l data/output/ntd/sch-001/
+  180  fg
+  181  cd ntd-model-runner/
+  182  git fetch
+  183  git pull origin master
+  184  pip uninstall trachoma
+  185  pip install .
+  186  cd trachoma/
+  187  pip install .
+  188  cd ../sch-sth-tra/
+  189  pip install .
+  190  nohup bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l -u 2>/dev/null </dev/null > trachoma-diggle-20220902a.out &
+  191  jobs
+  192  ps uxf
+  193  fg
+  194  ps ux
+  195  rm -rf data/output/ntd/202208c/
+  196  ls -l ../data/output/
+  197  ls -l ..
+  198  rm -rf ../data/ ../__pycache__/ ../results/
+  199  ls -l
+  200  history|grep nohup
+  201  rm -rf data/output/ntd/202208c
+  202  nohup bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202208c -i iu-disease-data/trachomaIUs-sample.csv -p source-data-20220830-diggle -l -u 2>&1 >/dev/null </dev/null  &
+  203  ps uxfw
+  204  tail -0f results/20220902151712/s1-g000-SSD44357.out
+  205  tail -f results/20220902151712/s1-g000-SSD44357.out
+  206  ps uxf
+  207  find ./data/output/ntd/202208c -type f
+  208  find ./data/output/ntd/202208c -type f | sort -V
+  209  history|grep tar 
+  210  history 
+  211  cd vi trachoma-diggle-20220902a.out 
+  212  cd ntd-model-runner/sch-sth-tra/
+  213  ls -l
+  214  cd data/output/ntd/202208c/
+  215  ls -l
+  216  cd trachoma/
+  217  ls -l
+  218  tar jcvf sample-trachoma-outputs-20220902a.tbz scenario_*
+  219  sudo apt-get install pbzip2
+  220  man tar
+  221  rm sample-trachoma-outputs-20220902a.tbz 
+  222  tar -I pbzip2 cvf sample-trachoma-outputs-20220902a.tbz scenario_*
+  223  tar -I pbzip2 -cvf sample-trachoma-outputs-20220902a.tbz scenario_*
+  224  mv sample-trachoma-outputs-20220902a.tbz ~/
+  225  history|grep bash|tail
+  226  cd ntd-model-runner/sch-sth-tra/
+  227  bash ./run-sch-sth-tra.bash -d Tra -s 1 -n 10 -o 202208c -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti -l -u
+  228  git fetch
+  229  git pull origin master
+  230  bash ./run-sch-sth-tra.bash -d Tra -s 1 -n 10 -o 202208c -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti -l -u
+  231  history|grep bash|tail
+  232  history|grep Tra
+  233  history|grep nohup
+  234  history|grep -w iti
+  235  ping 10.73.208.7
+  236  ping 10.73.208.3
+  237  mysql 
+  238  mysql -h 10.73.208.3 
+  239  psq
+  240  sudo apt-cache search psql
+  241  sudo apt-get install postgresql-client-13
+  242  psql -U ntd -h 10.73.208.7
+  243  psql -U  ntd-endgame-prod -h 10.73.208.7 
+  244  psql -U postgres -h 10.73.208.7 
+  245  history > $(hostname)-history.txt

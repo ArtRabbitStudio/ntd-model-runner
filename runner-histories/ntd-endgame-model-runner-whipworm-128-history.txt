@@ -1,0 +1,478 @@
+    1  git fetch
+    2  cd ntd-model-runner/
+    3  git fetch
+    4  git pull origin master
+    5  nohup bash test-runs-whipworm.bash > /dev/null < /dev/null &
+    6  ps uxf
+    7  tail -f results/20220525145328/s1_g1_ETH18914.out
+    8  ls -l results/
+    9  cd ntd-model-runner/
+   10  tail -f results/20220525145328/s1_g1_ETH18914.out
+   11  cd ntd-model-runner/
+   12  ls -ltr results/
+   13  ls -ltr results/20220525145328/
+   14  cd ntd-model-runner/
+   15  ls -ltr results/20220525145328/
+   16  ps uxf
+   17  tail -f results/20220525145328/s1_g5_RWA38141.out
+   18  ps uxf
+   19  tail -f results/20220525145328/s1_g92_ZWE52940.out
+   20  cd ntd-model-runner/
+   21  tail -f results/20220525145328/s1_g92_ZWE52940.out
+   22  cd ntd-model-runner
+   23  ls -ltr results/20220525145328/|tail -5
+   24  cd ntd-model-runner/results/20220525145328/
+   25  ps uxf
+   26  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq | wc -l
+   27  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq
+   28  cd ntd-model-runner/results/20220525145328/
+   29  ag --no-filename 'from cloud storage' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed -e 's/^.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g' -e 's/ from cloud storage//g'
+   30  ag --no-filename 'reading in parameters' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed 's/.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g'
+   31  ps uxf
+   32  cd ntd-model-runner/results/20220525145328/
+   33  ag --no-filename 'reading in parameters' $( ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq|sed -e 's/^/s1*/g' -e 's/$/.out/') | sed 's/.*diseases/https:\/\/storage.googleapis.com\/ntd-disease-simulator-data\/diseases/g'
+   34  ag -l 'ValueError'
+   35  ps uxf
+   36  whoami
+   37  ls -ltr
+   38  ps uxf
+   39  cd ntd-model-runner/
+   40  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq | wc -l
+   41  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq 
+   42  ag -l 'ValueError'
+   43  cd results/
+   44  ag -l 'ValueError'
+   45  ag -l 'ValueError' |cut -f 3 -d _|cut -f 1 -d .| sort|uniq 
+   46  cd ntd-model-runner/results/20220525145328/
+   47  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq >> ../../test-runs-hookworm-reruns.bash
+   48  vi ../../test-runs-hookworm-reruns.bash
+   49  rm ../../test-runs-hookworm-reruns.bash
+   50  cd ../../
+   51  cp test-runs-whipworm.bash test-runs-whipworm-reruns.bash 
+   52  cd -
+   53  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq >> ../../test-runs-whipworm-reruns.bash 
+   54  vi ../../test-runs-whipworm-reruns.bash
+   55  ps uxf
+   56  cd ntd-model-runner/results/20220525145328/
+   57  ag -l "'a' cannot be empty unless no" |sed -e 's/^s[123]_g//g' -e 's/\.out$//g' -e 's/_/:/g' |sort|uniq
+   58  cd ../../
+   59  vi test-runs-whipworm-reruns.bash 
+   60  git fetch
+   61  git pull origin master
+   62  pip uninstall sch_simulation
+   63  pip install .
+   64  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   65  nohup bash test-runs-whipworm-reruns.bash > /dev/null < /dev/null &
+   66  ps uxf
+   67  tail -0f results/20220527112201/s1_g114_ETH18954.out
+   68  pip uninstall sch_simulation
+   69  pip install .
+   70  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+   71  ls -ltr results/
+   72  fg
+   73  bg
+   74  ps uxf
+   75  tail -f results/20220527112201/s2_g114_ETH18954.out
+   76  fg
+   77  ps uxf
+   78  nohup bash test-runs-whipworm-reruns.bash > /dev/null < /dev/null &
+   79  ls -ltr results/
+   80  ls -ltr results/20220527112552/
+   81  ps uxf
+   82  tail -0f results/20220527112552/s1_g114_ETH18954.out
+   83  ps uxf
+   84  tail -0f results/20220527112552/s2_g114_ETH18954.out
+   85  ps uxf
+   86  tail -0f results/20220527112552/s3_g114_ETH18954.out
+   87  ps uxf
+   88  ps ux
+   89  ps uxf
+   90  ps uxfw
+   91  ps uxfww
+   92  ps uxfw
+   93  ls -l ntd-model-runner/results/20220630082950/
+   94  ps uxfw
+   95  htop -d 3
+   96  ls -l ~/.config/
+   97  ls -l ~/.config/htop/
+   98  ls -l ~/.config/htop/htoprc 
+   99  mv ~/.config/htop/htoprc ~/.config/htop/htoprc.bog
+  100  htop -d 3
+  101  ps uxfw
+  102  htop -d 3
+  103  ls -l ntd-model-runner/results/20220630082950/
+  104  rm -rf ntd-model-runner/results/20220630082950/
+  105  cd ntd-model-runner/
+  106  ls -ltr
+  107  git fetch
+  108  git pull origin master
+  109  ls -l
+  110  pip uninstall sch_simulation
+  111  pip install .
+  112  vi /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+  113  vi run-sch-scenario-1-3b.bash 
+  114  bash run-sch-scenario-1-3b.bash
+  115  fg
+  116  vi run-sch-scenario-1-3b.bash 
+  117  ls -l results/
+  118  ls -l results/20220630082900/
+  119  ls -l results/20220630082900/s1-g001-CAF09652.out 
+  120  cat results/20220630082900/s1-g001-CAF09652.out
+  121  ls -l results/20220630082900/
+  122  rm -rf results/20220630082900/
+  123  vi run-sch-scenario-1-3b.bash 
+  124  bash run-sch-scenario-1-3b.bash
+  125  ps uxfw
+  126  ls -l data/input/
+  127  date
+  128  ls -ltr data/input/
+  129  rm -rf data/input/*Man*
+  130  cd ntd-model-runner/
+  131  git fetch
+  132  git pull origin master
+  133  pip uninstall sch_simulation
+  134  pip install .
+  135  vi  /home/igor/.local/lib/python3.9/site-packages/sch_simulation/helsim_RUN_KK.py 
+  136  git fetch
+  137  git pull origin master
+  138  ls -ltr results/
+  139  vi run-sth-trichuris-scenarios.bash 
+  140  bash run-sth-trichuris-scenarios.bash 
+  141  ls -ltr results/
+  142  ls -ltr results/20220705173053/
+  143  ls -ltr results/20220705173053/s1-g001-ETH18914.out 
+  144  vi results/20220705173053/s1-g001-ETH18914.out
+  145  rm -rf results/20220705173053/
+  146  fg
+  147  bash run-sth-trichuris-scenarios.bash 
+  148  fg
+  149  ls -ltr results/
+  150  ls -ltr results/20220705173212/
+  151  rm -rf results/20220705173212/
+  152  nohup bash run-sth-trichuris-scenarios.bash > /dev/null < /dev/null &
+  153  ps uxfw
+  154  htop -d 3
+  155  ls -ltr
+  156  cd ntd-model-runner/
+  157  ls -ltr results/
+  158  ls -ltr results/20220705173403/s1-g*
+  159  ag -w real results/20220705173403/s1-g*
+  160  tail -f results/20220705173403/s1-g164-BDI06400.out
+  161  ps uxfw
+  162  tail -f results/20220705173403/s1-g165-RWA38118.out
+  163  ag -w real results/20220705173403/*
+  164  date
+  165  ag -w real results/20220705173403/*
+  166  cd ntd-model-runner/
+  167  ag -w real results/20220705173403/*
+  168  ps uxfw
+  169  whoami
+  170  ls -ltr
+  171  cd ntd-model-runner/
+  172  ls -ltr results/
+  173  ls -ltr results/20220705173403/
+  174  cd results/
+  175  tar jcvf sth-001-whipworm-results.tbz 20220705173403/
+  176  ls -l
+  177  ls /home/igor/ntd-model-runner/results/sth-001-whipworm-results.tbz 
+  178  cd ntd-model-runner/
+  179  git fetch
+  180  git pull origin master
+  181  pip uninstall sch_simulation
+  182  pip install .
+  183  vi run-sth-trichuris-scenarios.bash 
+  184  fg
+  185  vi run-sth-trichuris-scenarios.bash 
+  186  nohup bash run-sth-trichuris-scenarios.bash > /dev/null < /dev/null &
+  187  ps uxfw |grep .out|grep -v grep
+  188  tail -0f results/20220714152532/s1-g001-ETH18914.out
+  189  htop -d 3
+  190  ps uxfw
+  191  ps ux
+  192  htop -d 3
+  193  ls -ltr ntd-model-runner/results/
+  194  ls -ltr ntd-model-runner/results/20220714152532/ | tail 
+  195  ls -ltr ntd-model-runner/results/20220714152532/s3b-g170-BDI06389.out
+  196  tail ntd-model-runner/results/20220714152532/s3b-g170-BDI06389.out
+  197  ps uxfw
+  198  ls -ltr
+  199  cd ntd-model-runner/results/
+  200  ls -ltr
+  201  ls -ltr 20220714152532/
+  202  tar jcvf sth-whipworm-results-002.tbz 20220714152532/
+  203  cd ntd-model-runner/
+  204  ls -l
+  205  git fetch
+  206  git status
+  207  git diff
+  208  git status
+  209  git checkout run-sch-scenario-1-3b.bash run-sth-trichuris-scenarios.bash
+  210  vi test-runs-whipworm-reruns.bash 
+  211  ls -ltest-runs-whipworm-reruns.bash
+  212  ls -l test-runs-whipworm-reruns.bash
+  213  rm test-runs-whipworm-reruns.bash
+  214  git pull origin mas
+  215  git pull origin master
+  216  ls -l
+  217  cd sch-sth/
+  218  ls -l
+  219  cd ..
+  220  rm -rf __pycache__/
+  221  ls -l
+  222  cd sch-sth/
+  223  ls -ltr
+  224  cd ntd-model-runner/
+  225  git pull origin master
+  226  cd sch-sth/
+  227  vi run-sth-trichuris-scenarios-groups-92-99.bash 
+  228  bash run-sth-trichuris-scenarios-groups-92-99.bash
+  229  fg
+  230  nohup bash run-sth-trichuris-scenarios-groups-92-99.bash > /dev/null < /dev/null &
+  231  ps uxfw | grep .out
+  232  fg
+  233  vi run-sth-trichuris-scenarios-groups-92-99.bash 
+  234  ls -ltr results/
+  235  ls -ltr results/20220805140220/
+  236  ls -ltr results/20220805140220/s1-g092-ZWE52940.out 
+  237  tail results/20220805140220/s1-g092-ZWE52940.out
+  238  ls -ltr results/20220805140151
+  239  rm -rf results/20220805140*
+  240  whoami
+  241  ls -ltr
+  242  nohup bash run-sth-trichuris-scenarios-groups-92-99.bash > /dev/null < /dev/null &
+  243  ps uxfw | grep .out
+  244  tail -f results/20220805140314/s1-g092-ZWE52940.out
+  245  ps uxfw|grep .out
+  246  ls -ltr results/20220805140314/
+  247  ps uxfw
+  248  tail results/20220805140314/s3b-g099-CMR07496.out
+  249  ps uxfw
+  250  tail results/20220805140314/s3b-g099-CMR07496.out
+  251  tail -0f  results/20220805140314/s3b-g099-CMR07496.out
+  252  ps uxfw
+  253  ls -ltr results/
+  254  tar jcvf sth-whipworm-timings-20220805.tbz  results/20220805140314/
+  255  ls -l\
+  256  ls -ltr
+  257  ls -la
+  258  cat .profile 
+  259  cd ntd-model-runner/
+  260  ls -ltr
+  261  git fetch
+  262  ls -l
+  263  cd sch-sth/
+  264  ls -ltr
+  265  cd ..
+  266  ls -ltr
+  267  git pull origin master
+  268  git diff sch-sth/run-sth-trichuris-scenarios-groups-92-99.bash 
+  269  git checkout sch-sth/run-sth-trichuris-scenarios-groups-92-99.bash
+  270  git pull origin master
+  271  ls -ltr
+  272  git log sch-sth
+  273  git log -p sch-sth
+  274  ls -l sch-sth
+  275  ls -l
+  276  ls -l lf/
+  277  rm -rf sch-sth
+  278  cd sch-sth-tra/
+  279  ls -ltr
+  280  pwd
+  281  cd ntd-model-runner/sch-sth-tra/
+  282  ls -ltr
+  283  pip install .
+  284  bash ./run-sch-sth-tra.bash -d Tra -s 1 -n 10 -o 202208c -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti -l -u
+  285  vi iu-disease-data/trachomaIUs-iti.csv 
+  286  history|grep mysql
+  287  mysql -u ntd -p -h ${DB_HOST} 
+  288  python import-ius.py iu-disease-data/tra-Trachoma-Tra-iti.txt 
+  289  vi run-sch-sth-tra.bash 
+  290  vi iu-disease-data/trachomaIUs-iti.csv 
+  291  bash ./run-sch-sth-tra.bash -d Tra -s 1 -n 200 -o 202208c -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti -l -u
+  292  vi ./data/output/ntd/202208c/trachoma/scenario_1/BDI/BDI06385/ihme-BDI06385-trachoma-scenario_1-200_simulations.csv
+  293  git status .
+  294  vi run-sch-sth-tra.bash 
+  295  git status .
+  296  vi run-sch-sth-tra.bash 
+  297  fg
+  298  cd ntd-model-runner/
+  299  ls
+  300  git fetch
+  301  git pull origin master
+  302  git diff sch-sth-tra/run-sch-sth-tra.bash 
+  303  git checkout sch-sth-tra/run-sch-sth-tra.bash
+  304  git pull origin master
+  305  cd sch-sth-tra/
+  306  ls -ltr
+  307  bash ./run-sch-sth-tra.bash -d Tra -s 1 -n 200 -o 202208c -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti
+  308  gsutil cp gs://ntd-endgame-result-data/ntd/202208c/trachoma/scenario_1/BDI/BDI06385/ihme-BDI06385-trachoma-scenario_1-200_simulations.csv.bz2 pog
+  309  vi pog 
+  310  mv pog pog.bz2
+  311  vi pog.bz2 
+  312  rm pog.bz2
+  313  ls -l
+  314  fg
+  315  pip help
+  316  pip list
+  317  pip list -v
+  318  vi /home/igor/.local/lib/python3.9/site-packages/trachoma/data/coverage/scen*.csv
+  319  ls /home/igor/.local/lib/python3.9/site-packages/trachoma/data/coverage/scen*.csv
+  320  fg
+  321  pip uninstall trachoma
+  322  pip install .
+  323  ls /home/igor/.local/lib/python3.9/site-packages/trachoma/data/coverage/scen*.csv
+  324  ls -l /home/igor/.local/lib/python3.9/site-packages/trachoma/data/coverage/scen*.csv
+  325  nohup bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202208c -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti >/dev/null </dev/null &
+  326  ps ux
+  327  ps uxfw
+  328  tail -f results/20220906103810/s1-g000-BDI06385.out
+  329  ps uxf
+  330  fg
+  331  jobs
+  332  ps uxf
+  333  kill 3782
+  334  ps uxf
+  335  history|grep nohup
+  336  nohup bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202209a -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti >/dev/null </dev/null &
+  337  ps uxf
+  338  cd ntd-model-runner/sch-sth-tra/
+  339  nohup bash ./run-sch-sth-tra.bash -d Tra -s 1,2a,2b,2c -n 200 -o 202209a -i iu-disease-data/trachomaIUs-iti.csv -p source-data-20220830-iti >/dev/null </dev/null &
+  340  ps uxf
+  341  tail -f results/20220906104853/s1-g000-BEN03222.out
+  342  cd ntd-model-runner/sch-sth-tra/
+  343  tail -f results/20220906104853/s1-g000-BEN03222.out
+  344  ps uxf
+  345  ls -ltr
+  346  cd ntd-model-runner/
+  347  ls -ltr
+  348  cd sch-sth-tra/results/
+  349  ls -ltr
+  350  cd 20220906104853
+  351  ls -l
+  352  ls -1 | wc -l
+  353  echo $((10004/4))
+  354  ag error
+  355  cd ../../
+  356  ls -ltr
+  357  cd
+  358  ls -ltr
+  359  mkdir endgame-ihme-ipm-exports-trachoma-export-20220908a
+  360  cd endgame-ihme-ipm-exports-trachoma-export-20220908a
+  361  history|grep gsutil
+  362  gsutil -m ls gs://ntd-disease-simulator-data/ntd/202209a/
+  363  gsutil -m ls gs://ntd-endgame-result-data/ntd/202209a/
+  364  gsutil -m ls gs://ntd-endgame-result-data/ntd/202209a/trachoma/
+  365  gsutil -m ls gs://ntd-endgame-result-data/ntd/202209a/trachoma/**/*.bz2 | wc -l
+  366  gsutil -m cp gs://ntd-endgame-result-data/ntd/202209a/trachoma/**/*.bz2 .
+  367  parallel bunzip ::: *.bz2
+  368  sudo apt-get install parallel
+  369  parallel bunzip ::: *.bz2
+  370  parallel bunzip2 ::: *.bz2
+  371  df -h
+  372  ls -1 *.csv | wc -l
+  373  cd ..
+  374  rm -rf endgame-ihme-ipm-exports-trachoma-export-20220908a/
+  375  df -h
+  376  pwd
+  377  history|grep gsutil
+  378  history|grep mkdir|tail
+  379  history|grep parallel|tail
+  380  ps 
+  381  ps ux
+  382  history
+  383  ag TestSpecificity ntd-model-runner/
+  384  cd ntd-model-runner/
+  385  git fetch
+  386  git pull origin master
+  387  git status .
+  388  rm -rf data/
+  389  ls -l
+  390  cd sch-sth-tra/
+  391  ls -ltr
+  392  pip uninstall sch_simulation trachoma gcsfs pandas 
+  393  pip install .
+  394  pip list
+  395  DISPLAY_CMD=y bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xad.csv -p source-data -f 202209b_burn_in -b 43 | head -1
+  396  time python3 -u run.py -d Man -g 107 -i ERI17467 -s 0_burn_in_1 -n 200 -m KenyaKDHS -o 202209b -p source-data -f 202209b_burn_in -b 43
+  397  fg
+  398  vi iu-disease-data/mansoniIUs_burn_in_xad.csv
+  399  nohup bash ./run-sch-sth-tra.bash -d Man -s 0_burn_in -n 200 -o 202209b -i iu-disease-data/mansoniIUs_burn_in_xad.csv -p source-data -f 202209b_burn_in -b 43 >/dev/null </dev/null &
+  400  ps uxfw
+  401  tail -f results/20220917213207/s0_burn_in_1-g108-UGA49731.out
+  402  htop -d 3
+  403  cd ntd-model-runner/sch-sth-tra/results/
+  404  ls -ltr 202209
+  405  ls -ltr 
+  406  ls -ltr 20220917213207
+  407  tail -f 20220917213207/s0_burn_in_1-g108-UGA49731.out 
+  408  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213207/
+  409  date
+  410  cd ntd-model-runner/sch-sth-tra/
+  411  ls -ltr results/
+  412  ls -d results/202209[^1]*
+  413  ls -ld results/202209[^1]*
+  414  ls -ld results/20220906104853/
+  415  ls -l results/20220906104853/|head -10
+  416  history|grep trachoma
+  417  ls -l results/20220906104853/s1-g000-BDI06398.out 
+  418  vi results/20220906104853/s1-g000-BDI06398.out
+  419  rm -rf results/2022090*
+  420  ls -ltr results/
+  421  ls -ltr results/20220917213207/
+  422  ls -1ltr results/20220917213207/
+  423  ls -1tr results/20220917213207/
+  424  ls -1tr results/20220917213207/|wc -l
+  425  cd ntd-model-runner/sch-sth-tra/
+  426  ls -1tr results/20220917213207/|wc -l
+  427  ls -1tr results/20220917213207/
+  428  ls -1tr results/20220917213207/s0_burn_in_2-g147-MWI28959.out
+  429  tail results/20220917213207/s0_burn_in_2-g147-MWI28959.out
+  430  tail results/20220917213207/s0_burn_in_1-g144-UGA49789.out
+  431  tail results/20220917213207/s0_burn_in_2-g147-MWI28959.out
+  432  ps uxfw
+  433  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213207/
+  434  nohup bash ./run-sch-sth-tra.bash -d Man -s 3b -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  435  cd ntd-model-runner/sch-sth-tra/
+  436  git fetch
+  437  git pull origin master
+  438  nohup bash ./run-sch-sth-tra.bash -d Man -s 3b -n 200 -o 202209b -i iu-disease-data/mansoniIUs_scenario0.csv -p source-data -r 202209b_burn_in -b 43 >/dev/null </dev/null &
+  439  ps uxfw
+  440  tail -200f results/20220919125422/s3b_2-g001-ETH18945.out
+  441  cat ../check-progress.bash 
+  442  cd ntd-model-runner/sch-sth-tra/
+  443  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213207/
+  444  cd -
+  445  ls -ltr ntd-model-runner/sch-sth-tra/results/20220917213207/
+  446  cd ntd-model-runner/sch-sth-tra/results/20220917213207/
+  447  gcloud compute images list --no-standard-images
+  448  cd ntd-model-runner/sch-sth-tra/
+  449  ls -ltr
+  450  cd results/
+  451  ls -ltr
+  452  cd 20220919125422/
+  453  ls -ltr
+  454  ls -1 | wc -l
+  455  ag real s3b_2-g001-ETH18945.out
+  456  cd ntd-model-runner/sch-sth-tra/results/20220919125422/
+  457  ls -ltr | tail -1
+  458  ls -1 | wc -l
+  459  ps uxfw
+  460  ps ax|grep sch-sth
+  461  ps 
+  462  tail -10f results/20220919125422/s3b_2-g080-ETH18641.out
+  463  tail -10f s3b_2-g080-ETH18641.out
+  464  ps ax|grep sch-sth
+  465  kill -9 2159
+  466  ps uxfw
+  467  ls -ltr
+  468  tail s3b_2-g080-ETH18641.out
+  469  ls -ltr
+  470  ps uxfw
+  471  history|grep Tra
+  472  wc -l ntd-model-runner/sch-sth-tra/iu-disease-data/trachomaIUs-iti.csv
+  473  history
+  474  history|grep Tri
+  475  history|grep nohup
+  476  find ntd-model-runner/ -name run-sth-trichuris-scenarios.bash
+  477  vi -R ntd-model-runner/sch-sth-tra/old-runners/run-sth-trichuris-scenarios.bash
+  478  history > $(hostname)-history.txt

@@ -1,0 +1,29 @@
+    1  cd ntd-model-runner/
+    2  git fetch
+    3  git pull origin mas
+    4  git pull origin master
+    5  pip uninstall sch_simulation && pip install .
+    6  vi test-runs-hookworm.bash 
+    7  git status
+    8  git pull origin master
+    9  vi test-runs-hookworm-8-core-b.bash 
+   10  bash test-runs-hookworm-8-core-b.bash | lesas
+   11  bash test-runs-hookworm-8-core-b.bash | less
+   12  fg
+   13  nohup bash test-runs-hookworm-8-core-b.bash > /dev/null < /dev/null &
+   14  tail -f results/20220617163529/s2_g44_RWA38125.out | ag finishing
+   15  tail -f results/20220617163529/s2_g44_RWA38125.out 
+   16  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; tail -1 $f ; echo ; sleep 5 ; done
+   17  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; tail -1 $f ; echo ; sleep 10 ; done
+   18  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo $f ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   19  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163513/*.out | wc -l) $f" ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   20  ls -l results/20220617163529/
+   21  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163529/*.out | wc -l) $f" ; date ; tail -1 $f ; echo ; sleep 10 ; done
+   22  while true ; do f=$(ps -ef | grep tee | grep -v grep | awk '{print $10}' ) ; echo "$(ls -1 results/20220617163529/*.out | wc -l) $f" ; date ; tail -2 $f ; echo ; sleep 10 ; done
+   23  ls -ltr
+   24  ls -ltr results/
+   25  ls -ltr results/20220617163529/
+   26  cd ntd-model-runner/results/
+   27  ls -l
+   28  for s in 20220617*/* ; do TIME=$(ag --no-numbers --no-filename -w real $s | awk '{print $2}') ; IU=$(echo ${s:15:-4}|cut -f 3 -d _) ; echo $IU $TIME ; done | sort
+   29  history > $(hostname)-history.txt
