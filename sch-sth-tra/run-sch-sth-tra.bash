@@ -39,6 +39,7 @@ DISEASE_SHORT_NAMES_TO_CODES["Tri"]="sth-whipworm"
 DISEASE_SHORT_NAMES_TO_CODES["Asc"]="sth-roundworm"
 DISEASE_SHORT_NAMES_TO_CODES["Hook"]="sth-hookworm"
 DISEASE_SHORT_NAMES_TO_CODES["Man"]="sch-mansoni"
+DISEASE_SHORT_NAMES_TO_CODES["Onc"]="epioncho"
 
 declare -A DISEASE_SHORT_NAMES_TO_MODEL
 DISEASE_SHORT_NAMES_TO_MODEL["Tra"]="trachoma"
@@ -46,6 +47,7 @@ DISEASE_SHORT_NAMES_TO_MODEL["Tri"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Asc"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Hook"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Man"]="sch_simulation"
+DISEASE_SHORT_NAMES_TO_MODEL["Onc"]="epioncho-ibm"
 
 function usage() {
     echo "usage: ${0}"
@@ -290,6 +292,14 @@ function run_scenarios () {
                     group=$( echo "$line" | cut -f 1 -d , | cut -f 1 -d _ )
                     sub_scenario=$( echo "$line" | cut -f 4 -d , | tr -d '\r')
                     full_scenario="${scenario}_${sub_scenario}"
+                    cmd_options="-g ${group} -i ${iu} -s ${full_scenario}"
+                    ;;
+
+                Onc)
+                    #iu=$( echo "$line" | cut -f 3 -d , )
+                    iu=${line}
+                    group=0
+                    full_scenario="${scenario}"
                     cmd_options="-g ${group} -i ${iu} -s ${full_scenario}"
                     ;;
                 

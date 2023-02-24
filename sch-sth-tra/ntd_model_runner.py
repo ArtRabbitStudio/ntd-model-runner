@@ -20,6 +20,7 @@ from sch_simulation.helsim_RUN_KK import *
 from sch_simulation.helsim_FUNC_KK import *
 
 from run_trachoma import run_trachoma_model
+from run_epioncho import run_epioncho_model
 
 # constants
 INSTITUTION_TYPE_IHME = 'ihme'
@@ -49,7 +50,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     if not hasattr( run_options, 'groupId' ) or run_options.groupId is None:
         # trachoma doesn't have groups
-        if species != "Trachoma":
+        if species not in [ 'Trachoma', 'Epioncho' ]:
             raise MissingArgumentError( 'run_options.groupId' )
 
     if not hasattr( run_options, 'numSims' ) or run_options.numSims is None:
@@ -74,6 +75,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         'Hookworm': 'hookworm',
         'Mansoni': 'mansoni',
         'Trachoma': 'trachoma',
+        'Epioncho': 'epioncho',
     }[ species ]
 
     GcsPrefix = {
@@ -82,6 +84,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         'Hookworm': f"{run_info.type}-",
         'Mansoni': f"{run_info.type}-",
         'Trachoma': '',
+        'Epioncho': '',
     }[ species ]
 
     DISEASE_CLOUD_ROOT = f'diseases/{GcsPrefix}{GcsSpecies.lower()}'
@@ -138,6 +141,9 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
         cloudModule = GCS if run_options.useCloudStorage else None
         return run_trachoma_model( iu, run_options.scenario, run_options.numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
+
+    if species == 'Epioncho':
+        return run_epioncho_model( iu, run_options.scenario, run_options.numSims, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
 
     # locate pickle file for IU
     pickleReadSuffix = f"_{readPickleFileSuffix}" if readPickleFileSuffix != None else ""
