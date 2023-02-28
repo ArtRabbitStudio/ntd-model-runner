@@ -29,9 +29,6 @@ fi
 # try to read a provided run timestamp, default to now()
 RUN_STAMP=${RUN_STAMP:=$( date +%Y%m%d%H%M%S )}
 
-# destination below ${OUTPUT_ROOT} where the outputs should be saved, e.g. 202208b
-output_folder_name="${1}"
-
 # work out how many jobs to run in parallel based on environment variable
 NUM_PARALLEL_JOBS=${NUM_PARALLEL_JOBS:=default}
 if [[ "${NUM_PARALLEL_JOBS}" = "default" ]] ; then
@@ -50,6 +47,10 @@ fi
 
 # print out run-stamp info
 echo "-> running Epioncho model at ${RUN_STAMP} using ${NUM_PARALLEL_JOBS} parallel jobs"
+
+# destination below ${OUTPUT_ROOT} where the outputs should be saved, e.g. 202208b
+output_folder_name="${1}"
+
 # shellcheck disable=SC2086
 echo "-> saving output into ${output_folder_name}" >&2
 

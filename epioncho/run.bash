@@ -261,7 +261,7 @@ select CHOICE in yes no ; do
 					GCS_OUTPUT_DATA_ROOT="${GCS_OUTPUT_DATA_ROOT}" \
 					RUN_TITLE="${RUN_TITLE}" \
 					GCS_DESTINATION="${GCS_DESTINATION}" \
-				bash ./run-in-parallel.bash "${LOCAL_OUTPUT_ROOT}/${RUN_TITLE}" \
+				bash ./run-in-parallel.bash "${OUTPUT_DATA_PATH}" \
 					2>&1 \
 					> "${PROJECT_ROOT_DIR}/${LOG_FILE}" \
 					< /dev/null \
