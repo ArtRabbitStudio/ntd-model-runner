@@ -52,9 +52,10 @@ echo "-> running Epioncho model at ${RUN_STAMP} using ${NUM_PARALLEL_JOBS} paral
 output_folder_name="${1}"
 
 # shellcheck disable=SC2086
-echo "-> saving output into ${output_folder_name}" >&2
+echo "-> saving output into ${OUTPUT_DATA_PATH}" >&2
 
 # run the job in parallel
+# TODO include all IUs
 NUM_SIMULATIONS=${NUM_SIMULATIONS:=5} \
 	parallel ${JOBS_ARG} -a <(head -50 ${IU_LIST_FILE}) \
 	pipenv run bash run-epioncho-model.bash
