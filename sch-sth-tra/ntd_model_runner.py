@@ -169,7 +169,9 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     coverageTextFileStorageName = f'/tmp/{short}_{iu}_MDA_vacc.txt'
 
     # locate & check parameter file for selected disease/scenario
-    run_options.paramFileName = f'{disease.upper()}_params/{species.lower()}_scenario_{run_options.scenario}.txt'
+    paramFileDirectory = f'{disease.upper()}_params'
+    paramFileName = 'mansoni_params.txt' if species.lower() == 'mansoni' else f'{species.lower()}_scenario_{run_options.scenario}.txt'
+    run_options.paramFileName = f'{paramFileDirectory}/{paramFileName}'
     paramFilePath = f'{MODEL_DATA_DIR}/{run_options.paramFileName}'
 
     if not os.path.exists( paramFilePath ):
@@ -188,6 +190,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         demogName = demogName,
         paramFileName = run_options.paramFileName,
         numSims = run_options.numSims,
+        surveyType = surveyType,
         cloudModule = GCS if run_options.useCloudStorage else None,
         runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
         burnInTime = burnInTime
