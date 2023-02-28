@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import signal
 import base64
 
@@ -48,6 +48,15 @@ def get_cli_options():
 # check options provided via CLI
 def check_options( run_options ):
 
+    # default to using the sanitized run name for the output folder
+    if run_options.outputFolder == None:
+        run_options.outputFolder = slugify( run_options.runName )
+
+    # check whether force ignore db
+    if os.getenv( "DONT_WRITE_DB_RECORD" ) == "y":
+        print( "not checking for flow db options" )
+        return
+
     # check pickle options are OK
     if run_options.readPickleFileSuffix == run_options.savePickleFileSuffix and run_options.readPickleFileSuffix != None:
         print( "xx> pickle output destination must be different from pickle input destination." )
@@ -67,10 +76,6 @@ def check_options( run_options ):
     if None in [ run_options.modelName, run_options.modelPath, run_options.modelBranch, run_options.modelCommit ]:
         print( "xx> model info not supplied." )
         sys.exit( 1 )
-
-    # default to using the sanitized run name for the output folder
-    if run_options.outputFolder == None:
-        run_options.outputFolder = slugify( run_options.runName )
 
 # check the run info in the DB for the requested list of IUs
 def get_run_info( DB, run_options ):
