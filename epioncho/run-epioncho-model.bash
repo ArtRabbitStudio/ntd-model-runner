@@ -65,7 +65,7 @@ log "running scenarios:"
 for s in ${SCENARIOS//,/ } ; do
 
 	SCENARIO_FILE="${SCENARIO_ROOT}/scenario${s}.json"
-	CSV_OUTPUT_FILE="ihme-${IU}-scenario_${s}-${NUM_SIMULATIONS}.csv"
+	CSV_OUTPUT_FILE="ihme-${IU}-scenario_${s}-${NUM_SIMULATIONS}_sims.csv"
 	CSV_OUTPUT_PATH="${OUTPUT_IU_DIR}/${CSV_OUTPUT_FILE}"
 
 	log "python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS}"
