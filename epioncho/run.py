@@ -2,8 +2,10 @@
 taken from https://github.com/dreamingspires/EPIONCHO-IBM/blob/master/examples/final_run_state_and_scenario.py
 '''
 
+import os
 import sys
 import h5py
+import time
 
 from epioncho_ibm.endgame_simulation import EndgameSimulation
 from epioncho_ibm.state.params import EpionchoEndgameModel
@@ -17,7 +19,9 @@ def run_simulations( hdf5_file, scenario_file, output_file, n_sims ):
 	new_file = h5py.File(hdf5_file, "r")
 	sims = []
 	output_data: list[Data] = []
+	init_time = time.perf_counter()
 	for group_name in group_names:
+		start_time = time.perf_counter()
 		restored_grp = new_file[group_name]
 		assert isinstance(restored_grp, h5py.Group)
 		sim = EndgameSimulation.restore(restored_grp)
@@ -50,6 +54,12 @@ def run_simulations( hdf5_file, scenario_file, output_file, n_sims ):
 				intensity=True,
 			)
 		output_data.append(run_data)
+		end_time = time.perf_counter()
+		run_time = end_time - start_time
+		print( f"{os.getpid()} {group_name}: {run_time:.4f} secs" )
+
+	total_time = time.perf_counter() - init_time
+	print( f"{os.getpid()} total time: {total_time:.4f} secs" )
 
 	write_data_to_csv(output_data, output_file)
 
