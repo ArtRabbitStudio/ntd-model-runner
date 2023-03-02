@@ -57,7 +57,7 @@ echo "-> saving output into ${OUTPUT_DATA_PATH}" >&2
 # run the job in parallel
 # TODO include all IUs
 NUM_SIMULATIONS=${NUM_SIMULATIONS:=5} \
-	parallel ${JOBS_ARG} -a <(head -50 ${IU_LIST_FILE}) \
+	parallel --keep-order --line-buffer ${JOBS_ARG} -a <(head -10 ${IU_LIST_FILE}) \
 	pipenv run bash run-epioncho-model.bash
 
 # indicate completion

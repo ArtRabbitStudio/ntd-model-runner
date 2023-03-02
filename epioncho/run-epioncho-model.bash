@@ -19,7 +19,7 @@ for env_var in \
 do
 
     if [[ -z "${!env_var}" ]]; then
-        echo "xx> variable ${env_var} not set"
+        echo "$$ xx> variable ${env_var} not set"
         exit 1
     fi
 
@@ -28,7 +28,7 @@ set -u
 
 # check IU provided in argv
 if [[ -z "${1}" ]] ; then
-	echo "xx> IU code not provided"
+	echo "$$ xx> IU code not provided"
 	exit 1
 fi
 
@@ -36,16 +36,25 @@ fi
 # TODO put these somewhere interesting
 IU=${1}
 REGION=${IU:0:3}
+OUTPUT_REGION_DIR="${OUTPUT_DATA_PATH}/${REGION}"
+OUTPUT_IU_DIR="${OUTPUT_REGION_DIR}/${IU}"
 HDF5_FILE="OutputVals_${IU}.hdf5"
 HDF5_FILE_GCS_LOCATION="gs://${GCS_INPUT_DATA_BUCKET}/${GCS_INPUT_DATA_PATH}/${HDF5_FILE}"
-HDF5_FILE_LOCAL_LOCATION="${OUTPUT_DATA_PATH}/${HDF5_FILE}"
+HDF5_FILE_LOCAL_LOCATION="${OUTPUT_IU_DIR}/${HDF5_FILE}"
+
+# make sure the output dir for this region exists
+mkdir -p "${OUTPUT_IU_DIR}"
 
 # download the HDF5 file before running the model scenarios in sequence
-echo "- copying HDF5 file from GCS..."
-echo "$$ gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}"
- #gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}
+if [[ -f "${HDF5_FILE_LOCAL_LOCATION}" ]] ; then
+	echo "$$ - HDF5 already downloaded"
+else
+	echo "$$ - copying HDF5 file from GCS..."
+	echo "$$ gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}"
+	gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}
+fi
 echo
-echo "- running scenarios:"
+echo "- $$ running scenarios:"
 
 # these all run in sequence so the parallelism is per-IU,
 # and the HDF5 only needs to be downloaded once for each IU
@@ -53,16 +62,16 @@ for s in ${SCENARIOS//,/ } ; do
 
 	SCENARIO_FILE="${SCENARIO_ROOT}/scenario${s}.json"
 	CSV_OUTPUT_FILE="ihme-${IU}-scenario_${s}-${NUM_SIMULATIONS}.csv"
-	CSV_OUTPUT_PATH="${OUTPUT_DATA_PATH}/${CSV_OUTPUT_FILE}"
+	CSV_OUTPUT_PATH="${OUTPUT_IU_DIR}/${CSV_OUTPUT_FILE}"
 
 	echo "$$ python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS}"
-	# python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS}
+	python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS}
 
 	echo "$$ bzip2 -9 ${CSV_OUTPUT_PATH}"
-	# bzip2 -9 ${CSV_OUTPUT_PATH}
+	bzip2 -f -9 ${CSV_OUTPUT_PATH}
 
 	echo "$$ gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2"
-	# gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2
+	gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2
 
 	echo "$$ rm ${CSV_OUTPUT_PATH}.bz2"
 	# rm ${CSV_OUTPUT_PATH}.bz2
@@ -70,7 +79,7 @@ for s in ${SCENARIOS//,/ } ; do
 	echo
 done
 
-echo "- removing HDF5 file"
-echo "$$ rm ${HDF5_FILE_LOCAL_LOCATION}"
-# rm "${HDF5_FILE_LOCAL_LOCATION}"
+echo "$$ - removing data files"
+echo "$$ rm -rf ${OUTPUT_IU_DIR}"
+# rm -rf ${OUTPUT_IU_DIR}
 echo
