@@ -73,13 +73,10 @@ for s in ${SCENARIOS//,/ } ; do
 	echo "$$ gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2"
 	gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2
 
-	echo "$$ rm ${CSV_OUTPUT_PATH}.bz2"
-	# rm ${CSV_OUTPUT_PATH}.bz2
-
 	echo
 done
 
-echo "$$ - removing data files"
+echo "$$ - removing data files in ${OUTPUT_IU_DIR}"
 echo "$$ rm -rf ${OUTPUT_IU_DIR}"
-# rm -rf ${OUTPUT_IU_DIR}
+ rm -rf ${OUTPUT_IU_DIR}
 echo
