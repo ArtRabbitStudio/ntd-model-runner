@@ -90,11 +90,14 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     DISEASE_CLOUD_ROOT = f'diseases/{GcsPrefix}{GcsSpecies.lower()}'
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/{sourceDataPath}'
 
+    # TODO check if survey type used for other diseases & check they run without
+    surveyTypeDirSuffix = f"/survey_type_{surveyType}" if species == 'Mansoni' else ''
+
     # only include the group if it's been specified
     if run_options.groupId is None:
-        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}/{iu[0:3]}'
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/{iu[0:3]}'
     else:
-        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}/group_{run_options.groupId:03}'
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/group_{run_options.groupId:03}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
@@ -244,9 +247,12 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     compressSuffix = ".bz2" if compress == True else ""
     compression = None if compress == False else "bz2"
 
+    # create common cloud filename components
+    surveyTypeFileSuffix = f"-survey_type_{surveyType.lower().replace('-','_')}" if species == 'Mansoni' else ''
+    file_name_ending = f"{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}{surveyTypeFileSuffix}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
     # run IHME transforms
     ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
+    ihme_file_name = f"{output_data_path}/ihme-{file_name_ending}"
     ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
 
     # store metadata in flow db
@@ -255,7 +261,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # run IPM transforms
     ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
+    ipm_file_name = f"{output_data_path}/ipm-{file_name_ending}"
     ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
 
     # store metadata in flow db
