@@ -92,6 +92,7 @@ function download_iu_list () {
 NUM_SIMULATIONS=200
 NUM_PARALLEL_JOBS=default
 IU_LIST_FILE="run/epioncho-IU-list-$( date +%Y%m%d ).txt"
+IU_LIST_SPECIFIED=n
 GCS_INPUT_DATA_BUCKET="ntd-disease-simulator-data"
 GCS_INPUT_DATA_PATH="diseases/epioncho"
 GCS_OUTPUT_DATA_BUCKET="ntd-flow-result-data-dev"
@@ -125,6 +126,7 @@ while getopts "hn:j:s:f:I:i:O:r:o:L:" opts ; do
 			;;
 
 		f)
+			IU_LIST_SPECIFIED=y
 			IU_LIST_FILE=$( get_abs_filename "${OPTARG}" )
 			if [[ ! -f "${IU_LIST_FILE}" || ! -s "${IU_LIST_FILE}" ]] ; then
 				error "IU list file must be a real path to a non-empty file"
@@ -190,7 +192,7 @@ else
 fi
 
 # check we have a valid list of IUs to run against
-if [[ -f "${IU_LIST_FILE}" ]] ; then
+if [[ -f "${IU_LIST_FILE}" ]] && [[ "${IU_LIST_SPECIFIED}" = "n" ]]; then
 	info "re-use existing IU list ${IU_LIST_FILE} ?"
 	select REUSE_FILE_CHOICE in yes no ; do
 		case "${REUSE_FILE_CHOICE}" in
