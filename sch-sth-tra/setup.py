@@ -12,7 +12,7 @@ setuptools.setup(
     python_requires='>=3.10.9',
     install_requires=[
         'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@Endgame_v2', # the SCH model
-        'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master', # the Trachoma model
+        'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@add_vaccination_dev_solve_issues', # the Trachoma model
         # 'epioncho-ibm @ git+https://github.com/dreamingspires/EPIONCHO-IBM.git@master', # the Oncho model
         # 'lf @ git+https://github.com/ntd-modelling-consortium/LF.git@master', # the LF model
         'google-cloud-storage', 'gcsfs==2022.7.1', 'fsspec', # for cloud storage inc. via pandas/pickle
