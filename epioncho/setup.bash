@@ -23,7 +23,7 @@ set +e
 pipenv --rm 2>/dev/null
 set -e
 rm -rf Pipfile*
-pipenv install --dev
+pipenv install --dev --python 3.10.9
 pipenv run pip install .
 echo
 
