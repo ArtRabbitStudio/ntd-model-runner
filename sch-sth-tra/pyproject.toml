@@ -1,0 +1,16 @@
+[project]
+name = "ntd_model_runner"
+version = "0.0.1"
+description = "SCH/STH/Trachoma simulation model runner"
+authors = [ { name = "ArtRabbit", email = "support@artrabbit.com" } ]
+requires-python = ">=3.10.9"
+dependencies = [
+    'fsspec',
+    'gcsfs==2022.7.1',
+    'google-cloud-storage',
+    #'mysql-connector-python==8.0.28',
+    'psycopg2-binary',
+    'python-slugify',
+    'sch-simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@Endgame_v2',
+    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master',
+]

@@ -4,6 +4,7 @@ Scripts & db for running NTD SCH model with various scenarios, IUS, groups, simu
 
 ### How do I set it up?
 
+__TODO update this to use pgSQL__
 - Create a MySQL db:
 
 ```bash
@@ -23,7 +24,7 @@ EOF
 - Run it in a python `virtualenv`, install the libraries and import the IU/disease/group data:
 
 ```bash
-$ pipenv shell
+$ pipenv shell --python 3.10.9
 # [ ... pipenv output ... ]
 (venv)$ pip install .
 (venv)$ python import-ius.py iu-disease-data/ius-with-disease-data.tbz
