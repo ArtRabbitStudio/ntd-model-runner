@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import toml
 import requests
 import distutils.core
 from functools import reduce
@@ -28,16 +29,16 @@ def repo_uri_for_model_name( model_name ):
     if model_name == 'lf':
         return 'git+https://github.com/NTD-Modelling-Consortium/LF.git@main'
 
-    setup = distutils.core.run_setup( "setup.py" )
-    l = list( map( lambda x: x.split(), setup.install_requires ) )
-    libs = [ x for x in l if x[ 0 ].endswith( '@' ) ]
+    pyproject = toml.load( './pyproject.toml' )
+    l = list( map( lambda x: x.split(), pyproject[ 'project' ][ 'dependencies' ] ) )
+    libs = [ x for x in l if len( x ) > 1 and x[ 1 ] == '@' ]
     d = reduce( key0_to_val, libs, {} )
     return d[ model_name ]
 
-# [ [ 'a@', 'b' ], [ 'c@', 'd' ] ] -> { 'a': 'b', 'c': 'd' }
+# [ [ 'a', '@', 'b' ], [ 'c', '@', 'd' ] ] -> { 'a': 'b', 'c': 'd' }
 def key0_to_val( a, b ):
-    key0 = b[ 0 ].replace( '@', '' )
-    a[ key0 ] = b[ 1 ]
+    key0 = b[ 0 ]
+    a[ key0 ] = b[ 2 ]
     return a
 
 def repo_path_and_branch_for_uri( repo_uri ):
