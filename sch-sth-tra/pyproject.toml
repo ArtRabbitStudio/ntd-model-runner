@@ -16,3 +16,6 @@ dependencies = [
     'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@Endgame_v2',
     'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master',
 ]
+[tool.setuptools.packages.find]
+include = []
+exclude = [ 'data', 'results', 'iu-disease-data' ]
