@@ -237,9 +237,6 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         print( f"-> running burn-in, not saving output" )
         return
 
-    # get a transformer generator function for the IHME/IPM transforms
-    transformer = sim_result_transform_generator( results, iu, run_info.species, run_options.scenario, run_options.numSims )
-
     # decide whether to put the group ID in the filename
     groupId_string = f'-group_{run_options.groupId:03}' if run_options.groupId is not None else ''
 
@@ -250,6 +247,10 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     # create common cloud filename components
     surveyTypeFileSuffix = f"-survey_type_{surveyType.lower().replace('-','_')}" if species == 'Mansoni' else ''
     file_name_ending = f"{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}{surveyTypeFileSuffix}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
+
+    # get a transformer generator function for the IHME/IPM transforms
+    transformer = sim_result_transform_generator( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
+
     # run IHME transforms
     ihme_df = next( transformer )
     ihme_file_name = f"{output_data_path}/ihme-{file_name_ending}"
@@ -365,9 +366,9 @@ def run_model(
 
     return results, simData
 
-def sim_result_transform_generator( results, iu, species, scenario, numSims ):
+def sim_result_transform_generator( results, iu, species, scenario, numSims, surveyTypeFileSuffix ):
 
-    # espen_loc,year_id,age_start,age_end,sex_id,intensity,scenario,species,sequelae,measure
+    # create key dict for IHME/IPM format dataframes
     keys = {
         "espen_loc":[],
         "year_id":[],
@@ -379,44 +380,115 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims ):
         "measure":[]
     }
 
+    # add a column for each result draw
     for i in range( 0, numSims ):
         keys[ f'draw_{i}' ] = []
 
+    ################################################################################
     # we're going to take the draw_1 from each run result for an IU:
-
+    #
     #   Time,age_start,age_end,intensity,species,measure,draw_1
     #   0.0,0,1,light,Mansoni,prevalence,0.0
-
+    #
     # and add it as draw_x at the end of a row in this output file:
-
-    #   espen_loc,year_id,age_start,age_end,intensity,scenario,species,measure,draw_0,draw_1,draw_3,draw_4,draw_x,draw_x,,
-    #   BFA05335,2030,4,4,light,1,mansoni,prevalence,0.1,0.08,0.09,0.11,,
+    #
+    #   espen_loc,year_id,age_start,age_end,intensity,scenario,species,measure,draw_0,draw_1,draw_3,draw_4,draw_y,draw_z,...
+    #   BFA05335,2030,4,4,light,1,mansoni,prevalence,0.1,0.08,0.09,0.11,...
+    ################################################################################
 
     ################################################################################
     # IHME data file
     ################################################################################
 
-    print( f'-> starting IHME transform for {numSims} simulations' )
+    print( f'-> starting IHME transform for {numSims} simulations with pandas' )
     a = time.time()
-    values = transform_results( results, iu, INSTITUTION_TYPE_IHME, species, scenario, numSims, keys )
+    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_IHME, species, scenario, numSims, keys )
     b = time.time()
-    print( f'-> finished IHME transform for {numSims} simulations in {(b-a):.3f}s' )
-    yield pd.DataFrame( values, columns = keys )
+    print( f'-> finished IHME transform for {numSims} simulations with pandas in {(b-a):.3f}s' )
+    yield values
+
+#    print( f'-> starting IHME transform for {numSims} simulations with arrays' )
+#    a = time.time()
+#    values = pd.DataFrame( transform_results_with_arrays( results, iu, INSTITUTION_TYPE_IHME, species, scenario, numSims, keys ), columns = keys )
+#    b = time.time()
+#    print( f'-> finished IHME transform for {numSims} simulations in {(b-a):.3f}s' )
+#    values.to_csv( f'ihme_arrays_{iu}_{scenario}_{numSims}_{surveyTypeFileSuffix}.csv' )
+#    yield values
 
     ################################################################################
     # IPM costs file
     ################################################################################
 
-    print( f'-> starting IPM transform for {numSims} simulations' )
+    print( f'-> starting IPM transform for {numSims} simulations with pandas' )
     a = time.time()
-    values = transform_results( results, iu, INSTITUTION_TYPE_IPM, species, scenario, numSims, keys )
+    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_IPM, species, scenario, numSims, keys )
     b = time.time()
     print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
-    yield pd.DataFrame( values, columns = keys )
+    yield values
+
+#    print( f'-> starting IPM transform for {numSims} simulations with arrays' )
+#    a = time.time()
+#    values = pd.DataFrame( transform_results_with_arrays( results, iu, INSTITUTION_TYPE_IPM, species, scenario, numSims, keys ), columns = keys )
+#    b = time.time()
+#    print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
+#    values.to_csv( f'ipm_arrays_{iu}_{scenario}_{numSims}_{surveyTypeFileSuffix}.csv' )
+#    yield values
 
     return
 
-def transform_results( results, iu, type, species, scenario, numSims, keys ):
+def transform_results_with_pandas( results, iu, type, species, scenario, numSims, keys ):
+
+    # strip off newlines from model output
+    for i in range( 0, len( results ) ):
+        results[ i ][ 'species' ] = results[ i ][ 'species' ].replace( '\n', '', regex=True )
+
+    # work out which lines from file to use
+    # previously used row 7584 for end of IPM data, now just run to the end of the results
+    num_result_rows = results[ 0 ].shape[ 0 ]
+
+    if species == 'Mansoni':
+        # first 9280 rows = standard ESPEN results + population data
+        # rows 9281-end = IPM cost data
+        last_ihme_row = 9280
+
+    else:
+        # first 7440 rows = standard ESPEN results + population data
+        # rows 7441-end = IPM cost data
+        last_ihme_row = 7440
+
+    startrow = { INSTITUTION_TYPE_IHME: 0, INSTITUTION_TYPE_IPM: last_ihme_row }[ type ]
+    endrow = { INSTITUTION_TYPE_IHME: last_ihme_row, INSTITUTION_TYPE_IPM: num_result_rows }[ type ]
+
+    # create a DF
+    output = pd.DataFrame.from_dict( keys )
+
+    # copy over the dynamic rows to fill out the DataFrame rows
+    for key in [ 'age_start', 'age_end', 'intensity', 'measure' ]:
+        output[key] = results[ 0] [ key ][ startrow:endrow ]
+
+    # work out the year for the row
+    output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2018 ).astype( int )
+
+    # copy the static rows into the full list
+    output[ 'espen_loc' ] = iu
+    output[ 'scenario' ] = scenario
+    output[ 'species' ] = species
+
+    # add on the draw for this result
+    for i in range( 0, len( results ) ):
+        output[ f'draw_{i}' ] = results[ i ][ 'draw_1' ][ startrow:endrow ]
+
+    # reset the line indexes to start from 0
+    return output.reset_index().drop( 'index', axis = 1 )
+
+################################################################################
+
+'''
+DEPRECATED this function is way slower than doing the same with pandas dataframes
+DEPRECATED as in the transform_results_with_pandas() function above, so it's just
+DEPRECATED left here for a short period to make sure results are OK before removing
+'''
+def transform_results_with_arrays( results, iu, type, species, scenario, numSims, keys ):
 
     # previously used row 7584 for end of IPM data, now just run to the end of the results
     num_result_rows = results[ 0 ].shape[ 0 ]
