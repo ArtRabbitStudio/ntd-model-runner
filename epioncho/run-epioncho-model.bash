@@ -15,7 +15,8 @@ for env_var in \
 	LOCAL_OUTPUT_ROOT \
 	GCS_INPUT_DATA_BUCKET \
 	GCS_INPUT_DATA_PATH \
-	GCS_DESTINATION
+	GCS_DESTINATION \
+	KEEP_LOCAL_DATA
 do
 
     if [[ -z "${!env_var}" ]]; then
@@ -67,9 +68,11 @@ for s in ${SCENARIOS//,/ } ; do
 	SCENARIO_FILE="${SCENARIO_ROOT}/scenario${s}.json"
 	CSV_OUTPUT_FILE="ihme-${IU}-scenario_${s}-${NUM_SIMULATIONS}_sims.csv"
 	CSV_OUTPUT_PATH="${OUTPUT_IU_DIR}/${CSV_OUTPUT_FILE}"
+	# TODO pass as a parameter
+	RUN_MODEL_ITERATIONS_INCLUSIVELY="true"
 
-	log "python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS}"
-	python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS}
+	log "python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY}"
+	python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY}
 
 	log "bzip2 -9 ${CSV_OUTPUT_PATH}"
 	bzip2 -f -9 ${CSV_OUTPUT_PATH}
@@ -80,7 +83,9 @@ for s in ${SCENARIOS//,/ } ; do
 	echo
 done
 
-log "- removing data files in ${OUTPUT_IU_DIR}"
-log "rm -rf ${OUTPUT_IU_DIR}"
-rm -rf ${OUTPUT_IU_DIR}
+if [[ "${KEEP_LOCAL_DATA}" != 'y' ]] ; then
+	log "- removing data files in ${OUTPUT_IU_DIR}"
+	log "rm -rf ${OUTPUT_IU_DIR}"
+	rm -rf ${OUTPUT_IU_DIR}
+fi
 echo

@@ -99,12 +99,13 @@ GCS_OUTPUT_DATA_BUCKET="ntd-flow-result-data-dev"
 GCS_OUTPUT_DATA_ROOT="ntd"
 RUN_TITLE=$( date +%Y%ma )
 PROJECT_ROOT_DIR=$( get_abs_filename . )
+KEEP_LOCAL_DATA=n
 
 # ensure at least a 'run' directory
 mkdir -p run
 
 # read CLI options
-while getopts "hn:j:s:f:I:i:O:r:o:L:" opts ; do
+while getopts "hn:j:s:f:I:i:kO:r:o:L:" opts ; do
 
 	case "${opts}" in
 
@@ -142,6 +143,10 @@ while getopts "hn:j:s:f:I:i:O:r:o:L:" opts ; do
 		i)
 			# e.g. diseases/epioncho
 			GCS_INPUT_DATA_PATH=${OPTARG}
+			;;
+
+		k)
+			KEEP_LOCAL_DATA=y
 			;;
 
 		O)
@@ -239,7 +244,7 @@ select CHOICE in yes no ; do
 
 		yes)
 
-			# create a log file namae
+			# create a log file name
 			RUN_STAMP=$( date +%Y%m%d%H%M%S )
 			LOG_FILE="epioncho-run-${RUN_STAMP}-output.txt"
 			FINISH_FILE="epioncho-run-${RUN_STAMP}-finished.txt"
@@ -250,6 +255,7 @@ select CHOICE in yes no ; do
 					NUM_PARALLEL_JOBS="${NUM_PARALLEL_JOBS}" \
 					NUM_SIMULATIONS="${NUM_SIMULATIONS}" \
 					IU_LIST_FILE="${IU_LIST_FILE}" \
+					KEEP_LOCAL_DATA="${KEEP_LOCAL_DATA}" \
 					RUN_STAMP="${RUN_STAMP}" \
 					SCENARIOS="${SCENARIOS}" \
 					SCENARIO_ROOT="${SCENARIO_ROOT}" \
@@ -274,7 +280,7 @@ select CHOICE in yes no ; do
 			REAL_LOG_PATH=$( realpath ${PROJECT_ROOT_DIR}/${LOG_FILE} )
 			info "Epioncho model is running in a detached shell."
 			echo "Log output is being saved to file: ${REAL_LOG_PATH}"
-			echo "When the model runs have finished, the file $( realpath ${PROJECT_ROOT_DIR}/${FINISH_FILE} ) will be created."
+			echo "When the model runs have finished, the file $( realpath ${PROJECT_ROOT_DIR} )/${FINISH_FILE} will be created."
 
 			exit 0
 			;;
