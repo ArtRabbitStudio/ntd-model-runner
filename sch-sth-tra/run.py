@@ -36,6 +36,8 @@ def get_cli_options():
     parser.add_option( '-f', '--save-pickle-file-suffix', dest='savePickleFileSuffix', type='string', default=None )
     parser.add_option( '-b', '--burn-in-time', dest='burnInTime', type='int', default=None )
     parser.add_option( '-y', '--survey-type', dest='surveyType', type='string', default='KK2' )
+    parser.add_option( '-w', '--vaccine-waning-length', dest='vaccineWaningLength', type='int', default=None )
+    parser.add_option( '-T', '--secular-trend', dest='secularTrend', action='store_true', default=False )
     parser.add_option( '--model-name', dest='modelName', type='string', default=None )
     parser.add_option( '--model-path', dest='modelPath', type='string', default=None )
     parser.add_option( '--model-branch', dest='modelBranch', type='string', default=None )
@@ -160,6 +162,8 @@ def run_main():
         'savePickleFileSuffix': options.savePickleFileSuffix,
         'burnInTime': options.burnInTime,
         'surveyType': options.surveyType,
+        'vaccineWaningLength': options.vaccineWaningLength,
+        'secularTrend': options.secularTrend,
         'modelName': options.modelName,
         'modelPath': options.modelPath,
         'modelBranch': options.modelBranch,

@@ -25,6 +25,8 @@ save_pickle_file_suffix=""
 out_of=""
 burn_in_time=""
 survey_type=""
+secular_trend=""
+vacc_waning_length=""
 uncompressed=""
 local_storage=""
 model_name=""
@@ -57,6 +59,7 @@ function usage() {
     echo "    [-k <source-bucket>] [-K destination-bucket>]"
     echo "    [-u (uncompressed)]"
     echo "    [-l (local_storage)]"
+    echo "    [-T <is-secular-trend> (default false)]"
     echo "    [-r <read-pickle-file-suffix>]"
     echo "    [-f <save-pickle-file-suffix>] [-b <burn-in-years>]"
     echo "    [-y <survey_type> (KK1, KK2, POC-CCA, PCR)]"
@@ -183,12 +186,30 @@ function get_options () {
             esac
             ;;
 
+        w)
+            waning_length=$( echo ${OPTARG} | tr -d '\n' )
+            case $waning_length in
+                ''|*[!0-9]*)
+                    echo "waning length should be a number"
+                    usage
+                    ;;
+                *)
+                    ;;
+            esac
+
+            vacc_waning_length=" -w ${waning_length}"
+            ;;
+
+        T)
+            secular_trend="y"
+            ;;
+
         u)
-            uncompressed="-u"
+            uncompressed=" -u"
             ;;
 
         l)
-            local_storage="-l"
+            local_storage=" -l"
             ;;
 
         h)
@@ -312,34 +333,40 @@ function run_scenarios () {
             if [[ -z "${read_pickle_file_suffix}" ]] ; then
                 read_pickle_cmd=""
             else
-                read_pickle_cmd="-r ${read_pickle_file_suffix}"
+                read_pickle_cmd=" -r ${read_pickle_file_suffix}"
             fi
 
             if [[ -z "${save_pickle_file_suffix}" ]] ; then
                 save_pickle_cmd=""
             else
-                save_pickle_cmd="-f ${save_pickle_file_suffix}"
+                save_pickle_cmd=" -f ${save_pickle_file_suffix}"
             fi
 
             if [[ -z "${burn_in_time:=}" ]] ; then
                 burn_in_time_cmd=""
             else
-                burn_in_time_cmd="-b ${burn_in_time}"
+                burn_in_time_cmd=" -b ${burn_in_time}"
             fi
 
             if [[ -z "${survey_type:=}" ]] ; then
                 survey_type_cmd=""
             else
-                survey_type_cmd="-y ${survey_type}"
+                survey_type_cmd=" -y ${survey_type}"
+            fi
+
+            if [[ "${secular_trend}" = "y" ]] ; then
+                secular_trend_cmd=" -T"
+            else
+                secular_trend_cmd=""
             fi
 
             if [[ -z "${output_folder:=}" ]] ; then
                 output_folder_cmd=""
             else
-                output_folder_cmd="-o ${output_folder}"
+                output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path} ${output_folder_cmd} ${read_pickle_cmd} ${save_pickle_cmd} ${burn_in_time_cmd} ${survey_type_cmd} ${uncompressed} ${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
@@ -471,7 +498,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:i:n:N:e:o:k:K:p:r:f:g:b:y:ulh" opts ; do
+while getopts ":d:s:i:n:N:e:o:k:K:p:r:f:g:b:y:w:Tulh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done

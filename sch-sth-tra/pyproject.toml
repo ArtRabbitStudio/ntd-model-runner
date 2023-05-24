@@ -14,7 +14,7 @@ dependencies = [
     'psycopg2-binary',
     'python-slugify',
     'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@Endgame_v2',
-    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master',
+    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@add_vaccination_dev_solve_issues',
 ]
 [tool.setuptools.packages.find]
 include = []

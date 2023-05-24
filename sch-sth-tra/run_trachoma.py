@@ -1,11 +1,12 @@
 from trachoma.trachoma_functions import *
 import multiprocessing
+import sys
 import time
 from joblib import Parallel, delayed
 num_cores = multiprocessing.cpu_count()
 import pickle
 
-def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression ):
+def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression ):
 
     #############################################################################################################################
     #############################################################################################################################
@@ -36,15 +37,14 @@ def run_trachoma_model( iu, scenario, numSims, BetaFilePath, InSimFilePath, clou
         'ep2':0.114,
         'n_inf_sev':38,
         'TestSensitivity': 0.96,
-        'TestSpecificity': 0.965,
-        'SecularTrendIndicator': 0,
-        'SecularTrendYearlyBetaDecrease': 0.05,
+        'TestSpecificity': 0.98,
+        'SecularTrendIndicator': 0 if secularTrend == False else 1,
+        'SecularTrendYearlyBetaDecrease': 0.07,
         'vacc_prob_block_transmission':  0.8,
         'vacc_reduce_bacterial_load': 0.5,
         'vacc_reduce_duration': 0.5,
-        'vacc_waning_length': 52 * 5
+        'vacc_waning_length': 52 * 5 if vaccineWaningLength == None else vaccineWaningLength
     }
-
 
     sim_params = {
         'timesim':52*23,
