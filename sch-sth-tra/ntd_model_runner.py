@@ -68,6 +68,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
     surveyType = run_options.surveyType if hasattr( run_options, 'surveyType' ) else 'KK2'
     secularTrend = run_options.secularTrend if hasattr( run_options, 'secularTrend' ) else False
+    vaccineWaningLength = run_options.vaccineWaningLength if hasattr( run_options, 'vaccineWaningLength' ) else None
 
     # construct cloud path for this disease/species
     GcsSpecies = {
@@ -94,9 +95,21 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     # TODO check if survey type used for other diseases & check they run without
     surveyTypeDirSuffix = f"/survey_type_{surveyType}" if species == 'Mansoni' else ''
 
-    # only include the group if it's been specified
+    # note secular or non-secular trend in Trachoma paths
+    if species == "Trachoma":
+        isSecularTrend = "non_" if secularTrend == False else ""
+        secularTrendPath = f"{isSecularTrend}secular_trend/"
+        vaccineWaningLengthPath = "" if vaccineWaningLength == None else f"waning_length_{vaccineWaningLength}/"
+    else:
+        secularTrendPath = ""
+        vaccineWaningLengthPath = ""
+
+    # only include the group if it's been specified (which it only is in SCH, so secularTrendPath/vaccineWaningLengthPath only needed if it's None)
     if run_options.groupId is None:
-        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/{iu[0:3]}'
+        DISEASE_CLOUD_DST_PATH = (
+            f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/'
+            f'{secularTrendPath}{vaccineWaningLengthPath}{iu[0:3]}'
+        )
     else:
         DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/group_{run_options.groupId:03}'
 
@@ -139,21 +152,25 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         compressSuffix = ".bz2" if compress == True else ""
         compression = None if compress == False else "bz2"
 
-        # note secular or non-secular trend in path
-        isSecularTrend = "non_" if secularTrend == False else ""
-        secularTrendPath = f"{isSecularTrend}secular_trend"
-
         # note non-standard vaccine waning length in filename
-        vwlIndicator = "" if run_options.vaccineWaningLength == None else f"-waning_length_{run_options.vaccineWaningLength}"
+        vwlIndicator = "" if vaccineWaningLength == None else f"-waning_length_{vaccineWaningLength}"
 
         # specify file output locations
-        ihme_file_name = f"{output_data_path}/{secularTrendPath}/ihme-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations-{isSecularTrend}secular_trend{vwlIndicator}.csv{compressSuffix}"
-        ipm_file_name = f"{output_data_path}/{secularTrendPath}/ipm-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-{run_options.numSims}_simulations-{isSecularTrend}secular_trend{vwlIndicator}.csv{compressSuffix}"
+        ihme_file_name = (
+            f"{output_data_path}/ihme-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-"
+            f"{run_options.numSims}_simulations-{isSecularTrend}secular_trend{vwlIndicator}.csv{compressSuffix}"
+        )
+
+        ipm_file_name = (
+            f"{output_data_path}/ipm-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-"
+            f"{run_options.numSims}_simulations-{isSecularTrend}secular_trend{vwlIndicator}.csv{compressSuffix}"
+        )
 
         cloudModule = GCS if run_options.useCloudStorage else None
+
         return run_trachoma_model(
             iu, run_options.scenario, run_options.numSims,
-            run_options.vaccineWaningLength, run_options.secularTrend,
+            vaccineWaningLength, secularTrend,
             BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression
         )
 
