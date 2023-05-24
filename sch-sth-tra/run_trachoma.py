@@ -43,7 +43,7 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
         'vacc_prob_block_transmission':  0.8,
         'vacc_reduce_bacterial_load': 0.5,
         'vacc_reduce_duration': 0.5,
-        'vacc_waning_length': 52 * 5 if vaccineWaningLength == None else vaccineWaningLength
+        'vacc_waning_length': 52 * ( 5 if vaccineWaningLength == None else vaccineWaningLength )
     }
 
     sim_params = {
