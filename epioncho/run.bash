@@ -229,6 +229,7 @@ GCS_DESTINATION="gs://${GCS_OUTPUT_DATA_BUCKET}/${GCS_OUTPUT_DATA_ROOT}/${RUN_TI
 # display info splash
 info "about to run model with these settings:"
 echo "- run ${NUM_SIMULATIONS} simulations for each IU"
+echo "- using data files from GCS data path gs://${GCS_INPUT_DATA_BUCKET}/${GCS_INPUT_DATA_PATH}"
 echo "- using scenarios ${SCENARIOS}"
 echo "- across ${NUM_PARALLEL_JOBS} parallel jobs"
 echo "- use ID list file ${IU_LIST_FILE} ($( wc -l ${IU_LIST_FILE} | awk '{print $1}' ) IUs)"
