@@ -23,7 +23,11 @@ set +e
 pipenv --rm 2>/dev/null
 set -e
 rm -rf Pipfile*
-pipenv install --dev --python 3.10.9
+pipenv --python 3.10.9
+pipenv run curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+pipenv run python get-pip.py --force-reinstall
+pipenv run rm get-pip.py
+pipenv run pip install -U setuptools
 pipenv run pip install .
 echo
 
