@@ -292,6 +292,7 @@ function check_options () {
 function run_scenarios () {
 
     echo "-> running scenarios, got model info: $model_name $model_path $model_branch $model_commit"
+    echo "-> scenarios: ${scenarios}"
 
     for scenario in ${scenarios//,/ } ; do
 
@@ -312,7 +313,10 @@ function run_scenarios () {
                     iu=$( echo "$line" | cut -f 3 -d , )
                     group=$( echo "$line" | cut -f 1 -d , | cut -f 1 -d _ )
                     sub_scenario=$( echo "$line" | cut -f 4 -d , | tr -d '\r')
-                    full_scenario="${scenario}_${sub_scenario}"
+                    full_scenario="${scenario}"
+                    if [[ -n "${sub_scenario}" ]] ; then
+                        full_scenario="${full_scenario}_${sub_scenario}"
+                    fi
                     cmd_options="-g ${group} -i ${iu} -s ${full_scenario}"
                     ;;
 

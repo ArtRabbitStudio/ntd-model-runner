@@ -34,7 +34,7 @@ def get_cli_options():
     parser.add_option( '-p', '--source-data-path', dest='sourceDataPath', default='source-data' )
     parser.add_option( '-r', '--read-pickle-file-suffix', dest='readPickleFileSuffix', type='string', default=None )
     parser.add_option( '-f', '--save-pickle-file-suffix', dest='savePickleFileSuffix', type='string', default=None )
-    parser.add_option( '-b', '--burn-in-time', dest='burnInTime', type='int', default=None )
+    parser.add_option( '-b', '--burn-in-time', dest='burnInTime', type='float', default=None )
     parser.add_option( '-y', '--survey-type', dest='surveyType', type='string', default='KK2' )
     parser.add_option( '-w', '--vaccine-waning-length', dest='vaccineWaningLength', type='int', default=None )
     parser.add_option( '-T', '--secular-trend', dest='secularTrend', action='store_true', default=False )
