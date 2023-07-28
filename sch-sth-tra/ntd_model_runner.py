@@ -482,12 +482,16 @@ def transform_results_with_pandas( results, iu, type, species, scenario, numSims
     if species == 'Mansoni':
         # first 9280 rows = standard ESPEN results + population data
         # rows 9281-end = IPM cost data
-        last_ihme_row = 9280
+        #last_ihme_row = 9280
+        # set to 8400 for Rwanda
+        last_ihme_row = 8400
 
     else:
         # first 7440 rows = standard ESPEN results + population data
         # rows 7441-end = IPM cost data
-        last_ihme_row = 7440
+        #last_ihme_row = 7440
+        # set to 8400 for Rwanda
+        last_ihme_row = 8400
 
     startrow = { INSTITUTION_TYPE_IHME: 0, INSTITUTION_TYPE_IPM: last_ihme_row }[ type ]
     endrow = { INSTITUTION_TYPE_IHME: last_ihme_row, INSTITUTION_TYPE_IPM: num_result_rows }[ type ]
