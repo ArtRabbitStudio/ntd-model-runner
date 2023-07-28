@@ -381,6 +381,11 @@ def run_model(
         print( f'-> reading in pickle data from {InSimFilePath}' )
         pickleData = pickle.loads( cloudModule.get_blob( InSimFilePath ) ) if cloudModule != None else pickle.load( open( InSimFilePath, 'rb' ) )
 
+        # calculate burnt-in time from pickle data
+        burnInTime = 0 if burnInTime == None else burnInTime
+        for i in range(len(pickleData)):
+            burnInTime = max( burnInTime,round( max( pickleData[i].demography.birthDate * 10 ) ) / 10 )
+
         res = Parallel(n_jobs=num_cores)(
             delayed(multiple_simulations_after_burnin)(params, pickleData, simparams, indices, i, burnInTime, surveyType) for i in range(numSims)
         )
