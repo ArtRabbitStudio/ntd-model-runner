@@ -11,7 +11,7 @@ from epioncho_ibm.endgame_simulation import EndgameSimulation
 from epioncho_ibm.state.params import EpionchoEndgameModel
 from epioncho_ibm.tools import Data, add_state_to_run_data, write_data_to_csv
 
-def run_simulations( hdf5_file, scenario_file, output_file, n_sims, inclusive ):
+def run_simulations( hdf5_file, scenario_file, output_file, n_sims, inclusive, prevalence_OAE ):
 
 	group_names = [f"draw_{i}" for i in range(n_sims)]
 
@@ -51,7 +51,9 @@ def run_simulations( hdf5_file, scenario_file, output_file, n_sims, inclusive ):
 				with_age_groups=True,
 				prevalence=True,
 				mean_worm_burden=False,
+				prevalence_OAE=prevalence_OAE,
 				intensity=True,
+				with_sequela=True
 			)
 		output_data.append(run_data)
 		end_time = time.perf_counter()
@@ -93,4 +95,4 @@ if __name__ == '__main__':
 	n_sims = sys.argv[ 4 ]
 	inclusive = sys.argv[ 5 ].lower() == 'true' if len( sys.argv ) >= 6 else False
 
-	run_simulations( hdf5_file, scenario_file, output_file, int(n_sims), inclusive )
+	run_simulations( hdf5_file, scenario_file, output_file, int(n_sims), inclusive, True )

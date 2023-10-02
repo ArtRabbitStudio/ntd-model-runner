@@ -77,7 +77,7 @@ function download_iu_list () {
 	info "downloading IU list from ${1}"
 	IU_LIST_FILE="run/epioncho-IU-list-$( date +%Y%m%d ).txt"
 	set +e
-	gsutil ls "${1}" | awk -F / '{print $NF}' | cut -f 2 -d '_' | cut -f 1 -d . | sort -V > "${IU_LIST_FILE}"
+	gsutil -q ls "${1}" | awk -F / '{print $NF}' | cut -f 2 -d '_' | cut -f 1 -d . | sort -V > "${IU_LIST_FILE}"
 	set -e
 	if [[ -f "${IU_LIST_FILE}" ]] && [[ ! -s "${IU_LIST_FILE}" ]] ; then
 		error "couldn't fetch IU list from ${1}"
@@ -282,7 +282,9 @@ select CHOICE in yes no ; do
 			info "Epioncho model is running in a detached shell."
 			echo "Log output is being saved to file: ${REAL_LOG_PATH}"
 			echo "When the model runs have finished, the file $( realpath ${PROJECT_ROOT_DIR} )/${FINISH_FILE} will be created."
+			info "Tailing output from the log file, ^C to quit."
 
+			exec tail -f "${REAL_LOG_PATH}"
 			exit 0
 			;;
 

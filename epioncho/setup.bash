@@ -15,8 +15,13 @@ if [[ -z $( which pipenv ) ]] ; then
 	exit 1
 fi
 
+
 # set up the python virtualenv
 info "-> setting up python Epioncho model runner ..."
+
+# switch to the right branch of the epioncho model
+EPIONCHO_MODEL_BRANCH="${EPIONCHO_MODEL_BRANCH:-master}"
+sed "s/_epioncho_model_branch_/${EPIONCHO_MODEL_BRANCH}/" < setup.py.tpl > setup.py
 
 # clear out existing virtualenv
 set +e
