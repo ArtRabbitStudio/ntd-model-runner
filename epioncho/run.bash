@@ -100,12 +100,13 @@ GCS_OUTPUT_DATA_ROOT="ntd"
 RUN_TITLE=$( date +%Y%ma )
 PROJECT_ROOT_DIR=$( get_abs_filename . )
 KEEP_LOCAL_DATA=n
+SHORTEN_IU_CODE=n
 
 # ensure at least a 'run' directory
 mkdir -p run
 
 # read CLI options
-while getopts "hn:j:s:f:I:i:kO:r:o:L:" opts ; do
+while getopts "hn:j:s:f:I:i:kO:r:o:L:C" opts ; do
 
 	case "${opts}" in
 
@@ -166,6 +167,10 @@ while getopts "hn:j:s:f:I:i:kO:r:o:L:" opts ; do
 
 		L)
 			LOCAL_OUTPUT_ROOT=${OPTARG}
+			;;
+
+		C)
+			SHORTEN_IU_CODE=y
 			;;
 
 		*)
@@ -236,6 +241,12 @@ echo "- use ID list file ${IU_LIST_FILE} ($( wc -l ${IU_LIST_FILE} | awk '{print
 echo "- use scenario files in directory $( realpath ./scenarios )"
 echo "- write model output files to directory ${OUTPUT_DATA_PATH}"
 echo "- copy local CSV output in ${OUTPUT_DATA_PATH} to GCS location ${GCS_DESTINATION}"
+if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then
+	echo "- shorten IU codes to XXX00000 in GCS paths"
+fi
+if [[ "${KEEP_LOCAL_DATA}" = 'y' ]] ; then
+	echo "- keep local data files after running simulations"
+fi
 
 # confirm go-ahead
 info "confirm? (enter 1 to go ahead, 2 to quit)"
@@ -257,6 +268,7 @@ select CHOICE in yes no ; do
 					NUM_SIMULATIONS="${NUM_SIMULATIONS}" \
 					IU_LIST_FILE="${IU_LIST_FILE}" \
 					KEEP_LOCAL_DATA="${KEEP_LOCAL_DATA}" \
+					SHORTEN_IU_CODE="${SHORTEN_IU_CODE}" \
 					RUN_STAMP="${RUN_STAMP}" \
 					SCENARIOS="${SCENARIOS}" \
 					SCENARIO_ROOT="${SCENARIO_ROOT}" \
@@ -285,7 +297,6 @@ select CHOICE in yes no ; do
 			info "Tailing output from the log file, ^C to quit."
 
 			exec tail -f "${REAL_LOG_PATH}"
-			exit 0
 			;;
 
 		no)

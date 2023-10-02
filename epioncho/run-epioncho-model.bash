@@ -16,7 +16,8 @@ for env_var in \
 	GCS_INPUT_DATA_BUCKET \
 	GCS_INPUT_DATA_PATH \
 	GCS_DESTINATION \
-	KEEP_LOCAL_DATA
+	KEEP_LOCAL_DATA \
+	SHORTEN_IU_CODE
 do
 
     if [[ -z "${!env_var}" ]]; then
@@ -55,7 +56,7 @@ if [[ -f "${HDF5_FILE_LOCAL_LOCATION}" ]] ; then
 	log "HDF5 already downloaded"
 else
 	log "copying HDF5 file from GCS..."
-	log "util cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}"
+	log "gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}"
 	gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}
 fi
 echo
@@ -79,8 +80,18 @@ for s in ${SCENARIOS//,/ } ; do
 	log "bzip2 -9 ${CSV_OUTPUT_PATH}"
 	bzip2 -f -9 ${CSV_OUTPUT_PATH}
 
-	log "gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2"
-	gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2
+	GCS_URL_PATH=${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2
+
+	# convert BEN0036703212 to BEN03212?
+	if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then
+		SHORT_IU="${IU:0:3}${IU:8:5}"
+		log "converting long IU code ${IU} to ${SHORT_IU} for GCS URL..."
+		GCS_URL_PATH=$( echo "${GCS_URL_PATH}" | sed -e "s/${IU}/${SHORT_IU}/g" )
+		log "conversion done: $( echo ${GCS_URL_PATH} | awk -F / '{print $NF}' )"
+	fi
+
+	log "gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_URL_PATH}"
+	gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_URL_PATH}
 
 	echo
 done
