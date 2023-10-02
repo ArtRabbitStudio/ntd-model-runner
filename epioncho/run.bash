@@ -294,9 +294,8 @@ select CHOICE in yes no ; do
 			info "Epioncho model is running in a detached shell."
 			echo "Log output is being saved to file: ${REAL_LOG_PATH}"
 			echo "When the model runs have finished, the file $( realpath ${PROJECT_ROOT_DIR} )/${FINISH_FILE} will be created."
-			info "Tailing output from the log file, ^C to quit."
 
-			exec tail -f "${REAL_LOG_PATH}"
+			exit 0
 			;;
 
 		no)
