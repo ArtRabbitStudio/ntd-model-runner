@@ -17,7 +17,8 @@ for env_var in \
 	GCS_INPUT_DATA_PATH \
 	GCS_DESTINATION \
 	KEEP_LOCAL_DATA \
-	SHORTEN_IU_CODE
+	SHORTEN_IU_CODE \
+	RUN_GROUPED
 do
 
     if [[ -z "${!env_var}" ]]; then
@@ -58,9 +59,9 @@ else
 	log "copying HDF5 file from GCS..."
 	log "gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}"
 	gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}
+	echo
 fi
-echo
-log "running scenarios:"
+log "running scenarios: ${SCENARIOS}"
 
 # these all run in sequence so the parallelism is per-IU,
 # and the HDF5 only needs to be downloaded once for each IU
@@ -74,8 +75,16 @@ for s in ${SCENARIOS//,/ } ; do
 	RUN_MODEL_ITERATIONS_INCLUSIVELY="true"
 	PREVALENCE_OAE="true"
 
-	log "python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY} ${PREVALENCE_OAE}"
-	python run.py ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY} ${PREVALENCE_OAE}
+	RUN_GROUPED=${RUN_GROUPED:=n}
+
+	if [[ "${RUN_GROUPED}" = "y" ]] ; then
+		PYTHON_FILE=run_grouped.py
+	else
+		PYTHON_FILE=run.py
+	fi
+
+	log "python ${PYTHON_FILE} ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY} ${PREVALENCE_OAE}"
+	python ${PYTHON_FILE} ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY} ${PREVALENCE_OAE}
 
 	log "bzip2 -9 ${CSV_OUTPUT_PATH}"
 	bzip2 -f -9 ${CSV_OUTPUT_PATH}

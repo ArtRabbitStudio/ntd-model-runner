@@ -101,12 +101,13 @@ RUN_TITLE=$( date +%Y%ma )
 PROJECT_ROOT_DIR=$( get_abs_filename . )
 KEEP_LOCAL_DATA=n
 SHORTEN_IU_CODE=n
+RUN_GROUPED=n
 
 # ensure at least a 'run' directory
 mkdir -p run
 
 # read CLI options
-while getopts "hn:j:s:f:I:i:kO:r:o:L:C" opts ; do
+while getopts "hn:j:s:f:I:i:kO:r:o:L:CG" opts ; do
 
 	case "${opts}" in
 
@@ -171,6 +172,10 @@ while getopts "hn:j:s:f:I:i:kO:r:o:L:C" opts ; do
 
 		C)
 			SHORTEN_IU_CODE=y
+			;;
+
+		G)
+			RUN_GROUPED=y
 			;;
 
 		*)
@@ -244,6 +249,9 @@ echo "- copy local CSV output in ${OUTPUT_DATA_PATH} to GCS location ${GCS_DESTI
 if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then
 	echo "- shorten IU codes to XXX00000 in GCS paths"
 fi
+if [[ "${RUN_GROUPED}" = 'y' ]] ; then
+	echo "- run age-grouped simulations"
+fi
 if [[ "${KEEP_LOCAL_DATA}" = 'y' ]] ; then
 	echo "- keep local data files after running simulations"
 fi
@@ -269,6 +277,7 @@ select CHOICE in yes no ; do
 					IU_LIST_FILE="${IU_LIST_FILE}" \
 					KEEP_LOCAL_DATA="${KEEP_LOCAL_DATA}" \
 					SHORTEN_IU_CODE="${SHORTEN_IU_CODE}" \
+					RUN_GROUPED="${RUN_GROUPED}" \
 					RUN_STAMP="${RUN_STAMP}" \
 					SCENARIOS="${SCENARIOS}" \
 					SCENARIO_ROOT="${SCENARIO_ROOT}" \
