@@ -46,7 +46,8 @@ HDF5_FILE_GCS_LOCATION="gs://${GCS_INPUT_DATA_BUCKET}/${GCS_INPUT_DATA_PATH}/${H
 HDF5_FILE_LOCAL_LOCATION="${OUTPUT_IU_DIR}/${HDF5_FILE}"
 
 function log () {
-	echo "$$ ${IU} | ${1}"
+	STAMP=$( date +%H:%M:%S )
+	echo "$$ ${IU} ${STAMP} | ${1}"
 }
 
 # make sure the output dir for this region exists
@@ -77,30 +78,47 @@ for s in ${SCENARIOS//,/ } ; do
 
 	RUN_GROUPED=${RUN_GROUPED:=n}
 
+	# choose the appropriate model runner, which takes CSV_OUTPUT_PATH as:
 	if [[ "${RUN_GROUPED}" = "y" ]] ; then
+		# an output file root (it strips the '.csv')
 		PYTHON_FILE=run_grouped.py
 	else
+		# an output file path (it writes the CSV directly)
 		PYTHON_FILE=run.py
 	fi
 
+	# run the model
 	log "python ${PYTHON_FILE} ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY} ${PREVALENCE_OAE}"
 	python ${PYTHON_FILE} ${HDF5_FILE_LOCAL_LOCATION} ${SCENARIO_FILE} ${CSV_OUTPUT_PATH} ${NUM_SIMULATIONS} ${RUN_MODEL_ITERATIONS_INCLUSIVELY} ${PREVALENCE_OAE}
 
-	log "bzip2 -9 ${CSV_OUTPUT_PATH}"
-	bzip2 -f -9 ${CSV_OUTPUT_PATH}
-
-	GCS_URL_PATH=${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_OUTPUT_FILE}.bz2
-
-	# convert BEN0036703212 to BEN03212?
-	if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then
-		SHORT_IU="${IU:0:3}${IU:8:5}"
-		log "converting long IU code ${IU} to ${SHORT_IU} for GCS URL..."
-		GCS_URL_PATH=$( echo "${GCS_URL_PATH}" | sed -e "s/${IU}/${SHORT_IU}/g" )
-		log "conversion done: $( echo ${GCS_URL_PATH} | awk -F / '{print $NF}' )"
+	# grouping takes the CSV path as an output root and generates multiple CSV files
+	if [[ "${RUN_GROUPED}" = "y" ]] ; then
+		# insert a '*' before '.csv' suffix
+		CSV_OUTPUT_PATH="${CSV_OUTPUT_PATH/.csv/}*.csv"
 	fi
 
-	log "gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_URL_PATH}"
-	gsutil cp ${CSV_OUTPUT_PATH}.bz2 ${GCS_URL_PATH}
+	# bzip up the data files
+	log "bzip2 -f -9 ${CSV_OUTPUT_PATH}"
+	bzip2 -f -9 ${CSV_OUTPUT_PATH}
+
+	# create GCS paths for the files
+	for CSV_FILE_PATH in $( ls -1 ${CSV_OUTPUT_PATH}.bz2 ) ; do
+
+		CSV_FILE_NAME=$( echo ${CSV_FILE_PATH} | awk -F / '{print $NF}' )
+		GCS_URL_PATH=${GCS_DESTINATION}/epioncho/scenario_${s}/${REGION}/${IU}/${CSV_FILE_NAME}
+
+		# convert BEN0036703212 to BEN03212?
+		if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then
+			SHORT_IU="${IU:0:3}${IU:8:5}"
+			log "converting long IU code ${IU} to ${SHORT_IU} for GCS URL..."
+			GCS_URL_PATH=$( echo "${GCS_URL_PATH}" | sed -e "s/${IU}/${SHORT_IU}/g" )
+			log "conversion done: $( echo ${GCS_URL_PATH} | awk -F / '{print $NF}' )"
+		fi
+
+		log "gsutil cp ${CSV_FILE_PATH} ${GCS_URL_PATH}"
+		gsutil cp ${CSV_FILE_PATH} ${GCS_URL_PATH}
+
+	done
 
 	echo
 done
@@ -110,4 +128,4 @@ if [[ "${KEEP_LOCAL_DATA}" != 'y' ]] ; then
 	log "rm -rf ${OUTPUT_IU_DIR}"
 	rm -rf ${OUTPUT_IU_DIR}
 fi
-echo
+#echo

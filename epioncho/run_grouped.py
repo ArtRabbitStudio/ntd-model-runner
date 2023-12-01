@@ -1,5 +1,6 @@
 '''
 taken from https://github.com/dreamingspires/EPIONCHO-IBM/blob/master/examples/final_run_state_and_scenario.py
+age-grouping from https://github.com/adiramani/P_EPIONCHO-IBM/blob/master/examples/test_prob_elim.py
 '''
 
 import os
@@ -22,7 +23,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 	sf = scenario_file.split('/')[-1]
 	ofr = output_file_root.split('/')[-1]
 
-	print( f"[ python: running {n_sims} simulations for IU {IU} on {ov} {sf} outputting to {ofr} ]" )
+	print( f"{os.getpid()} {IU} | [ python: running {n_sims} simulations for IU {IU} on {ov} {sf} outputting to {ofr} ]" )
 
 	new_file = h5py.File(hdf5_file, "r")
 	sims = []
@@ -69,23 +70,21 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		age_grouped_run_data: Data = {}
 		all_age_run_data: Data = {}
 
-		xyz = 0
-
-		print( f"OK 1 {mda_start} {simulation_stop}" )
-		print( f"OK 2 {[ i for i in range( mda_start, simulation_stop ) ]}" )
+#		for state in sim.iter_run(
+#			end_time = simulation_stop,
+#			sampling_years=[ i for i in range( mda_start, simulation_stop ) ],
+#			inclusive = inclusive
+#		):
 
 		for state in sim.iter_run(
 			end_time = simulation_stop,
-			sampling_years=[ i for i in range( mda_start, simulation_stop ) ],
+			sampling_interval = 1,
 			inclusive = inclusive
 		):
 
-			print( f"xyz: {xyz}" )
-			xyz += 1
-
 			add_state_to_run_data(
 				state,
-				run_data=age_grouped_output_data,
+				run_data=age_grouped_run_data,
 				number=True,
 				n_treatments=False,
 				achieved_coverage=False,
@@ -111,18 +110,15 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 				with_sequela=True
 			)
 
-			print( f"GROUPED {age_grouped_output_data}" )
-			print( f"ALL {all_age_output_data}" )
-
 		age_grouped_output_data.append( age_grouped_run_data )
 		all_age_output_data.append( all_age_run_data )
 
 		end_time = time.perf_counter()
 		run_time = end_time - start_time
-		print( f"{os.getpid()} {group_name}: {run_time:.4f} secs" )
+		print( f"{os.getpid()} {IU} | [ python: {group_name}: {run_time:.4f} secs ]" )
 
 	total_time = time.perf_counter() - init_time
-	print( f"{os.getpid()} total time: {total_time:.4f} secs" )
+	print( f"{os.getpid()} {IU} | [ python: total time: {total_time:.4f} secs ]" )
 
 	mda_file_suffix = f"mda_stop_{mda_stop}"
 
@@ -150,7 +146,7 @@ def calculate_probability_elimination(
 	csv_file: str,
 ) -> None:
 
-	print( f"[ python: calculating probability elimination: {data} {iuName} {scenario} {mda_start_year} {mda_stop_year} {mda_interval} {csv_file} ]" )
+#	print( f"[ python: calculating probability elimination: {data} {iuName} {scenario} {mda_start_year} {mda_stop_year} {mda_interval} {csv_file} ]" )
 	# Arranging data into an easy to manipulate format (taken from tools.py)
 	data_combined_runs: dict[
 		tuple[float, float, float, str], list[float | int]
@@ -340,18 +336,24 @@ python run.py \
 	OutputVals_AGO02053.hdf5 \
 	/Users/igor/Work/ntd/ntd-model-runner/epioncho/scenarios/scenario3c.json \
 	/Users/igor/whatever/ihme-AGO02053-scenario_3c-10.csv \
-	10
+	10 \
+	true \
+	true
 
 python run.py \
 	OutputVals_AGO02049.hdf5 \
 	/Users/igor/Work/ntd/ntd-model-runner/epioncho/scenarios/scenario1.json \
 	/Users/igor/whatever/ihme-AGO02049-scenario_1-200.csv \
-	200
+	200 \
+	true \
+	true
 
 - .hdf5 files fetched from GCS by caller
 - scenario file included in runner but potentially specified elsewhere in caller
-- absolute output file path specified by caller
+- absolute output file path root specified by caller
 - number of simulations specified by caller
+- whether to call model with 'inclusive' to include all years
+- whether to ask model to provide prevalence_OAE
 
 """
 
@@ -363,5 +365,6 @@ if __name__ == '__main__':
 	output_file_root = sys.argv[ 3 ][:-4] # remove the ".csv"
 	n_sims = sys.argv[ 4 ]
 	inclusive = sys.argv[ 5 ].lower() == 'true' if len( sys.argv ) >= 6 else False
+	prevalence_OAE = sys.argv[ 6 ].lower() == 'true' if len( sys.argv ) >= 7 else False
 
-	run_simulations( IU, hdf5_file, scenario_file, output_file_root, int(n_sims), inclusive, True )
+	run_simulations( IU, hdf5_file, scenario_file, output_file_root, int(n_sims), inclusive, prevalence_OAE )

@@ -299,7 +299,7 @@ select CHOICE in yes no ; do
 
 			# inform user
 			# shellcheck disable=SC2086
-			REAL_LOG_PATH=$( realpath ${PROJECT_ROOT_DIR}/${LOG_FILE} )
+			REAL_LOG_PATH="$( realpath ${PROJECT_ROOT_DIR} )/${LOG_FILE}"
 			info "Epioncho model is running in a detached shell."
 			echo "Log output is being saved to file: ${REAL_LOG_PATH}"
 			echo "When the model runs have finished, the file $( realpath ${PROJECT_ROOT_DIR} )/${FINISH_FILE} will be created."
