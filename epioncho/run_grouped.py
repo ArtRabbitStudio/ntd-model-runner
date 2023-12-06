@@ -35,8 +35,6 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 	# read in scenario file
 	new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
 
-	print( f"BLAH {len(new_endgame_model.programs)}" )
-
 	if len( new_endgame_model.programs ) > 0:
 
 		last_program = new_endgame_model.programs[ -1 ]
