@@ -24,11 +24,12 @@ function choice () {
 function usage () {
 	echo "usage: ${0} \\"
 	echo "	[-n <num-simulations>] [-j <num-parallel-jobs>]"
-	echo "	[-s <scenarios>] [-f <iu-list-file>]"
+	echo "	[-S <scenario-folder>] [-s <scenario-namess>] [-f <iu-list-file>]"
 	echo "	[-I <gcs-input-data-bucket> ] [-i <gcs-input-data-path>]"
 	echo "	[-o <gcs-output-data-root>] [-O <gcs-output-data-bucket>]"
 	echo "	[-r <run-title>]"
-	echo "	[-L <local-output-root>]"
+	echo "	[-L <local-output-root>] [-k (keep-local-data-files) ]"
+	echo "	[-C (shorten-iu-codes)] [-G (run-grouped)]"
 	exit 1
 }
 
@@ -59,7 +60,7 @@ function check_and_maybe_create_dir () {
 function check_scenarios () {
 	NOT_FOUND=0
 	for s in $( echo ${1//,/ } ) ; do
-		SCENARIO_FILE="scenarios/scenario${s}.json"
+		SCENARIO_FILE="${SCENARIO_DIR}/scenario${s}.json"
 		if [[ ! -f "${SCENARIO_FILE}" ]] ; then
 			error "scenario file ${SCENARIO_FILE} not found for scenario ${s}"
 			NOT_FOUND=$((NOT_FOUND + 1))
@@ -102,12 +103,13 @@ PROJECT_ROOT_DIR=$( get_abs_filename . )
 KEEP_LOCAL_DATA=n
 SHORTEN_IU_CODE=n
 RUN_GROUPED=n
+SCENARIO_DIR="./scenarios"
 
 # ensure at least a 'run' directory
 mkdir -p run
 
 # read CLI options
-while getopts "hn:j:s:f:I:i:kO:r:o:L:CG" opts ; do
+while getopts "hn:j:S:s:f:I:i:kO:r:o:L:CG" opts ; do
 
 	case "${opts}" in
 
@@ -121,6 +123,10 @@ while getopts "hn:j:s:f:I:i:kO:r:o:L:CG" opts ; do
 
 		j)
 			NUM_PARALLEL_JOBS=${OPTARG}
+			;;
+
+		S)
+			SCENARIO_DIR=${OPTARG}
 			;;
 
 		s)
@@ -190,7 +196,7 @@ done
 DEFAULT_SCENARIOS="1,2a,2b,3a,3b,3c"
 SCENARIOS="${SCENARIOS:=${DEFAULT_SCENARIOS}}"
 LOCAL_OUTPUT_ROOT="${LOCAL_OUTPUT_ROOT:=$( mkdir -p ./run/output && realpath ./run/output )}"
-SCENARIO_ROOT="${SCENARIO_ROOT:=$( realpath ./scenarios )}"
+SCENARIO_ROOT="${SCENARIO_ROOT:=$( realpath ./${SCENARIO_DIR} )}"
 
 # check input/output directories
 OUTPUT_DATA_PATH="${LOCAL_OUTPUT_ROOT}/${GCS_OUTPUT_DATA_ROOT}/${RUN_TITLE}"
@@ -243,7 +249,7 @@ echo "- using data files from GCS data path gs://${GCS_INPUT_DATA_BUCKET}/${GCS_
 echo "- using scenarios ${SCENARIOS}"
 echo "- across ${NUM_PARALLEL_JOBS} parallel jobs"
 echo "- use ID list file ${IU_LIST_FILE} ($( wc -l ${IU_LIST_FILE} | awk '{print $1}' ) IUs)"
-echo "- use scenario files in directory $( realpath ./scenarios )"
+echo "- use scenario files in directory $( realpath ${SCENARIO_ROOT} )"
 echo "- write model output files to directory ${OUTPUT_DATA_PATH}"
 echo "- copy local CSV output in ${OUTPUT_DATA_PATH} to GCS location ${GCS_DESTINATION}"
 if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then

@@ -4,7 +4,9 @@ age-grouping from https://github.com/adiramani/P_EPIONCHO-IBM/blob/master/exampl
 '''
 
 import os
+import csv
 import sys
+import glob
 import h5py
 import time
 
@@ -33,10 +35,21 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 	# read in scenario file
 	new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
 
-	last_program = new_endgame_model.programs[ -1 ]
-	mda_start = last_program.first_year
-	mda_stop = last_program.last_year
-	interval = int( last_program.interventions.treatment_interval )
+	print( f"BLAH {len(new_endgame_model.programs)}" )
+
+	if len( new_endgame_model.programs ) > 0:
+
+		last_program = new_endgame_model.programs[ -1 ]
+		mda_start = last_program.first_year
+		mda_stop = last_program.last_year
+		interval = int( last_program.interventions.treatment_interval )
+
+	# zero-intervention scenarios
+	else:
+
+		mda_start = 2026
+		mda_stop = 2040
+		interval = 1
 
 	# data stores
 	age_grouped_output_data: list[Data] = []
@@ -133,6 +146,13 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		mda_stop,
 		interval,
 		f"{output_file_root}-{mda_file_suffix}-all_age_data.csv"
+	)
+
+	combineAndFilter(
+		pathToOutputFiles='/'.join( output_file_root.split( '/' )[ 0:-1 ] + ['']  ), # output root, minus filename, plus trailing slash
+		specific_files="*-all_age_data.csv",
+		measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp"',
+		output_file_root=output_file_root
 	)
 
 
@@ -328,6 +348,39 @@ def calculate_probability_elimination(
 			"median",
 		],
 	).to_csv(csv_file)
+
+# Combines all data files in a folder and filters as necessary. Saves into two new files
+# pathToOutputFiles - where all the data files are located
+# specific_files - file name filter to only combine the files that are wanted
+# measure_filter - data filter that filters the values within each data file based. This is directly passed into `pd.query()`
+def combineAndFilter(
+	pathToOutputFiles=".",
+	specific_files="*.csv",
+	measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp"',
+	output_file_root="."
+):
+
+	print( f"{os.getpid()} {IU} | [ python: combineAndFilter path: {pathToOutputFiles} ]" )
+
+	rows = []
+	columns = []
+
+	for filename in glob.glob(
+		pathToOutputFiles + "**/" + specific_files, recursive=True
+	):
+		with open(filename, newline="") as f:
+			reader = csv.reader(f)
+			if len(columns) == 0:
+				columns = next(reader)
+			else:
+				next(reader)
+			rows.extend(reader)
+
+	outputData = pd.DataFrame(rows, columns=columns)
+	outputData.to_csv( f"{output_file_root}-combined_data.csv")
+
+	filteredOutput = outputData.query(measure_filter)
+	filteredOutput.to_csv( f"{output_file_root}-combined_filtered_data.csv" )
 
 """
 expects to be called e.g.:
