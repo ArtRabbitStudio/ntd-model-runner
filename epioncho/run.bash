@@ -29,6 +29,7 @@ function usage () {
 	echo "	[-o <gcs-output-data-root>] [-O <gcs-output-data-bucket>]"
 	echo "	[-r <run-title>]"
 	echo "	[-L <local-output-root>] [-k (keep-local-data-files) ]"
+	echo "	[-V <sampling-interval>]"
 	echo "	[-C (shorten-iu-codes)] [-G (run-grouped)]"
 	exit 1
 }
@@ -103,13 +104,14 @@ PROJECT_ROOT_DIR=$( get_abs_filename . )
 KEEP_LOCAL_DATA=n
 SHORTEN_IU_CODE=n
 RUN_GROUPED=n
+SAMPLING_INTERVAL=1
 SCENARIO_DIR="./scenarios"
 
 # ensure at least a 'run' directory
 mkdir -p run
 
 # read CLI options
-while getopts "hn:j:S:s:f:I:i:kO:r:o:L:CG" opts ; do
+while getopts "hn:j:S:s:f:I:i:kO:r:o:L:V:CG" opts ; do
 
 	case "${opts}" in
 
@@ -174,6 +176,10 @@ while getopts "hn:j:S:s:f:I:i:kO:r:o:L:CG" opts ; do
 
 		L)
 			LOCAL_OUTPUT_ROOT=${OPTARG}
+			;;
+
+		V)
+			SAMPLING_INTERVAL=${OPTARG}
 			;;
 
 		C)
@@ -252,6 +258,7 @@ echo "- use ID list file ${IU_LIST_FILE} ($( wc -l ${IU_LIST_FILE} | awk '{print
 echo "- use scenario files in directory $( realpath ${SCENARIO_ROOT} )"
 echo "- write model output files to directory ${OUTPUT_DATA_PATH}"
 echo "- copy local CSV output in ${OUTPUT_DATA_PATH} to GCS location ${GCS_DESTINATION}"
+echo "- using sampling interval ${SAMPLING_INTERVAL}"
 if [[ "${SHORTEN_IU_CODE}" = 'y' ]] ; then
 	echo "- shorten IU codes to XXX00000 in GCS paths"
 fi
@@ -282,6 +289,7 @@ select CHOICE in yes no ; do
 					NUM_SIMULATIONS="${NUM_SIMULATIONS}" \
 					IU_LIST_FILE="${IU_LIST_FILE}" \
 					KEEP_LOCAL_DATA="${KEEP_LOCAL_DATA}" \
+					SAMPLING_INTERVAL="${SAMPLING_INTERVAL}" \
 					SHORTEN_IU_CODE="${SHORTEN_IU_CODE}" \
 					RUN_GROUPED="${RUN_GROUPED}" \
 					RUN_STAMP="${RUN_STAMP}" \

@@ -19,7 +19,7 @@ from epioncho_ibm.endgame_simulation import EndgameSimulation
 from epioncho_ibm.state.params import EpionchoEndgameModel
 from epioncho_ibm.tools import Data, add_state_to_run_data, write_data_to_csv
 
-def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inclusive, prevalence_OAE ):
+def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inclusive, prevalence_OAE, sampling_interval ):
 
 	ov = hdf5_file.split('/')[-1]
 	sf = scenario_file.split('/')[-1]
@@ -40,14 +40,14 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		last_program = new_endgame_model.programs[ -1 ]
 		mda_start = last_program.first_year
 		mda_stop = last_program.last_year
-		interval = int( last_program.interventions.treatment_interval )
+		interval = float( last_program.interventions.treatment_interval )
 
 	# zero-intervention scenarios
 	else:
 
 		mda_start = 2026
 		mda_stop = 2040
-		interval = 1
+		interval = 1.0
 
 	# data stores
 	age_grouped_output_data: list[Data] = []
@@ -89,7 +89,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 
 		for state in sim.iter_run(
 			end_time = simulation_stop,
-			sampling_interval = 1,
+			sampling_interval = sampling_interval,
 			inclusive = inclusive
 		):
 
@@ -132,9 +132,10 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 	print( f"{os.getpid()} {IU} | [ python: total time: {total_time:.4f} secs ]" )
 
 	mda_file_suffix = f"mda_stop_{mda_stop}"
+	sampling_interval_suffix = f"sampling_interval_{sampling_interval}"
 
-	write_data_to_csv( age_grouped_output_data, f"{output_file_root}-{mda_file_suffix}-age_grouped_raw_data.csv" )
-	write_data_to_csv( all_age_output_data, f"{output_file_root}-{mda_file_suffix}-raw_all_age_data.csv" )
+	write_data_to_csv( age_grouped_output_data, f"{output_file_root}-{mda_file_suffix}-{sampling_interval_suffix}-age_grouped_raw_data.csv" )
+	write_data_to_csv( all_age_output_data, f"{output_file_root}-{mda_file_suffix}-{sampling_interval_suffix}-raw_all_age_data.csv" )
 
 	calculate_probability_elimination(
 		all_age_output_data,
@@ -143,16 +144,8 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		mda_start,
 		mda_stop,
 		interval,
-		f"{output_file_root}-{mda_file_suffix}-all_age_data.csv"
+		f"{output_file_root}-{mda_file_suffix}-{sampling_interval_suffix}-all_age_data.csv"
 	)
-
-	combineAndFilter(
-		pathToOutputFiles='/'.join( output_file_root.split( '/' )[ 0:-1 ] + ['']  ), # output root, minus filename, plus trailing slash
-		specific_files="*-all_age_data.csv",
-		measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp"',
-		output_file_root=output_file_root
-	)
-
 
 def calculate_probability_elimination(
 	data: list[Data],
@@ -160,11 +153,12 @@ def calculate_probability_elimination(
 	scenario: str,
 	mda_start_year: int | None,
 	mda_stop_year: int,
-	mda_interval: int,
+	mda_interval: float,
 	csv_file: str,
 ) -> None:
 
-#	print( f"[ python: calculating probability elimination: {data} {iuName} {scenario} {mda_start_year} {mda_stop_year} {mda_interval} {csv_file} ]" )
+#	print( f"{os.getpid()} {IU} | [ python: calculating probability elimination: {len(data)} {iuName} {scenario} {mda_start_year} {mda_stop_year} {mda_interval} {csv_file} ]" )
+
 	# Arranging data into an easy to manipulate format (taken from tools.py)
 	data_combined_runs: dict[
 		tuple[float, float, float, str], list[float | int]
@@ -183,6 +177,8 @@ def calculate_probability_elimination(
 	if mda_start_year:
 		yrs_after_mda_start_mask = tmp[:, 0].astype(float) >= mda_start_year
 		tmp = tmp[yrs_after_mda_start_mask, :]
+	else:
+		mda_start_year = 0
 
 	# Calculating probability of elimination using mf_prev
 	mf_prev_mask = tmp[:, 3] == "prevalence"
@@ -199,6 +195,8 @@ def calculate_probability_elimination(
 			for i in range(mf_under_1_mask.shape[1])
 		]
 	)
+
+	roundsTillUnder1Prev = (yearOfUnder1Prev - mda_start_year - 1) / mda_interval
 
 	# Probability of elimination for a given year = the average number of runs that reach 0 mf prev
 	prob_elim = np.mean(mf_prev_vals == 0, axis=1)
@@ -243,6 +241,11 @@ def calculate_probability_elimination(
 		if np.any(prob_elim >= 0.90)
 		else ""
 	)
+	roundsTill90Under1Prev = (
+		(float(yearOf90Under1Prev) - mda_start_year - 1) / mda_interval
+		if yearOf90Under1Prev != ""
+		else ""
+	)
 
 	# Summarizing all other prevalence outputs (filtering to only mfp)
 	other_prevs = tmp[mf_prev_mask, 4:].astype(float)
@@ -268,7 +271,7 @@ def calculate_probability_elimination(
 					"",
 					np.nan,
 					np.nan,
-					"years_to_90_under_1_mfp",
+					"years_to_90_prob_elim",
 					yearOf90ProbElim,
 					None,
 					None,
@@ -281,8 +284,21 @@ def calculate_probability_elimination(
 					"",
 					np.nan,
 					np.nan,
-					"years_to_90_prob_elim",
+					"years_to_90_under_1_mfp",
 					yearOf90Under1Prev,
+					None,
+					None,
+					None,
+				]
+			),
+			# rounds till >=90% under 1% prev
+			np.array(
+				[
+					"",
+					np.nan,
+					np.nan,
+					"rounds_to_90_under_1_mfp",
+					roundsTill90Under1Prev,
 					None,
 					None,
 					None,
@@ -295,7 +311,9 @@ def calculate_probability_elimination(
 					np.nan,
 					np.nan,
 					"years_to_1_mfp",
-					np.nanmean(yearOfUnder1Prev),
+					np.nanmean(yearOfUnder1Prev)
+					if not (np.isnan(yearOfUnder1Prev).all())
+					else None,
 					np.percentile(yearOfUnder1Prev, 2.5),
 					np.percentile(yearOfUnder1Prev, 97.5),
 					np.median(yearOfUnder1Prev),
@@ -309,6 +327,34 @@ def calculate_probability_elimination(
 					np.nan,
 					"years_to_1_mfp_all_runs",
 					",".join(yearOfUnder1Prev.astype(str)),
+					None,
+					None,
+					None,
+				]
+			),
+			# avg rounds till <=1% mf prev
+			np.array(
+				[
+					"",
+					np.nan,
+					np.nan,
+					"rounds_to_1_mfp",
+					np.nanmean(roundsTillUnder1Prev)
+					if not (np.isnan(roundsTillUnder1Prev).all())
+					else None,
+					np.percentile(roundsTillUnder1Prev, 2.5),
+					np.percentile(roundsTillUnder1Prev, 97.5),
+					np.median(roundsTillUnder1Prev),
+				]
+			),
+			# all rounds to <1% mfp
+			np.array(
+				[
+					"",
+					np.nan,
+					np.nan,
+					"rounds_to_1_mfp_all_runs",
+					",".join(roundsTillUnder1Prev.astype(str)),
 					None,
 					None,
 					None,
@@ -346,6 +392,7 @@ def calculate_probability_elimination(
 			"median",
 		],
 	).to_csv(csv_file)
+
 
 # Combines all data files in a folder and filters as necessary. Saves into two new files
 # pathToOutputFiles - where all the data files are located
@@ -417,5 +464,6 @@ if __name__ == '__main__':
 	n_sims = sys.argv[ 4 ]
 	inclusive = sys.argv[ 5 ].lower() == 'true' if len( sys.argv ) >= 6 else False
 	prevalence_OAE = sys.argv[ 6 ].lower() == 'true' if len( sys.argv ) >= 7 else False
+	sampling_interval = float( sys.argv[ 7 ] ) if len( sys.argv ) >= 8 else False
 
-	run_simulations( IU, hdf5_file, scenario_file, output_file_root, int(n_sims), inclusive, prevalence_OAE )
+	run_simulations( IU, hdf5_file, scenario_file, output_file_root, int(n_sims), inclusive, prevalence_OAE, sampling_interval )

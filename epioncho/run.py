@@ -11,7 +11,7 @@ from epioncho_ibm.endgame_simulation import EndgameSimulation
 from epioncho_ibm.state.params import EpionchoEndgameModel
 from epioncho_ibm.tools import Data, add_state_to_run_data, write_data_to_csv
 
-def run_simulations( IU, hdf5_file, scenario_file, output_file, n_sims, inclusive, prevalence_OAE ):
+def run_simulations( IU, hdf5_file, scenario_file, output_file, n_sims, inclusive, prevalence_OAE, sampling_interval ):
 
 	group_names = [f"draw_{i}" for i in range(n_sims)]
 
@@ -40,7 +40,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file, n_sims, inclusiv
 		sim.simulation.reset_current_params(new_params)
 
 		run_data: Data = {}
-		for state in sim.iter_run( end_time = 2040, sampling_interval = 1, inclusive = inclusive ):
+		for state in sim.iter_run( end_time = 2040, sampling_interval = sampling_interval, inclusive = inclusive ):
 			add_state_to_run_data(
 				state,
 				run_data=run_data,
@@ -62,6 +62,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file, n_sims, inclusiv
 	total_time = time.perf_counter() - init_time
 	print( f"{os.getpid()} {IU} | [ python: total time: {total_time:.4f} secs ]" )
 
+	# TODO FIXME add sampling interval to filename
 	write_data_to_csv( output_data, output_file )
 
 """
@@ -101,5 +102,6 @@ if __name__ == '__main__':
 	n_sims = sys.argv[ 4 ]
 	inclusive = sys.argv[ 5 ].lower() == 'true' if len( sys.argv ) >= 6 else False
 	prevalence_OAE = sys.argv[ 6 ].lower() == 'true' if len( sys.argv ) >= 7 else False
+	sampling_interval = float( sys.argv[ 7 ] ) if len( sys.argv ) >= 8 else False
 
-	run_simulations( IU, hdf5_file, scenario_file, output_file, int(n_sims), inclusive, prevalence_OAE )
+	run_simulations( IU, hdf5_file, scenario_file, output_file, int(n_sims), inclusive, prevalence_OAE, sampling_interval )

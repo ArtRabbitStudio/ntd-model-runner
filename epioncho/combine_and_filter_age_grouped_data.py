@@ -33,7 +33,6 @@ def combineAndFilter(
 	filteredOutput = outputData.query(measure_filter)
 	filteredOutput.to_csv("combined_filtered_data.csv")
 
-
 if __name__ == '__main__':
 
 	pathToOutputFiles = sys.argv[ 1 ]
