@@ -11,6 +11,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.10.9',
     install_requires=[
+        'pyarrow',
         'pandas',
         'numpy',
         'epioncho-ibm @ git+https://github.com/dreamingspires/EPIONCHO-IBM.git@master', # the Oncho model

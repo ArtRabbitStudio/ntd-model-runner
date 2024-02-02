@@ -39,5 +39,5 @@ if __name__ == '__main__':
 	combineAndFilter(
 		pathToOutputFiles=pathToOutputFiles,
 		specific_files="*-all_age_data.csv",
-		measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp"',
+		measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp" | measure == "year_of_1_mfp_avg"',
 	)
