@@ -36,6 +36,10 @@ function usage () {
 
 # convert $1 (relative filename) to absolute
 function get_abs_filename() {
+  if [[ ! -f "$1" ]] ; then
+    echo "$1"
+    return
+  fi
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 }
 
