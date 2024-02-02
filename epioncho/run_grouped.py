@@ -77,6 +77,8 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		new_params.seed = current_params.seed
 
 		sim.simulation.reset_current_params(new_params)
+		# TODO remove, added as bugfix for 20240202 business case run
+		sim.simulation.state.current_time = 2026 - (0.5/366)
 
 		age_grouped_run_data: Data = {}
 		all_age_run_data: Data = {}
