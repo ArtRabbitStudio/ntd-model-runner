@@ -17,10 +17,11 @@
     },
     "programs": [
         {
-            "first_year": 2022,
+            "first_year": 2023,
             "last_year": 2025,
             "interventions": {
-                "treatment_interval": 1
+                "treatment_interval": 1,
+                "correlation": 0.3
             }
         },
         {
@@ -29,8 +30,9 @@
             "interventions": {
                 "treatment_interval": 0.25,
                 "total_population_coverage": 0.8,
-                "noncompliant_percentage": 0.01
+                "correlation": 0.3
             }
         }
     ]
+
 }

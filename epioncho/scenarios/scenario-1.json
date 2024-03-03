@@ -2,7 +2,7 @@
     "parameters": {
         "initial": {
             "n_people": 400,
-			"sequela_active": [
+            "sequela_active": [
                 "HangingGroin",
                 "Atrophy",
                 "Blindness",

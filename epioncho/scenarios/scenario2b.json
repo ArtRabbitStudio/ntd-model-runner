@@ -2,7 +2,7 @@
     "parameters": {
         "initial": {
             "n_people": 400,
-			"sequela_active": [
+            "sequela_active": [
                 "HangingGroin",
                 "Atrophy",
                 "Blindness",
@@ -17,17 +17,19 @@
     },
     "programs": [
         {
-            "first_year": 2022,
+            "first_year": 2023,
             "last_year": 2025,
             "interventions": {
-                "treatment_interval": 1
+                "treatment_interval": 1,
+                "correlation": 0.3
             }
         },
         {
             "first_year": 2026,
             "last_year": 2040,
             "interventions": {
-                "treatment_interval": 0.25
+                "treatment_interval": 0.25,
+                "correlation": 0.3
             }
         }
     ]

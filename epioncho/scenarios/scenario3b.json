@@ -2,7 +2,7 @@
     "parameters": {
         "initial": {
             "n_people": 400,
-			"sequela_active": [
+            "sequela_active": [
                 "HangingGroin",
                 "Atrophy",
                 "Blindness",
@@ -24,10 +24,11 @@
     },
     "programs": [
         {
-            "first_year": 2022,
+            "first_year": 2023,
             "last_year": 2025,
             "interventions": {
-                "treatment_interval": 1
+                "treatment_interval": 1,
+                "correlation": 0.3
             }
         },
         {
@@ -37,7 +38,7 @@
                 "treatment_interval": 0.5,
                 "min_age_of_treatment": 4,
                 "total_population_coverage": 0.8,
-                "noncompliant_percentage": 0.01,
+                "correlation": 0.3,
                 "microfilaricidal_nu": 0.04,
                 "microfilaricidal_omega": 1.82,
                 "embryostatic_lambda_max": 462,
