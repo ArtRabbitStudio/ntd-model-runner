@@ -14,7 +14,7 @@ setuptools.setup(
         'pyarrow',
         'pandas',
         'numpy',
-        'epioncho-ibm @ git+https://github.com/dreamingspires/EPIONCHO-IBM.git@master', # the Oncho model
+        'epioncho-ibm @ git+https://github.com/NTD-Modelling-Consortium/EPIONCHO-IBM@master', # the Oncho model
     ],
     include_package_data=True
 )

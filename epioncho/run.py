@@ -24,28 +24,24 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file, n_sims, inclusiv
 		restored_grp = new_file[group_name]
 		assert isinstance(restored_grp, h5py.Group)
 		sim = EndgameSimulation.restore(restored_grp)
-		new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
-
 		current_params = sim.simulation.get_current_params()
-		sim.reset_endgame(new_endgame_model)
-		new_params = sim.simulation.get_current_params()
 
-		# Save out attributes to keep
-		new_params.blackfly.bite_rate_per_person_per_year = (
+		new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
+		new_endgame_model.parameters.initial.blackfly.bite_rate_per_person_per_year = (
 			current_params.blackfly.bite_rate_per_person_per_year
 		)
-		new_params.gamma_distribution = current_params.gamma_distribution
-		new_params.seed = current_params.seed
+		new_endgame_model.parameters.initial.gamma_distribution = current_params.gamma_distribution
+		new_endgame_model.parameters.initial.seed = current_params.seed
 
-		sim.simulation.reset_current_params(new_params)
+		sim.reset_endgame(new_endgame_model)
 
 		run_data: Data = {}
-		for state in sim.iter_run( end_time = 2040, sampling_interval = sampling_interval, inclusive = inclusive ):
+		for state in sim.iter_run( end_time = 2040, sampling_interval = sampling_interval, inclusive = inclusive, make_time_backwards_compatible = True ):
 			add_state_to_run_data(
 				state,
 				run_data=run_data,
 				number=True,
-				n_treatments=False,
+				n_treatments=True,
 				achieved_coverage=False,
 				with_age_groups=True,
 				prevalence=True,
