@@ -36,7 +36,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file, n_sims, inclusiv
 		sim.reset_endgame(new_endgame_model)
 
 		run_data: Data = {}
-		for state in sim.iter_run( end_time = 2040, sampling_interval = sampling_interval, inclusive = inclusive, make_time_backwards_compatible = False):
+		for state in sim.iter_run( end_time = 2041, sampling_interval = sampling_interval, inclusive = inclusive, make_time_backwards_compatible = False):
 			add_state_to_run_data(
 				state,
 				run_data=run_data,
