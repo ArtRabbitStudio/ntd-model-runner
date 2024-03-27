@@ -1,0 +1,22 @@
+{
+    "parameters": {
+        "initial": {
+            "n_people": 400,
+            "sequela_active": [
+                "HangingGroin",
+                "Atrophy",
+                "Blindness",
+                "APOD",
+                "CPOD",
+                "RSD",
+                "Depigmentation",
+                "SevereItching"
+             ]
+        },
+        "changes": [
+            "year": 2026,
+                "params": {"blackfly": {"bite_rate_per_person_per_year": 0}}
+        ]
+    },
+    "programs": []
+}

@@ -1,0 +1,40 @@
+{
+    "parameters": {
+        "initial": {
+            "n_people": 400,
+            "sequela_active": [
+                "HangingGroin",
+                "Atrophy",
+                "Blindness",
+                "APOD",
+                "CPOD",
+                "RSD",
+                "Depigmentation",
+                "SevereItching"
+             ]
+        },
+        "changes": [
+            "year": 2026,
+                "params": 
+            {"delta_time_days": 0.5,
+            "blackfly": {"bite_rate_per_person_per_year": abr * 0}},
+        ]
+    },
+    "programs": [
+        {
+            "first_year": 2026,
+            "last_year": 2040,
+            "interventions": {
+                "treatment_name": "MOX",
+                "treatment_interval": 0.5,
+                "min_age_of_treatment": 4,
+                "total_population_coverage": 0.8,
+                "correlation": 0.3,
+                "microfilaricidal_nu": 0.04,
+                "microfilaricidal_omega": 1.82,
+                "embryostatic_lambda_max": 462,
+                "embryostatic_phi": 4.83
+            }
+        }
+    ]
+}
