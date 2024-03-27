@@ -14,10 +14,12 @@
              ]
         },
         "changes": [
-            "year": 2026,
-                "params": 
-            {"delta_time_days": 0.5,
-            "blackfly": {"bite_rate_per_person_per_year": abr * 0}},
+            {
+                "year": 2026,
+                "params": {
+                    "delta_time_days": 0.5,
+                    "blackfly": {"bite_rate_per_person_per_year": 0}}
+            }
         ]
     },
     "programs": [
