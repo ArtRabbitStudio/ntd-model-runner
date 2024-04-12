@@ -63,22 +63,18 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		start_time = time.perf_counter()
 		restored_grp = new_file[group_name]
 		assert isinstance(restored_grp, h5py.Group)
-		sim = EndgameSimulation.restore(restored_grp)
+		sim = EndgameSimulation.restore( restored_grp )
 
 		current_params = sim.simulation.get_current_params()
-		sim.reset_endgame(new_endgame_model)
-		new_params = sim.simulation.get_current_params()
 
-		# Save out attributes to keep
-		new_params.blackfly.bite_rate_per_person_per_year = (
+		new_endgame_model.parameters.initial.blackfly.bite_rate_per_person_per_year = (
 			current_params.blackfly.bite_rate_per_person_per_year
 		)
-		new_params.gamma_distribution = current_params.gamma_distribution
-		new_params.seed = current_params.seed
+		new_endgame_model.parameters.initial.gamma_distribution = current_params.gamma_distribution
+		new_endgame_model.parameters.initial.seed = current_params.seed
 
-		sim.simulation.reset_current_params(new_params)
-		# TODO remove, added as bugfix for 20240202 business case run
-		sim.simulation.state.current_time = 2026 - (0.5/366)
+		sim.simulation.state.current_time = 2026
+		sim.reset_endgame( new_endgame_model )
 
 		age_grouped_run_data: Data = {}
 		all_age_run_data: Data = {}
@@ -86,7 +82,8 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		for state in sim.iter_run(
 			end_time = simulation_stop,
 			sampling_interval = sampling_interval,
-			inclusive = inclusive
+			inclusive = inclusive,
+			make_time_backwards_compatible = True
 		):
 
 			add_state_to_run_data(
