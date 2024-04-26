@@ -28,6 +28,7 @@ survey_type=""
 secular_trend=""
 vacc_waning_length=""
 uncompressed=""
+dont_split_sch_results=""
 local_storage=""
 model_name=""
 model_path=""
@@ -58,6 +59,7 @@ function usage() {
     echo "    [-p <source-data-path>] [-o <output-folder>]"
     echo "    [-k <source-bucket>] [-K destination-bucket>]"
     echo "    [-u (uncompressed)]"
+    echo "    [-D (dont-split-SCH-results)]"
     echo "    [-l (local_storage)]"
     echo "    [-T <is-secular-trend> (default false)]"
     echo "    [-r <read-pickle-file-suffix>]"
@@ -206,6 +208,10 @@ function get_options () {
 
         u)
             uncompressed=" -u"
+            ;;
+
+        D)
+            dont_split_sch_results=" -D"
             ;;
 
         l)
@@ -370,7 +376,7 @@ function run_scenarios () {
                 output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
@@ -502,7 +508,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:i:n:N:e:o:k:K:p:r:f:g:b:y:w:Tulh" opts ; do
+while getopts ":d:s:i:n:N:e:o:k:K:p:r:f:g:b:y:w:TuDlh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done

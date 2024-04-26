@@ -20,11 +20,11 @@ from sch_simulation.helsim_RUN_KK import *
 from sch_simulation.helsim_FUNC_KK import *
 
 from run_trachoma import run_trachoma_model
-from run_epioncho import run_epioncho_model
 
 # constants
 INSTITUTION_TYPE_IHME = 'ihme'
 INSTITUTION_TYPE_IPM = 'ipm'
+INSTITUTION_TYPE_ALL = 'all'
 
 # custom exceptions
 class MissingArgumentError( ValueError ):
@@ -58,6 +58,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # get local vars out of dictionary, using defaults if not supplied
     compress = run_options.compress if hasattr( run_options, 'compress' ) else False
+    splitSchResults = run_options.splitSchResults if hasattr( run_options, 'splitSchResults' ) else False
     readPickleFileSuffix = run_options.readPickleFileSuffix if hasattr( run_options, 'readPickleFileSuffix' ) else None
     savePickleFileSuffix = run_options.savePickleFileSuffix if hasattr( run_options, 'savePickleFileSuffix' ) else None
     saveIntermediateResults = run_options.saveIntermediateResults if hasattr( run_options, 'saveIntermediateResults' ) else False
@@ -281,6 +282,16 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
 
+    # if not splitting results for IHME, save results straight into CSV
+    if splitSchResults == False:
+        all_results_file_name = f"{output_data_path}/all_results-{file_name_ending}"
+        all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
+        all_df.to_csv( all_results_file_name, index=False, compression=compression )
+        print( f"-> Result file: {all_results_file_name}" )
+        os.remove( coverageTextFileStorageName )
+        # TODO write db result record?
+        return
+
     # run IHME transforms
     ihme_df = next( transformer )
     ihme_file_name = f"{output_data_path}/ihme-{file_name_ending}"
@@ -401,6 +412,31 @@ def run_model(
 
     return results, simData
 
+def sim_result_transform_all( results, iu, species, scenario, numSims, surveyTypeFileSuffix ):
+
+    # create key dict for IHME/IPM format dataframes
+    keys = {
+        "espen_loc":[],
+        "year_id":[],
+        "age_start":[],
+        "age_end":[],
+        "intensity":[],
+        "scenario":[],
+        "species":[],
+        "measure":[]
+    }
+
+    # add a column for each result draw
+    for i in range( 0, numSims ):
+        keys[ f'draw_{i}' ] = []
+
+    print( f'-> starting ALL transform for {numSims} simulations with pandas' )
+    a = time.time()
+    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_ALL, species, scenario, numSims, keys )
+    b = time.time()
+    print( f'-> finished ALL transform for {numSims} simulations with pandas in {(b-a):.3f}s' )
+    return values
+
 def sim_result_transform_generator( results, iu, species, scenario, numSims, surveyTypeFileSuffix ):
 
     # create key dict for IHME/IPM format dataframes
@@ -442,14 +478,6 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims, sur
     print( f'-> finished IHME transform for {numSims} simulations with pandas in {(b-a):.3f}s' )
     yield values
 
-#    print( f'-> starting IHME transform for {numSims} simulations with arrays' )
-#    a = time.time()
-#    values = pd.DataFrame( transform_results_with_arrays( results, iu, INSTITUTION_TYPE_IHME, species, scenario, numSims, keys ), columns = keys )
-#    b = time.time()
-#    print( f'-> finished IHME transform for {numSims} simulations in {(b-a):.3f}s' )
-#    values.to_csv( f'ihme_arrays_{iu}_{scenario}_{numSims}_{surveyTypeFileSuffix}.csv' )
-#    yield values
-
     ################################################################################
     # IPM costs file
     ################################################################################
@@ -460,14 +488,6 @@ def sim_result_transform_generator( results, iu, species, scenario, numSims, sur
     b = time.time()
     print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
     yield values
-
-#    print( f'-> starting IPM transform for {numSims} simulations with arrays' )
-#    a = time.time()
-#    values = pd.DataFrame( transform_results_with_arrays( results, iu, INSTITUTION_TYPE_IPM, species, scenario, numSims, keys ), columns = keys )
-#    b = time.time()
-#    print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
-#    values.to_csv( f'ipm_arrays_{iu}_{scenario}_{numSims}_{surveyTypeFileSuffix}.csv' )
-#    yield values
 
     return
 
@@ -495,8 +515,8 @@ def transform_results_with_pandas( results, iu, type, species, scenario, numSims
         # set to 8400 for Rwanda
         last_ihme_row = 8400
 
-    startrow = { INSTITUTION_TYPE_IHME: 0, INSTITUTION_TYPE_IPM: last_ihme_row }[ type ]
-    endrow = { INSTITUTION_TYPE_IHME: last_ihme_row, INSTITUTION_TYPE_IPM: num_result_rows }[ type ]
+    startrow = { INSTITUTION_TYPE_IHME: 0, INSTITUTION_TYPE_IPM: last_ihme_row, INSTITUTION_TYPE_ALL: 0 }[ type ]
+    endrow = { INSTITUTION_TYPE_IHME: last_ihme_row, INSTITUTION_TYPE_IPM: num_result_rows, INSTITUTION_TYPE_ALL: num_result_rows }[ type ]
 
     # create a DF
     output = pd.DataFrame.from_dict( keys )
@@ -523,51 +543,4 @@ def transform_results_with_pandas( results, iu, type, species, scenario, numSims
     return output.reset_index().drop( 'index', axis = 1 )
 
 ################################################################################
-
-'''
-DEPRECATED this function is way slower than doing the same with pandas dataframes
-DEPRECATED as in the transform_results_with_pandas() function above, so it's just
-DEPRECATED left here for a short period to make sure results are OK before removing
-'''
-def transform_results_with_arrays( results, iu, type, species, scenario, numSims, keys ):
-
-    # previously used row 7584 for end of IPM data, now just run to the end of the results
-    num_result_rows = results[ 0 ].shape[ 0 ]
-
-    if species == 'Mansoni':
-        # first 9280 rows = standard ESPEN results + population data
-        # rows 9281-end = IPM cost data
-        last_ihme_row = 9280
-
-    else:
-        # first 7440 rows = standard ESPEN results + population data
-        # rows 7441-end = IPM cost data
-        last_ihme_row = 7440
-
-    startrow = { INSTITUTION_TYPE_IHME: 0, INSTITUTION_TYPE_IPM: last_ihme_row }[ type ]
-    endrow = { INSTITUTION_TYPE_IHME: last_ihme_row, INSTITUTION_TYPE_IPM: num_result_rows }[ type ]
-
-    # array to put the transformed data into
-    values = []
-
-    # spin through the relevant rows
-    for rowIndex, row in results[ 0 ][ startrow:endrow ].iterrows():
-
-        # get an index into target array, i.e. where we're putting the new row
-        # - jump ahead by last_ihme_row for the ipm data
-        arrIndex = ( rowIndex - last_ihme_row ) if type == INSTITUTION_TYPE_IPM else rowIndex
-
-        if arrIndex > 0 and arrIndex % 1000 == 0:
-            print( f"-> transformed {arrIndex} rows" )
-
-        # add in the first fields, up to the first draw
-        scenario_fields = [ iu, math.trunc( row.Time + 2018 ), row.age_start, row.age_end, row.intensity, scenario, species, row.measure, row.draw_1 ]
-        values.insert( arrIndex, scenario_fields )
-
-        # add draw_1 from the current line in each file as draw_X in the ihme file
-        for simNo in range( 1, numSims ):
-            # put the 'draw_1' value from row 'rowIndex' of the source data into row 'arrIndex' of the target
-            values[ arrIndex ].append( results[ simNo ].loc[ rowIndex ].draw_1 )
-
-    return values
 

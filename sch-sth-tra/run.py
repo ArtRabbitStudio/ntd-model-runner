@@ -31,6 +31,7 @@ def get_cli_options():
     parser.add_option( '-s', '--scenario', dest='scenario', type='string', default='1' )
     parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
     parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store_false', default=True )
+    parser.add_option( '-D', '--dont-split-sch-results', dest='splitSchResults', action='store_false', default=True )
     parser.add_option( '-p', '--source-data-path', dest='sourceDataPath', default='source-data' )
     parser.add_option( '-r', '--read-pickle-file-suffix', dest='readPickleFileSuffix', type='string', default=None )
     parser.add_option( '-f', '--save-pickle-file-suffix', dest='savePickleFileSuffix', type='string', default=None )
@@ -157,6 +158,7 @@ def run_main():
         'groupId': options.groupId if options.groupId != 0 else None,
         'scenario': options.scenario,
         'compress': options.compress,
+        'splitSchResults': options.splitSchResults,
         'sourceDataPath': options.sourceDataPath,
         'readPickleFileSuffix': options.readPickleFileSuffix,
         'savePickleFileSuffix': options.savePickleFileSuffix,
@@ -176,8 +178,9 @@ def run_main():
     cli_iu_list_len = len( [ x for x in run_options.iuList if x != '' ] )
     cloudStorageStr = '' if run_options.useCloudStorage else 'not '
     compressStr = '' if run_options.compress else 'not '
+    splitStr = '' if run_options.splitSchResults else 'not '
 
-    print( f"-> {run_options.numSims} simulations for {cli_iu_list_len} IUs requested, {cloudStorageStr}using cloud storage, {compressStr}compressing output files" )
+    print( f"-> {run_options.numSims} simulations for {cli_iu_list_len} IUs requested, {cloudStorageStr}using cloud storage, {compressStr}compressing output files, {splitStr}splitting SCH results" )
 
     if run_options.outputFolder != '':
         print (f"-> saving result to output folder {run_options.outputFolder}" )
