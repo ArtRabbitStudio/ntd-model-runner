@@ -37,6 +37,7 @@ class gcs:
         return found
 
     def write_string_to_file( self, string, gcs_path ):
+        print( f'-> writing data to {gcs_path} in cloud storage' )
         blob = self._bucket.blob( gcs_path )
         blob.upload_from_string( string )
 

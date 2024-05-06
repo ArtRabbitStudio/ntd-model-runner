@@ -12,6 +12,7 @@ dependencies = [
     'gcsfs==2022.7.1',
     'google-cloud-storage',
     'psycopg2-binary',
+    'dotted-dict',
     'python-slugify',
     'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@Endgame_v2',
     'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@add_vaccination_dev_solve_issues',
