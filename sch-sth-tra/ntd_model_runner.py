@@ -526,9 +526,9 @@ def transform_results_with_pandas( results, iu, type, species, scenario, numSims
         output[key] = results[ 0] [ key ][ startrow:endrow ]
 
     # work out the year for the row
-    #output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2018 ).astype( int )
+    output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2018 ).astype( int )
     ## use 2020.5 for Rwanda TODO FIXME revert for Endgame
-    output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2020.5 ).astype( int )
+    #output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2020.5 ).astype( int )
 
     # copy the static rows into the full list
     output[ 'espen_loc' ] = iu
