@@ -1,14 +1,14 @@
 DISEASE=${1}
 IU=${2}
 SOURCE_DATA_DIR=${3:-source-data}
-CONVERTED_SOURCE_DATA_DIR="source-data-converted-$( date +%Y%m%d )"
+CONVERTED_SOURCE_DATA_DIR="source-data-converted-$( date +%Y%m%d )a"
 
 python convert-sth-pickle-data.py ${DISEASE} ${IU} ${SOURCE_DATA_DIR} ${CONVERTED_SOURCE_DATA_DIR}
 
 glob_path="gs://ntd-disease-simulator-data/diseases/sth-${DISEASE}/${SOURCE_DATA_DIR}/${IU:0:3}/${IU}"
-glob="gs://ntd-disease-simulator-data/diseases/sth-${DISEASE}/${SOURCE_DATA_DIR}/${IU:0:3}/${IU}"
+csv_glob="gs://ntd-disease-simulator-data/diseases/sth-${DISEASE}/${SOURCE_DATA_DIR}/${IU:0:3}/${IU}/*.csv"
 
-for s in $( gsutil ls ${glob} ) ; do
+for s in $( gsutil ls ${csv_glob} ) ; do
     f=$( echo $s | awk -F / '{print $NF}' )
     newname=$( echo $s | sed -e "s/${SOURCE_DATA_DIR}/${CONVERTED_SOURCE_DATA_DIR}/" )
     echo "  --> from: $f"

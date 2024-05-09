@@ -39,6 +39,7 @@ class gcs:
     def write_string_to_file( self, string, gcs_path ):
         print( f'-> writing data to {gcs_path} in cloud storage' )
         blob = self._bucket.blob( gcs_path )
+        blob.cache_control = "no-cache"
         blob.upload_from_string( string )
 
     def download_blob_to_file( self, gcs_path, file_path ):
