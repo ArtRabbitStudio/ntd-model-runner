@@ -63,7 +63,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		start_time = time.perf_counter()
 		restored_grp = new_file[group_name]
 		assert isinstance(restored_grp, h5py.Group)
-		sim = EndgameSimulation.restore( restored_grp )
+		sim = EndgameSimulation.restore(restored_grp)
 
 		current_params = sim.simulation.get_current_params()
 
@@ -73,8 +73,8 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 		new_endgame_model.parameters.initial.gamma_distribution = current_params.gamma_distribution
 		new_endgame_model.parameters.initial.seed = current_params.seed
 
-		sim.simulation.state.current_time = 2026
-		sim.reset_endgame( new_endgame_model )
+		#sim.simulation.state.current_time = 2026
+		sim.reset_endgame(new_endgame_model)
 
 		age_grouped_run_data: Data = {}
 		all_age_run_data: Data = {}
@@ -83,36 +83,41 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 			end_time = simulation_stop,
 			sampling_interval = sampling_interval,
 			inclusive = inclusive,
-			make_time_backwards_compatible = True
+			#make_time_backwards_compatible = True
 		):
 
 			add_state_to_run_data(
 				state,
 				run_data=age_grouped_run_data,
 				number=True,
-				n_treatments=False,
-				achieved_coverage=False,
+				n_treatments=True,
+				achieved_coverage=True,
 				with_age_groups=True,
 				prevalence=True,
-				mean_worm_burden=False,
-				prevalence_OAE=prevalence_OAE,
+				mean_worm_burden=True,
+				prevalence_OAE=True,
 				intensity=True,
-				with_sequela=True
+				with_sequela=True,
+				with_pnc=True,
+				saving_multiple_states=True
 			)
 
 			add_state_to_run_data(
 				state,
 				run_data=all_age_run_data,
 				number=True,
-				n_treatments=False,
-				achieved_coverage=False,
+				n_treatments=True,
+				achieved_coverage=True,
 				with_age_groups=False,
 				prevalence=True,
-				mean_worm_burden=False,
-				prevalence_OAE=prevalence_OAE,
+				mean_worm_burden=True,
+				prevalence_OAE=True,
 				intensity=True,
-				with_sequela=True
+				with_sequela=True,
+				with_pnc=True,
+				saving_multiple_states=False
 			)
+
 
 		age_grouped_output_data.append( age_grouped_run_data )
 		all_age_output_data.append( all_age_run_data )
