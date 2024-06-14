@@ -30,7 +30,7 @@ def run_simulations( IU, hdf5_file, scenario_file, output_file_root, n_sims, inc
 	new_file = h5py.File(hdf5_file, "r")
 	sims = []
 
-	simulation_stop = 2050
+	simulation_stop = 2042
 
 	# read in scenario file
 	new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
