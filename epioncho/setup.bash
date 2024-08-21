@@ -21,7 +21,11 @@ info "-> setting up python Epioncho model runner ..."
 
 # switch to the right branch of the epioncho model
 EPIONCHO_MODEL_BRANCH="${EPIONCHO_MODEL_BRANCH:-master}"
-sed "s/_epioncho_model_branch_/${EPIONCHO_MODEL_BRANCH}/" < setup.py.tpl > setup.py
+POSTPROCESSING_REPO_BRANCH="${POSTPROCESSING_REPO_BRANCH:-main}"
+sed \
+	-e "s/_epioncho_model_branch_/${EPIONCHO_MODEL_BRANCH}/" \
+	-e "s/_postprocessing_repo_branch_/${POSTPROCESSING_REPO_BRANCH}/" \
+	< setup.py.tpl > setup.py
 
 # clear out existing virtualenv
 set +e

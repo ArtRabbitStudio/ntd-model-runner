@@ -15,6 +15,7 @@ setuptools.setup(
         'pandas',
         'numpy',
         'epioncho-ibm @ git+https://github.com/NTD-Modelling-Consortium/EPIONCHO-IBM@_epioncho_model_branch_', # the Oncho model
+		'endgame-postprocessing @ git+https://github.com/NTD-Modelling-Consortium/endgame-postprocessing@_postprocessing_repo_branch_', # the Oncho post-processing repo
     ],
     include_package_data=True
 )
