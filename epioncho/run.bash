@@ -206,7 +206,7 @@ done
 DEFAULT_SCENARIOS="1,2a,2b,3a,3b,3c"
 SCENARIOS="${SCENARIOS:=${DEFAULT_SCENARIOS}}"
 LOCAL_OUTPUT_ROOT="${LOCAL_OUTPUT_ROOT:=$( mkdir -p ./run/output && realpath ./run/output )}"
-SCENARIO_ROOT="${SCENARIO_ROOT:=$( realpath ./${SCENARIO_DIR} )}"
+SCENARIO_ROOT="${SCENARIO_ROOT:=$( realpath ${SCENARIO_DIR} )}"
 
 # check input/output directories
 OUTPUT_DATA_PATH="${LOCAL_OUTPUT_ROOT}/${GCS_OUTPUT_DATA_ROOT}/${RUN_TITLE}"
