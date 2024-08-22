@@ -1,43 +1,45 @@
 import sys
-import csv
-import glob
+from endgame_postprocessing.model_wrappers import constants as modelwrapper_constants
+from endgame_postprocessing.post_processing.aggregation import (
+    aggregate_post_processed_files,
+    iu_lvl_aggregate,
+    country_lvl_aggregate,
+    africa_lvl_aggregate,
+)
 
-import numpy as np
-import pandas as pd
-
-# Combines all data files in a folder and filters as necessary. Saves into two new files
-# pathToOutputFiles - where all the data files are located
-# specific_files - file name filter to only combine the files that are wanted
-# measure_filter - data filter that filters the values within each data file based. This is directly passed into `pd.query()`
+# Combines all data files in a folder and aggregates as necessary.
 def combineAndFilter(
-	pathToOutputFiles="/",
-	specific_files="*.csv",
-	measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp"',
+    path_to_output_files=".", specific_files="*-all_age_data.csv", output_file_root="."
 ):
-	rows = []
-	columns = []
-	for filename in glob.glob(
-		pathToOutputFiles + "**/" + specific_files, recursive=True
-	):
-		with open(filename, newline="") as f:
-			reader = csv.reader(f)
-			if len(columns) == 0:
-				columns = next(reader)
-			else:
-				next(reader)
-			rows.extend(reader)
 
-	outputData = pd.DataFrame(rows, columns=columns)
-	outputData.to_csv("combined_data.csv")
+    print(
+        f"python: combineAndFilter path: {path_to_output_files} ]"
+    )
 
-	filteredOutput = outputData.query(measure_filter)
-	filteredOutput.to_csv("combined_filtered_data.csv")
+    combined_iu_df = iu_lvl_aggregate(
+        aggregate_post_processed_files(
+            path_to_files=path_to_output_files,
+            specific_files=specific_files
+        )
+    )
+    combined_iu_df.to_csv(f"{output_file_root}combined-oncho-iu-lvl-agg.csv")
+    country_lvl_data = country_lvl_aggregate(
+        iu_lvl_data=combined_iu_df,
+        general_summary_measure_names=modelwrapper_constants.COUNTRY_SUMMARY_COLUMNS,
+        general_groupby_cols=modelwrapper_constants.COUNTRY_SUMMARY_GROUP_COLUMNS,
+        threshold_summary_measure_names=modelwrapper_constants.COUNTRY_THRESHOLD_SUMMARY_COLUMNS,
+        threshold_groupby_cols=modelwrapper_constants.COUNTRY_THRESHOLD_SUMMARY_GROUP_COLUMNS,
+        threshold_cols_rename=modelwrapper_constants.COUNTRY_THRESHOLD_RENAME_MAP,
+    )
+    country_lvl_data.to_csv(
+        f"{output_file_root}combined-oncho-country-lvl-agg.csv"
+    )
+    africa_lvl_aggregate(
+        country_lvl_data=country_lvl_data,
+        measures_to_summarize=modelwrapper_constants.AFRICA_SUMMARY_MEASURES,
+        columns_to_group_by=modelwrapper_constants.AFRICA_LVL_GROUP_COLUMNS,
+    ).to_csv(f"{output_file_root}combined-oncho-africa-lvl-agg.csv")
 
-if __name__ == '__main__':
 
-	pathToOutputFiles = sys.argv[ 1 ]
-	combineAndFilter(
-		pathToOutputFiles=pathToOutputFiles,
-		specific_files="*-all_age_data.csv",
-		measure_filter=f'measure == "years_to_1_mfp" | measure == "rounds_to_1_mfp" | measure == "rounds_to_90_under_1_mfp" | measure == "years_to_90_under_1_mfp" | measure == "year_of_1_mfp_avg"',
-	)
+if __name__ == "__main__":
+    combineAndFilter(path_to_output_files=sys.argv[1], output_file_root=sys.argv[2])
