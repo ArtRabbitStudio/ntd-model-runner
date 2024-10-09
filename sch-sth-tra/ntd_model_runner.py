@@ -222,7 +222,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # run the model
     run_info.started = datetime.now()
-    results, simData = run_model(
+    results, simData, ntdmcData = run_model(
         InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else InSimFilePath,
         RkFilePath = GcsRkFilePath if run_options.useCloudStorage else RkFilePath,
         coverageFileName = run_options.coverageFileName,
@@ -290,6 +290,12 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         print( f"-> Result file: {all_results_file_name}" )
         os.remove( coverageTextFileStorageName )
         # TODO write db result record?
+
+        # write out NTDMC file. TODO write this instead of IPM in split-results segment?
+        ntdmc_file_name = f"{output_data_path}/ntdmc-{file_name_ending}"
+        ntdmcData.to_csv( ntdmc_file_name, index=False, compression=compression )
+        print( f"-> NTDMC file:  {ntdmc_file_name}" )
+
         return
 
     # run IHME transforms
@@ -384,7 +390,7 @@ def run_model(
 
         print( f'-> running burn-in, not reading pickle data (from {InSimFilePath})' )
         res = Parallel(n_jobs=num_cores)(
-            delayed(BurnInSimulations)(params,simparams, i, surveyType) for i in range(numSims)
+            delayed( BurnInSimulations )( params, simparams, i, surveyType ) for i in range( numSims )
         )
 
     # run simulations in parallel starting from specified pickled state
@@ -400,17 +406,21 @@ def run_model(
             burnInTime = max( burnInTime,round( max( pickleData[i].demography.birthDate * 10 ) ) / 10 )
 
         res = Parallel(n_jobs=num_cores)(
-            delayed(multiple_simulations_after_burnin)(params, pickleData, simparams, indices, i, burnInTime, surveyType) for i in range(numSims)
+            delayed( multiple_simulations_after_burnin )( params, pickleData, simparams, indices, i, burnInTime, surveyType ) for i in range( numSims )
         )
 
     results = [ item[ 0 ] for item in res ]
     simData = [ item[ 1 ] for item in res ]
 
+    # generate ntdmc data. doing it here because it needs access to 'params' and raw 'res'
+    startYear = 2026
+    ntdmcData = constructNTDMCResultsAcrossAllSims( params, res, surveyType.upper(), startYear, resultsIndex = 2 )
+
     end_time = time.time()
 
     print( f'-> finished {numSims} simulations on {num_cores} cores in {(end_time - start_time):.3f}s' )
 
-    return results, simData
+    return results, simData, ntdmcData
 
 def sim_result_transform_all( results, iu, species, scenario, numSims, surveyTypeFileSuffix ):
 
