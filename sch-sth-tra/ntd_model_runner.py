@@ -204,7 +204,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     print( f"-> using coverage file {run_options.coverageFileName}" )
 
-    coverageTextFileStorageName = f'/tmp/{short}_{iu}_MDA_vacc.txt'
+    coverageTextFileStorageName = f'/tmp/{os.getpid()}_{short}_{iu}_MDA_vacc.txt'
 
     # locate & check parameter file for selected disease/scenario
     paramFileDirectory = f'{disease.upper()}_params'
@@ -231,6 +231,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         demogName = demogName,
         paramFileName = run_options.paramFileName,
         numSims = run_options.numSims,
+        numProcs = run_options.numProcs,
         surveyType = surveyType,
         cloudModule = GCS if run_options.useCloudStorage else None,
         runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
@@ -289,7 +290,6 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
         all_df.to_csv( all_results_file_name, index=False, compression=compression )
         print( f"-> Result file: {all_results_file_name}" )
-        os.remove( coverageTextFileStorageName )
         # TODO write db result record?
 
         # write out NTDMC file. TODO write this instead of IPM in split-results segment?
@@ -297,6 +297,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         ntdmcData.to_csv( ntdmc_file_name, index=False, compression=compression )
         print( f"-> NTDMC file:  {ntdmc_file_name}" )
 
+        os.remove( coverageTextFileStorageName )
         return
 
     # run IHME transforms
@@ -332,7 +333,7 @@ def run_model(
     InSimFilePath=None, RkFilePath=None,
     coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
     demogName='Default', surveyType='KK2', paramFileName='sch_example.txt',
-    numSims=None, cloudModule=None, runningBurnIn=False, burnInTime=None
+    numSims=None, numProcs=0, cloudModule=None, runningBurnIn=False, burnInTime=None
 ):
 
     # number of simulations to run
@@ -378,7 +379,7 @@ def run_model(
     params = parse_vector_control_input(coverageFileName, params)
 
     # count number of processors
-    num_cores = multiprocessing.cpu_count()
+    num_cores = numProcs if numProcs > 0 else multiprocessing.cpu_count()
     print( f'-> running {numSims} simulations on {num_cores} cores' )
 
     # pick parameters and saved populations in order
@@ -406,7 +407,7 @@ def run_model(
         for i in range(len(pickleData)):
             burnInTime = max( burnInTime,round( max( pickleData[i].demography.birthDate * 10 ) ) / 10 )
 
-        res = Parallel(n_jobs=num_cores)(
+        res = Parallel(n_jobs=num_cores, backend="multiprocessing")(
             delayed( multiple_simulations_after_burnin )( params, pickleData, simparams, indices, i, burnInTime, surveyType ) for i in range( numSims )
         )
 

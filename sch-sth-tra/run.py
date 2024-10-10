@@ -25,6 +25,7 @@ def get_cli_options():
     parser.add_option( '-m', '--demography-name', dest='demogName', default="Default" )
     parser.add_option( '-i', '--iu-list', dest='iuList', type='string', action='callback', callback=iu_list_callback, default='' )
     parser.add_option( '-n', '--num-sims', dest='numSims', default=1 )
+    parser.add_option( '-c', '--num-procs', dest='numProcs', default=0 )
     parser.add_option( '-N', '--run-name', dest='runName', default=None )
     parser.add_option( '-e', '--person-email', dest='personEmail', default=None )
     parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
@@ -123,7 +124,8 @@ def carry_out_runs( DB, run_options ):
         run_options.saveIntermediateResults = False
 
         try:
-            print( f"-> running {run_options.numSims} simulations for {run_info['short']}:{run_info['iu_code']}" )
+            displayNumProcs = run_options.numProcs if run_options.numProcs > 0 else "the default number of"
+            print( f"-> running {run_options.numSims} simulations on {displayNumProcs} processes for {run_info['short']}:{run_info['iu_code']}" )
             run( SimpleNamespace( **run_info ), run_options, DB )
 
         except DirectoryNotFoundError as d:
@@ -147,6 +149,7 @@ def run_main():
     run_options = SimpleNamespace( **{
         'iuList': options.iuList if isinstance( options.iuList, list ) == True else [ '' ],
         'numSims': int( options.numSims ),
+        'numProcs': int( options.numProcs ),
         'runName': base64.b64decode( options.runName ).decode( 'UTF-8' ),
         'personEmail': options.personEmail,
         'disease': options.disease,

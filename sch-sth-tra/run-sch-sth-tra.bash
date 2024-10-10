@@ -9,6 +9,7 @@ demogName=KenyaKDHS
 result_folder=results/$( date +%Y%m%d%H%M%S )
 scenarios="0,1,2,3a,3b"
 num_sims=0
+num_procs=0
 source_data_path="source-data"
 source_bucket="ntd-disease-simulator-data"
 destination_bucket="ntd-endgame-result-data"
@@ -42,6 +43,7 @@ DISEASE_SHORT_NAMES_TO_CODES["Tri"]="sth-whipworm"
 DISEASE_SHORT_NAMES_TO_CODES["Asc"]="sth-roundworm"
 DISEASE_SHORT_NAMES_TO_CODES["Hook"]="sth-hookworm"
 DISEASE_SHORT_NAMES_TO_CODES["Man"]="sch-mansoni"
+DISEASE_SHORT_NAMES_TO_CODES["Hae"]="sch-haematobium"
 DISEASE_SHORT_NAMES_TO_CODES["Onc"]="epioncho"
 
 declare -A DISEASE_SHORT_NAMES_TO_MODEL
@@ -50,6 +52,7 @@ DISEASE_SHORT_NAMES_TO_MODEL["Tri"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Asc"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Hook"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Man"]="sch_simulation"
+DISEASE_SHORT_NAMES_TO_MODEL["Hae"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Onc"]="epioncho-ibm"
 
 function usage() {
@@ -98,6 +101,10 @@ function get_options () {
 
         n)
             num_sims=${OPTARG}
+            ;;
+
+        c)
+            num_procs=${OPTARG}
             ;;
 
         o)
@@ -315,7 +322,7 @@ function run_scenarios () {
                     full_scenario="${scenario}"
                     ;;
 
-                Man)
+                Hae|Man)
                     iu=$( echo "$line" | cut -f 3 -d , )
                     group=$( echo "$line" | cut -f 1 -d , | cut -f 1 -d _ )
                     sub_scenario=$( echo "$line" | cut -f 4 -d , | tr -d '\r')
@@ -376,7 +383,7 @@ function run_scenarios () {
                 output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}"
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
@@ -508,7 +515,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:i:n:N:e:o:k:K:p:r:f:g:b:y:w:TuDlh" opts ; do
+while getopts ":d:s:i:n:c:N:e:o:k:K:p:r:f:g:b:y:w:TuDlh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done
