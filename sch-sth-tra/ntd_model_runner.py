@@ -210,7 +210,8 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     paramFileDirectory = f'{disease.upper()}_params'
     #paramFileName = 'mansoni_params.txt' if species.lower() == 'mansoni' else f'{species.lower()}_scenario_{run_options.scenario}.txt'
     ## fixed to 'all diseases use specific parameter files' for Rwanda 202307 - TODO FIXME change back for Endgame
-    paramFileName = f'{species.lower()}_scenario_{run_options.scenario}.txt'
+    ## fixed to explicit x_params_scenario_y.txt 20241010 - TODO FIXME for SCH mansoni(/haematobium)
+    paramFileName = f'{species.lower()}_params_scenario_{run_options.scenario}.txt'
     run_options.paramFileName = f'{paramFileDirectory}/{paramFileName}'
     paramFilePath = f'{MODEL_DATA_DIR}/{run_options.paramFileName}'
 
