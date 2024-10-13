@@ -4,6 +4,9 @@
 # fail fast and hard
 set -euo pipefail
 
+# flag to carry on until sent graceful-quit signal
+CONTINUE_EXECUTION=1
+
 # default values
 demogName=KenyaKDHS
 result_folder=results/$( date +%Y%m%d%H%M%S )
@@ -71,6 +74,12 @@ function usage() {
     echo "    [-g <iu-file-segment-number,out-of-total-segments>]"
     exit 1
 }
+
+function trap_quit () {
+    CONTINUE_EXECUTION=0
+}
+
+trap trap_quit QUIT
 
 # WARNING: these are all written to global variables
 function get_options () {
@@ -312,6 +321,12 @@ function run_scenarios () {
         lines=$( get_lines "${segment_number:=}" "${out_of:=}" "${iu_list_file}" )
 
         for line in $lines ; do
+
+            # check if asked to exit gracefully
+            if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then
+                echo "asked to quit by signal, exiting"
+                exit 0
+            fi
 
             case "${disease}" in
 
