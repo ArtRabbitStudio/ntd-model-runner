@@ -322,12 +322,6 @@ function run_scenarios () {
 
         for line in $lines ; do
 
-            # check if asked to exit gracefully
-            if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then
-                echo "asked to quit by signal, exiting"
-                exit 0
-            fi
-
             case "${disease}" in
 
                 Hook|Tri|Asc|Tra)
@@ -399,6 +393,12 @@ function run_scenarios () {
             fi
 
             cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}"
+
+            # check if asked to exit gracefully
+            if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then
+                echo "asked to quit by signal, exiting after ${cmd_options}"
+                exit 0
+            fi
 
             if [[ "${DISPLAY_CMD:=n}" == "y" ]] ; then
                 echo "$cmd"
