@@ -1,4 +1,3 @@
-import tarfile
 import sys
 import os
 import re
@@ -6,13 +5,6 @@ import re
 from db import db
 
 # SQL statements
-insert_disease_sql = '''
-INSERT INTO disease ( type, species, short )
-VALUES ( %s, %s, %s )
-ON CONFLICT ( type, species, short ) DO UPDATE SET type = EXCLUDED.type, species = EXCLUDED.species, short = EXCLUDED.short
-RETURNING id
-'''
-
 insert_iu_sql = '''
 INSERT INTO iu ( code )
 VALUES ( %s )
@@ -23,7 +15,7 @@ RETURNING id
 insert_join_sql = '''
 INSERT INTO iu_disease ( iu_id, disease_id )
 VALUES ( %s, %s )
-ON CONFLICT ( iu_id, disease_id ) DO NOTHING
+ON CONFLICT ( iu_id, disease_id ) DO UPDATE SET iu_id = EXCLUDED.iu_id, disease_id = EXCLUDED.disease_id
 RETURNING iu_id
 '''
 
