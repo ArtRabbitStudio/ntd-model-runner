@@ -214,8 +214,6 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # locate & check parameter file for selected disease/scenario
     paramFileDirectory = f'{disease.upper()}_params{paramFileSubdirectory}'
-    print( f'paramFileDirectory: {paramFileDirectory}' )
-    print( f'paramFileDiseaseSuffix: {paramFileDiseaseSuffix}' )
 
     #paramFileName = 'mansoni_params.txt' if species.lower() == 'mansoni' else f'{species.lower()}_scenario_{run_options.scenario}.txt'
     ## fixed to 'all diseases use specific parameter files' for Rwanda 202307 - TODO FIXME change back for Endgame
@@ -288,51 +286,66 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # create common cloud filename components
     surveyTypeFileSuffix = f"-survey_type_{surveyType.lower().replace('-','_')}" if species == 'Mansoni' else ''
-    file_name_ending = f"{iu}-{run_info.species.lower()}{groupId_string}-scenario_{run_options.scenario}{surveyTypeFileSuffix}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
+    file_name_ending = f"{iu}-{run_info.species.lower()}{paramFileDiseaseSuffix}{groupId_string}-scenario_{run_options.scenario}{surveyTypeFileSuffix}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
 
     # get a transformer generator function for the IHME/IPM transforms
     transformer = sim_result_transform_generator( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
 
-    # if not splitting results for IHME, save results straight into CSV
-    if splitSchResults == False:
-        all_results_file_name = f"{output_data_path}/all_results-{file_name_ending}"
-        all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
-        all_df.to_csv( all_results_file_name, index=False, compression=compression )
-        print( f"-> Result file: {all_results_file_name}" )
-        # TODO write db result record?
+    # not splitting results for IHME, save results straight into CSV
+    all_results_file_name = f"{output_data_path}/all_results-{file_name_ending}"
+    all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
+    all_df.to_csv( all_results_file_name, index=False, compression=compression )
+    print( f"-> Result file: {all_results_file_name}" )
+    # TODO write db result record?
 
-        # write out NTDMC file. TODO write this instead of IPM in split-results segment?
-        ntdmc_file_name = f"{output_data_path}/ntdmc-{file_name_ending}"
-        ntdmcData.to_csv( ntdmc_file_name, index=False, compression=compression )
-        print( f"-> NTDMC file:  {ntdmc_file_name}" )
-
-        os.remove( coverageTextFileStorageName )
-        return
-
-    # run IHME transforms
-    ihme_df = next( transformer )
-    ihme_file_name = f"{output_data_path}/ihme-{file_name_ending}"
-    ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
-
-    # store metadata in flow db
-    if run_options.useCloudStorage:
-        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IHME, ihme_file_name, compression )
-
-    # run IPM transforms
-    ipm_df = next( transformer )
-    ipm_file_name = f"{output_data_path}/ipm-{file_name_ending}"
-    ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
-
-    # store metadata in flow db
-    if run_options.useCloudStorage:
-        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IPM, ipm_file_name, compression )
+    # write out NTDMC file. TODO write this instead of IPM in split-results segment?
+    ntdmc_file_name = f"{output_data_path}/ntdmc-{file_name_ending}"
+    ntdmcData.to_csv( ntdmc_file_name, index=False, compression=compression )
+    print( f"-> NTDMC file:  {ntdmc_file_name}" )
 
     os.remove( coverageTextFileStorageName )
-
-    print( f"-> IHME file: {ihme_file_name}" )
-    print( f"-> IPM file:  {ipm_file_name}" )
-
     return
+
+#    # if not splitting results for IHME, save results straight into CSV
+#    if splitSchResults == False:
+#        all_results_file_name = f"{output_data_path}/all_results-{file_name_ending}"
+#        all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
+#        all_df.to_csv( all_results_file_name, index=False, compression=compression )
+#        print( f"-> Result file: {all_results_file_name}" )
+#        # TODO write db result record?
+#
+#        # write out NTDMC file. TODO write this instead of IPM in split-results segment?
+#        ntdmc_file_name = f"{output_data_path}/ntdmc-{file_name_ending}"
+#        ntdmcData.to_csv( ntdmc_file_name, index=False, compression=compression )
+#        print( f"-> NTDMC file:  {ntdmc_file_name}" )
+#
+#        os.remove( coverageTextFileStorageName )
+#        return
+#
+#    # run IHME transforms
+#    ihme_df = next( transformer )
+#    ihme_file_name = f"{output_data_path}/ihme-{file_name_ending}"
+#    ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
+#
+#    # store metadata in flow db
+#    if run_options.useCloudStorage:
+#        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IHME, ihme_file_name, compression )
+#
+#    # run IPM transforms
+#    ipm_df = next( transformer )
+#    ipm_file_name = f"{output_data_path}/ipm-{file_name_ending}"
+#    ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
+#
+#    # store metadata in flow db
+#    if run_options.useCloudStorage:
+#        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IPM, ipm_file_name, compression )
+#
+#    os.remove( coverageTextFileStorageName )
+#
+#    print( f"-> IHME file: {ihme_file_name}" )
+#    print( f"-> IPM file:  {ipm_file_name}" )
+#
+#    return
 
 '''
 function to load in a pickle file and associated parameters file and then
