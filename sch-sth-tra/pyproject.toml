@@ -8,14 +8,14 @@ authors = [
 requires-python = ">=3.10.9"
 dependencies = [
     'toml',
-    'fsspec',
-    'gcsfs==2022.7.1',
+    'fsspec==2022.11.0',
+    'gcsfs==2022.11.0',
     'google-cloud-storage',
     'psycopg2-binary',
     'dotted-dict',
     'python-slugify',
-    'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@master',
-    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@add_vaccination_dev_solve_issues',
+    'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@collect-amis-ntdmc-branches',
+    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master',
 ]
 [tool.setuptools.packages.find]
 include = []

@@ -38,6 +38,10 @@ model_name=""
 model_path=""
 model_branch=""
 model_commit=""
+param_subdir=""
+param_file_disease_suffix=""
+short_disease_code_suffix=""
+
 
 # map of e.g. Tra -> 'trachoma' for source data URL paths
 declare -A DISEASE_SHORT_NAMES_TO_CODES
@@ -62,6 +66,8 @@ function usage() {
     echo "usage: ${0}"
     echo "    -d <short-disease-code> -i <iu-list-file> -n <num-sims> -N <run-name> -e <person-email>"
     echo "    [-s <scenario-list>]"
+    echo "    [-P <param-subdir] [-x <param-file-disease-suffix>]"
+    echo "    [-X <short-disease-code-suffix>]"
     echo "    [-p <source-data-path>] [-o <output-folder>]"
     echo "    [-k <source-bucket>] [-K destination-bucket>]"
     echo "    [-u (uncompressed)]"
@@ -130,6 +136,18 @@ function get_options () {
 
         s)
             scenarios=${OPTARG}
+            ;;
+
+        P)
+            param_subdir=${OPTARG}
+            ;;
+
+        x)
+            param_file_disease_suffix=${OPTARG}
+            ;;
+
+        X)
+            short_disease_code_suffix=${OPTARG}
             ;;
 
         k)
@@ -356,6 +374,24 @@ function run_scenarios () {
 
             esac
 
+            if [[ -z "${param_subdir:=}" ]] ; then
+                param_subdir_cmd=""
+            else
+                param_subdir_cmd=" -P ${param_subdir}"
+            fi
+
+            if [[ -z "${param_file_disease_suffix:=}" ]] ; then
+                param_file_disease_suffix_cmd=""
+            else
+                param_file_disease_suffix_cmd=" -x ${param_file_disease_suffix}"
+            fi
+
+            if [[ -z "${short_disease_code_suffix:=}" ]] ; then
+                short_disease_code_suffix_cmd=""
+            else
+                short_disease_code_suffix_cmd=" -X ${short_disease_code_suffix}"
+            fi
+
             if [[ -z "${read_pickle_file_suffix}" ]] ; then
                 read_pickle_cmd=""
             else
@@ -392,7 +428,7 @@ function run_scenarios () {
                 output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
 
             # check if asked to exit gracefully
             if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then
@@ -530,7 +566,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:i:n:c:N:e:o:k:K:p:r:f:g:b:y:w:TuDlh" opts ; do
+while getopts ":d:s:P:x:X:i:n:c:N:e:o:k:K:p:r:f:g:b:y:w:TuDlh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done

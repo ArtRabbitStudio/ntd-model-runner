@@ -30,6 +30,9 @@ def get_cli_options():
     parser.add_option( '-e', '--person-email', dest='personEmail', default=None )
     parser.add_option( '-l', '--local-storage', action='store_false', dest='useCloudStorage', default=True )
     parser.add_option( '-s', '--scenario', dest='scenario', type='string', default='1' )
+    parser.add_option( '-P', '--param-subdir', dest='paramSubdir', type='string', default='' )
+    parser.add_option( '-x', '--param-file-disease-suffix', dest='paramFileDiseaseSuffix', type='string', default='' )
+    parser.add_option( '-X', '--short-disease-code-suffix', dest='shortDiseaseCodeSuffix', type='string', default='' )
     parser.add_option( '-g', '--group-id', dest='groupId', type='int', default=None )
     parser.add_option( '-u', '--uncompressed-output', dest='compress', action='store_false', default=True )
     parser.add_option( '-D', '--dont-split-sch-results', dest='splitSchResults', action='store_false', default=True )
@@ -160,6 +163,9 @@ def run_main():
         'destinationBucket': options.destinationBucket,
         'groupId': options.groupId if options.groupId != 0 else None,
         'scenario': options.scenario,
+        'paramSubdir': options.paramSubdir,
+        'paramFileDiseaseSuffix': options.paramFileDiseaseSuffix,
+        'shortDiseaseCodeSuffix': options.shortDiseaseCodeSuffix,
         'compress': options.compress,
         'splitSchResults': options.splitSchResults,
         'sourceDataPath': options.sourceDataPath,

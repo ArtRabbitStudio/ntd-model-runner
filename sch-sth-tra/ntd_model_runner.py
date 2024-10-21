@@ -70,6 +70,9 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     surveyType = run_options.surveyType if hasattr( run_options, 'surveyType' ) else 'KK2'
     secularTrend = run_options.secularTrend if hasattr( run_options, 'secularTrend' ) else False
     vaccineWaningLength = run_options.vaccineWaningLength if hasattr( run_options, 'vaccineWaningLength' ) else None
+    paramSubdir = run_options.paramSubdir if hasattr( run_options, 'paramSubdir' ) else None
+    paramFileDiseaseSuffix = run_options.paramFileDiseaseSuffix if hasattr( run_options, 'paramFileDiseaseSuffix' ) else ''
+    shortDiseaseCodeSuffix = run_options.shortDiseaseCodeSuffix if hasattr( run_options, 'shortDiseaseCodeSuffix' ) else ''
 
     # construct cloud path for this disease/species
     GcsSpecies = {
@@ -77,6 +80,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         'Trichuris': 'whipworm',
         'Hookworm': 'hookworm',
         'Mansoni': 'mansoni',
+        'Haematobium': 'haematobium',
         'Trachoma': 'trachoma',
         'Epioncho': 'epioncho',
     }[ species ]
@@ -86,6 +90,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         'Trichuris': f"{run_info.type}-",
         'Hookworm': f"{run_info.type}-",
         'Mansoni': f"{run_info.type}-",
+        'Haematobium': f"{run_info.type}-",
         'Trachoma': '',
         'Epioncho': '',
     }[ species ]
@@ -179,23 +184,24 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
 
     # locate pickle file for IU
     pickleReadSuffix = f"_{readPickleFileSuffix}" if readPickleFileSuffix != None else ""
-    InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}{pickleReadSuffix}.p'
-    GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}{pickleReadSuffix}.p'
+    InSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}{shortDiseaseCodeSuffix}_{iu}{pickleReadSuffix}.p'
+    GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}{shortDiseaseCodeSuffix}_{iu}{pickleReadSuffix}.p'
 
     # specify output pickle file location for IU?
     if savePickleFileSuffix != None:
-        OutSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}_{iu}_{savePickleFileSuffix}.p'
-        GcsOutSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}_{iu}_{savePickleFileSuffix}.p'
+        OutSimFilePath = f'{LOCAL_INPUT_DATA_DIR}/{short}{shortDiseaseCodeSuffix}_{iu}_{savePickleFileSuffix}.p'
+        GcsOutSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{short}{shortDiseaseCodeSuffix}_{iu}_{savePickleFileSuffix}.p'
         print( f"-> will write output pickle file to {GcsOutSimFilePath if run_options.useCloudStorage else OutSimFilePath}" )
     else:
         print( "-> not writing output pickle file" )
 
     # locate RK input file for IU
-    RkFilePath = f'{LOCAL_INPUT_DATA_DIR}/Input_Rk_{short}_{iu}.csv'
-    GcsRkFilePath = f'gs://{sourceBucket}/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}_{iu}.csv'
+    RkFilePath = f'{LOCAL_INPUT_DATA_DIR}/Input_Rk_{short}{shortDiseaseCodeSuffix}_{iu}.csv'
+    GcsRkFilePath = f'gs://{sourceBucket}/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/Input_Rk_{short}{shortDiseaseCodeSuffix}_{iu}.csv'
 
     # locate & check coverage file for selected disease/scenario
-    run_options.coverageFileName = f'{disease.upper()}_params/{species.lower()}_coverage_scenario_{run_options.scenario}.xlsx'
+    paramFileSubdirectory = f"/{paramSubdir}" if paramSubdir else ""
+    run_options.coverageFileName = f'{disease.upper()}_params{paramFileSubdirectory}/{species.lower()}_coverage_scenario_{run_options.scenario}.xlsx'
     coverageFilePath = f'{MODEL_DATA_DIR}/{run_options.coverageFileName}'
 
     if not os.path.exists( coverageFilePath ):
@@ -207,11 +213,14 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     coverageTextFileStorageName = f'/tmp/{os.getpid()}_{short}_{iu}_MDA_vacc.txt'
 
     # locate & check parameter file for selected disease/scenario
-    paramFileDirectory = f'{disease.upper()}_params'
+    paramFileDirectory = f'{disease.upper()}_params{paramFileSubdirectory}'
+    print( f'paramFileDirectory: {paramFileDirectory}' )
+    print( f'paramFileDiseaseSuffix: {paramFileDiseaseSuffix}' )
+
     #paramFileName = 'mansoni_params.txt' if species.lower() == 'mansoni' else f'{species.lower()}_scenario_{run_options.scenario}.txt'
     ## fixed to 'all diseases use specific parameter files' for Rwanda 202307 - TODO FIXME change back for Endgame
     ## fixed to explicit x_params_scenario_y.txt 20241010 - TODO FIXME for SCH mansoni(/haematobium)
-    paramFileName = f'{species.lower()}_params_scenario_{run_options.scenario}.txt'
+    paramFileName = f'{species.lower()}{paramFileDiseaseSuffix}_params_scenario_{run_options.scenario}.txt'
     run_options.paramFileName = f'{paramFileDirectory}/{paramFileName}'
     paramFilePath = f'{MODEL_DATA_DIR}/{run_options.paramFileName}'
 
