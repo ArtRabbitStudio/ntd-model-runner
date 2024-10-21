@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# get list already done
+gsutil ls gs://ntd-endgame-result-data/ntd/202410a-STH/sth-whipworm/** > whipworm-done-so-far
+
+# get a full list of IUs
+gsutil ls gs://ntd-disease-simulator-data/diseases/sth-whipworm/source-data-trichuris-projections-all-africa-2025-20241008/**/*.p | awk -F / '{print $8}' > ./whipworm-all-ius
+
+# get one line per scenario/IU combination
+ag -w ntdmc whipworm-done-so-far | awk -F / '{print $7, $9}' > whipworm-so-far-20241014-scenario-iu-combos
+
+# split them out into a list of IUs done per scenario
+for s in 1 2a 2b 2c 3a 3b ; do ag scenario_${s} whipworm-so-far-20241014-scenario-iu-combos | awk '{print $2}' > ius-done-scenario_${s}; done
+
+# work out which of the IU/scenario combinations haven't been done by comparing the done ones against the full list, and write them into one CSV for each scenario
+for s in 1 2a 2b 2c 3a 3b ; do comm -13 ius-done-scenario_${s} ./whipworm-all-ius | awk '{print 1, $1, $1}' | sed -e 's/ /","/g' -e 's/^/"/g' -e 's/$/"/g' > sth-IUs-all-africa-20241008-batch-5-whipworm-scenario_${s}.csv ; done
+
+# split the scenario CSVs into 6 chunks but don't break lines
+for s in 1 2a 2b 2c 3a 3b ; do gsplit --number=l/6 sth-IUs-all-africa-20241008-batch-5-whipworm-scenario_${s}.csv sth-IUs-all-africa-20241008-batch-5-whipworm-scenario_${s}- ; done
+
+# rename the chunk files to CSV and add a CSV header
+for s in sth-IUs-all-africa-20241008-batch-5-whipworm-scenario_*-?? ; do mv ${s} ${s}.csv && gsed -i -e '1s;^;"Group_name","IU_ID","IU_ID2"\n;' ${s}.csv ; done
+
+
+# --
+
+# awk -F / '{print $9}' < whipworm-done-so-far | sort > whipworm-so-far-20241014-sorted
+# uniq -c whipworm-so-far-20241014-sorted | sort -k 2 | grep -v ' 12 '

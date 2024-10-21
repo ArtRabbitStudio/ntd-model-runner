@@ -46,7 +46,7 @@ DISEASE_SHORT_NAMES_TO_CODES["Tri"]="sth-whipworm"
 DISEASE_SHORT_NAMES_TO_CODES["Asc"]="sth-roundworm"
 DISEASE_SHORT_NAMES_TO_CODES["Hook"]="sth-hookworm"
 DISEASE_SHORT_NAMES_TO_CODES["Man"]="sch-mansoni"
-DISEASE_SHORT_NAMES_TO_CODES["Hae"]="sch-haematobium"
+DISEASE_SHORT_NAMES_TO_CODES["Haema"]="sch-haematobium"
 DISEASE_SHORT_NAMES_TO_CODES["Onc"]="epioncho"
 
 declare -A DISEASE_SHORT_NAMES_TO_MODEL
@@ -55,7 +55,7 @@ DISEASE_SHORT_NAMES_TO_MODEL["Tri"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Asc"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Hook"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Man"]="sch_simulation"
-DISEASE_SHORT_NAMES_TO_MODEL["Hae"]="sch_simulation"
+DISEASE_SHORT_NAMES_TO_MODEL["Haema"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Onc"]="epioncho-ibm"
 
 function usage() {
@@ -331,7 +331,7 @@ function run_scenarios () {
                     full_scenario="${scenario}"
                     ;;
 
-                Hae|Man)
+                Haema|Man)
                     iu=$( echo "$line" | cut -f 3 -d , )
                     group=$( echo "$line" | cut -f 1 -d , | cut -f 1 -d _ )
                     sub_scenario=$( echo "$line" | cut -f 4 -d , | tr -d '\r')

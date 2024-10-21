@@ -28,7 +28,7 @@ def import_disease_ius( disease_short_code, filename, content, DB ):
     params = ( disease_short_code, )
     disease_id = DB.fetchone( "SELECT id FROM disease WHERE short = %s", params )['id']
 
-    inserted = 0
+    upserted = 0
     ius = content.split( b"\n" )
     for iu in ius:
         iu_str = iu.decode( "utf-8" )
@@ -39,9 +39,9 @@ def import_disease_ius( disease_short_code, filename, content, DB ):
                 iu_id = DB.fetchone( "SELECT id FROM iu WHERE code = %s", params )['id']
 
             DB.insert( insert_join_sql, ( iu_id, disease_id, ), 'iu_id' )
-            inserted = inserted + 1
-            if inserted % 500 == 0:
-                print( f"--> inserted {inserted} IUs" )
+            upserted = upserted + 1
+            if upserted % 500 == 0:
+                print( f"--> upserted {upserted} IUs" )
 
     DB.commit()
 
