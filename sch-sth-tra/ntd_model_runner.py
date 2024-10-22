@@ -99,7 +99,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     DISEASE_CLOUD_SRC_PATH = f'{DISEASE_CLOUD_ROOT}/{sourceDataPath}'
 
     # TODO check if survey type used for other diseases & check they run without
-    surveyTypeDirSuffix = f"/survey_type_{surveyType}" if species == 'Mansoni' else ''
+    surveyTypeDirSuffix = f"/survey_type_{surveyType}" if ( species == 'Mansoni' or species == 'Haematobium' ) else ''
 
     # note secular or non-secular trend in Trachoma paths
     if species == "Trachoma":
@@ -285,7 +285,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     compression = None if compress == False else "bz2"
 
     # create common cloud filename components
-    surveyTypeFileSuffix = f"-survey_type_{surveyType.lower().replace('-','_')}" if species == 'Mansoni' else ''
+    surveyTypeFileSuffix = f"-survey_type_{surveyType.lower().replace('-','_')}" if ( species == 'Mansoni' or species == 'Haematobium' ) else ''
     file_name_ending = f"{iu}-{run_info.species.lower()}{paramFileDiseaseSuffix}{groupId_string}-scenario_{run_options.scenario}{surveyTypeFileSuffix}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
 
     # get a transformer generator function for the IHME/IPM transforms
