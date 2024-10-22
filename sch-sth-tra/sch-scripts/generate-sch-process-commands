@@ -59,16 +59,12 @@ OUTPUTS["haema"]="/Users/igor/Desktop/NTD/202410b-SCH/batch-1/haema-cmds.txt"
 SCENARIOS="1,2ai,2aii,2bi,2bii,2ci,2cii,3a,3b,3c"
 SIMULATIONS=200
 CORES=20
-TARGET_BUCKET="ntd-flow-result-data-dev"
-#TARGET_BUCKET="ntd-endgame-result-data"
+#TARGET_BUCKET="ntd-flow-result-data-dev"
+TARGET_BUCKET="ntd-endgame-result-data"
 
 COUNT=0
 
 for disease in man-low man-high haema ; do
-
-	OUTPUT=${OUTPUTS[${disease}]}
-
-	echo -n "" > ${OUTPUT}
 
 	SHORT=${SHORTS[${disease}]}
 	SHORT_SUFFIX=${SHORT_SUFFIXES[${disease}]}
@@ -80,10 +76,12 @@ for disease in man-low man-high haema ; do
 	PARAM_FILE_SUFFIX=$( [[ -z ${SUFFIX} ]] && echo "" || echo "-x ${SUFFIX//-/_} " )
 	SHORT_CODE_SUFFIX=$( [[ -z ${SHORT_SUFFIX} ]] && echo "" || echo "-X ${SHORT_SUFFIX} " )
 
-	echo -n "${SHORT} "
-	echo -n "${DISEASE} "
-	echo "${DIR}"
-	echo "------"
+	OUTPUT=${OUTPUTS[${disease}]}
+
+	echo -n "${SHORT} " > ${OUTPUT}
+	echo -n "${DISEASE} " >> ${OUTPUT}
+	echo "${DIR}" >> ${OUTPUT}
+	echo "------" >> ${OUTPUT}
 
 	for chunk in ${CHUNKS} ; do
 		
