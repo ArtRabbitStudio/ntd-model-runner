@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+#	5 machines = haematobium = 52370
+#	5 * 6 runners = 30 runners = need to do 1750 per runner = 175 * 10 scenarios
+#	
+#	gsplit ../all-haematobium-ius.csv -l 175 haema-
+#	
+#	----
+#	
+#	2 machines = mansoni-low = 22600
+#	2 * 6 runners = 12 runners = need to do 1884 per runner = 189 * 10 scenarios
+#	
+#	gsplit ../mansoni_IUs_20241021_low_burden.csv -l 189 man-low-
+#	
+#	----
+#	
+#	3 machines = mansoni-high = 26250
+#	3 * 6 runners = 18 runners = need to do 1460 per runner = 146 * 10 scenarios
+#	
+#	gsplit ../mansoni_IUs_20241021_high_burden.csv -l 146 man-high-
+
+declare -A SHORTS
+SHORTS["man-low"]="Man"
+SHORTS["man-high"]="Man"
+SHORTS["haema"]="Haema"
+
+declare -A SHORT_SUFFIXES
+SHORT_SUFFIXES["man-low"]="_Low"
+SHORT_SUFFIXES["man-high"]="_High"
+SHORT_SUFFIXES["haema"]=""
+
+declare -A DISEASES
+DISEASES["man-low"]="mansoni"
+DISEASES["man-high"]="mansoni"
+DISEASES["haema"]="haematobium"
+
+declare -A DISEASE_SUFFIXES
+DISEASE_SUFFIXES["man-low"]="-low-burden"
+DISEASE_SUFFIXES["man-high"]="-high-burden"
+DISEASE_SUFFIXES["haema"]=""
+
+declare -A DIRS
+DIRS["man-low"]="iu-disease-data/sch-IUs-mansoni-202410b/low-split"
+DIRS["man-high"]="iu-disease-data/sch-IUs-mansoni-202410b/high-split"
+DIRS["haema"]="iu-disease-data/sch-IUs-haematobium-202410b/haema-split"
+
+declare -A SPLITS
+SPLITS["man-low"]="aa ab ac ad ae af ag ah ai aj ak al"
+SPLITS["man-high"]="aa ab ac ad ae af ag ah ai aj ak al am an ao ap aq ar"
+SPLITS["haema"]="aa ab ac ad ae af ag ah ai aj ak al am an ao ap aq ar as at au av aw ax ay az ba bb bc bd"
+
+declare -A OUTPUTS
+OUTPUTS["man-low"]="/Users/igor/Desktop/NTD/202410b-SCH/batch-1/man-low-cmds.txt"
+OUTPUTS["man-high"]="/Users/igor/Desktop/NTD/202410b-SCH/batch-1/man-high-cmds.txt"
+OUTPUTS["haema"]="/Users/igor/Desktop/NTD/202410b-SCH/batch-1/haema-cmds.txt"
+
+SCENARIOS="1,2ai,2aii,2bi,2bii,2ci,2cii,3a,3b,3c"
+SIMULATIONS=200
+CORES=20
+TARGET_BUCKET="ntd-flow-result-data-dev"
+#TARGET_BUCKET="ntd-endgame-result-data"
+
+COUNT=0
+
+for disease in man-low man-high haema ; do
+
+	OUTPUT=${OUTPUTS[${disease}]}
+
+	echo -n "" > ${OUTPUT}
+
+	SHORT=${SHORTS[${disease}]}
+	SHORT_SUFFIX=${SHORT_SUFFIXES[${disease}]}
+	DIR=${DIRS[${disease}]}
+	CHUNKS=${SPLITS[${disease}]}
+	DISEASE=${DISEASES[${disease}]}
+	SUFFIX=${DISEASE_SUFFIXES[${disease}]}
+	PARAM_SUBDIR="202410b-20241021"
+	PARAM_FILE_SUFFIX=$( [[ -z ${SUFFIX} ]] && echo "" || echo "-x ${SUFFIX//-/_} " )
+	SHORT_CODE_SUFFIX=$( [[ -z ${SHORT_SUFFIX} ]] && echo "" || echo "-X ${SHORT_SUFFIX} " )
+
+	echo -n "${SHORT} "
+	echo -n "${DISEASE} "
+	echo "${DIR}"
+	echo "------"
+
+	for chunk in ${CHUNKS} ; do
+		
+		IU_FILE="${DIR}/${disease}-${chunk}.csv"
+
+		# check file exists
+		if [[ ! -f ${IU_FILE} ]] ; then
+			echo "ERROR: IU file ${IU_FILE} not found"
+			exit 1
+		fi
+
+		# check it has header line
+		if [[ -z $( ag "Group_name" ${IU_FILE} ) ]] ; then
+			echo "-> addiing header line to ${IU_FILE}"
+			gsed -i -e '1s;^;"Group_name","IU_ID","IU_ID2"\n;' ${IU_FILE}
+		fi
+
+		CMD=$( echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash run-sch-sth-tra.bash \
+				-d ${SHORT} \
+				-s ${SCENARIOS} \
+				-c ${CORES} \
+				-n ${SIMULATIONS} \
+				-i ${IU_FILE} \
+				-p source-data-${DISEASE}${SUFFIX}-projections-all-africa-2025-20241016 \
+				-k ntd-disease-simulator-data -K ${TARGET_BUCKET} -N \"202410b-SCH\" -o \"202410b-SCH\" \
+				-e igor@artrabbit.com -y KK2 \
+				-P ${PARAM_SUBDIR} \
+				${PARAM_FILE_SUFFIX}${SHORT_CODE_SUFFIX}\
+		>/dev/null </dev/null & " | sed 's/	//g' )
+
+		echo ${CMD}
+		echo ${CMD} >> ${OUTPUT}
+
+		COUNT=$(( COUNT + 1 ))
+		if [[ $(( COUNT % 6 )) = 0 ]] ; then
+			echo >> ${OUTPUT}
+			COUNT=0
+		fi
+
+    done
+
+	echo
+done

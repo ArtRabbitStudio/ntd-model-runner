@@ -113,11 +113,11 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     # only include the group if it's been specified (which it only is in SCH, so secularTrendPath/vaccineWaningLengthPath only needed if it's None)
     if run_options.groupId is None:
         DISEASE_CLOUD_DST_PATH = (
-            f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/'
+            f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}{paramFileDiseaseSuffix.replace("_","-")}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/'
             f'{secularTrendPath}{vaccineWaningLengthPath}{iu[0:3]}'
         )
     else:
-        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/group_{run_options.groupId:03}'
+        DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}{paramFileDiseaseSuffix.replace("_","-")}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/group_{run_options.groupId:03}'
 
     # get model package's data dir for finding scenario files
     MODEL_DATA_DIR = pkg_resources.resource_filename( "sch_simulation", "data" )
