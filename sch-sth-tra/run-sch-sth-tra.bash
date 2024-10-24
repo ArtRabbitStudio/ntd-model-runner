@@ -41,6 +41,7 @@ model_commit=""
 param_subdir=""
 param_file_disease_suffix=""
 short_disease_code_suffix=""
+start_year=""
 
 
 # map of e.g. Tra -> 'trachoma' for source data URL paths
@@ -77,6 +78,7 @@ function usage() {
     echo "    [-r <read-pickle-file-suffix>]"
     echo "    [-f <save-pickle-file-suffix>] [-b <burn-in-years>]"
     echo "    [-y <survey_type> (KK1, KK2, POC-CCA, PCR)]"
+    echo "    [-Y <start-year>]"
     echo "    [-g <iu-file-segment-number,out-of-total-segments>]"
     exit 1
 }
@@ -222,6 +224,10 @@ function get_options () {
             esac
             ;;
 
+        Y)
+            start_year=${OPTARG}
+            ;;
+
         w)
             waning_length=$( echo ${OPTARG} | tr -d '\n' )
             case $waning_length in
@@ -281,6 +287,11 @@ function check_options () {
     # require burn-in time for saving pickle files
     if [[ -n "${save_pickle_file_suffix:=}" && -z "${burn_in_time:=}" ]] ; then
         echo "error: burn-in requires a number of years" >&2
+        usage
+    fi
+
+    if [[ -z "${start_year}" ]] ; then
+        echo "error: start year required"
         usage
     fi
 
@@ -428,7 +439,7 @@ function run_scenarios () {
                 output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
+            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -Y ${start_year} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
 
             # check if asked to exit gracefully
             if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then
@@ -566,7 +577,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:P:x:X:i:n:c:N:e:o:k:K:p:r:f:g:b:y:w:TuDlh" opts ; do
+while getopts ":d:s:P:x:X:i:n:c:N:e:o:k:K:p:r:f:g:b:y:Y:w:TuDlh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done

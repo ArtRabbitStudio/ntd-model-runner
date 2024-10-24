@@ -56,6 +56,9 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     if not hasattr( run_options, 'numSims' ) or run_options.numSims is None:
         raise MissingArgumentError( 'run_options.numSims' )
 
+    if not hasattr( run_options, 'startYear' ) or run_options.startYear is None:
+        raise MissingArgumentError( 'run_options.startYear' )
+
     # get local vars out of dictionary, using defaults if not supplied
     compress = run_options.compress if hasattr( run_options, 'compress' ) else False
     splitSchResults = run_options.splitSchResults if hasattr( run_options, 'splitSchResults' ) else False
@@ -67,6 +70,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     sourceBucket = run_options.sourceBucket if hasattr( run_options, 'sourceBucket' ) else 'ntd-disease-simulator-data'
     destinationBucket = run_options.destinationBucket if hasattr( run_options, 'destinationBucket' ) else 'ntd-endgame-result-data'
     sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
+    startYear = run_options.startYear if hasattr( run_options, 'startYear' ) else None
     surveyType = run_options.surveyType if hasattr( run_options, 'surveyType' ) else 'KK2'
     secularTrend = run_options.secularTrend if hasattr( run_options, 'secularTrend' ) else False
     vaccineWaningLength = run_options.vaccineWaningLength if hasattr( run_options, 'vaccineWaningLength' ) else None
@@ -242,7 +246,8 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         surveyType = surveyType,
         cloudModule = GCS if run_options.useCloudStorage else None,
         runningBurnIn = ( savePickleFileSuffix != None and burnInTime != None ),
-        burnInTime = burnInTime
+        burnInTime = burnInTime,
+        startYear = startYear
     )
     run_info.ended = datetime.now()
 
@@ -288,12 +293,9 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     surveyTypeFileSuffix = f"-survey_type_{surveyType.lower().replace('-','_')}" if ( species == 'Mansoni' or species == 'Haematobium' ) else ''
     file_name_ending = f"{iu}-{run_info.species.lower()}{paramFileDiseaseSuffix}{groupId_string}-scenario_{run_options.scenario}{surveyTypeFileSuffix}-group_{run_options.groupId:03}-{run_options.numSims}_simulations.csv{compressSuffix}"
 
-    # get a transformer generator function for the IHME/IPM transforms
-    transformer = sim_result_transform_generator( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
-
     # not splitting results for IHME, save results straight into CSV
     all_results_file_name = f"{output_data_path}/all_results-{file_name_ending}"
-    all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
+    all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix, startYear )
     all_df.to_csv( all_results_file_name, index=False, compression=compression )
     print( f"-> Result file: {all_results_file_name}" )
     # TODO write db result record?
@@ -306,47 +308,6 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     os.remove( coverageTextFileStorageName )
     return
 
-#    # if not splitting results for IHME, save results straight into CSV
-#    if splitSchResults == False:
-#        all_results_file_name = f"{output_data_path}/all_results-{file_name_ending}"
-#        all_df = sim_result_transform_all( results, iu, run_info.species, run_options.scenario, run_options.numSims, surveyTypeFileSuffix )
-#        all_df.to_csv( all_results_file_name, index=False, compression=compression )
-#        print( f"-> Result file: {all_results_file_name}" )
-#        # TODO write db result record?
-#
-#        # write out NTDMC file. TODO write this instead of IPM in split-results segment?
-#        ntdmc_file_name = f"{output_data_path}/ntdmc-{file_name_ending}"
-#        ntdmcData.to_csv( ntdmc_file_name, index=False, compression=compression )
-#        print( f"-> NTDMC file:  {ntdmc_file_name}" )
-#
-#        os.remove( coverageTextFileStorageName )
-#        return
-#
-#    # run IHME transforms
-#    ihme_df = next( transformer )
-#    ihme_file_name = f"{output_data_path}/ihme-{file_name_ending}"
-#    ihme_df.to_csv( ihme_file_name, index=False, compression=compression )
-#
-#    # store metadata in flow db
-#    if run_options.useCloudStorage:
-#        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IHME, ihme_file_name, compression )
-#
-#    # run IPM transforms
-#    ipm_df = next( transformer )
-#    ipm_file_name = f"{output_data_path}/ipm-{file_name_ending}"
-#    ipm_df.to_csv( ipm_file_name, index=False, compression=compression )
-#
-#    # store metadata in flow db
-#    if run_options.useCloudStorage:
-#        DB.write_db_result_record( run_info, run_options, INSTITUTION_TYPE_IPM, ipm_file_name, compression )
-#
-#    os.remove( coverageTextFileStorageName )
-#
-#    print( f"-> IHME file: {ihme_file_name}" )
-#    print( f"-> IPM file:  {ipm_file_name}" )
-#
-#    return
-
 '''
 function to load in a pickle file and associated parameters file and then
 run forward in time 23 years and give back results
@@ -355,7 +316,8 @@ def run_model(
     InSimFilePath=None, RkFilePath=None,
     coverageFileName='Coverage_template.xlsx', coverageTextFileStorageName=None,
     demogName='Default', surveyType='KK2', paramFileName='sch_example.txt',
-    numSims=None, numProcs=0, cloudModule=None, runningBurnIn=False, burnInTime=None
+    numSims=None, numProcs=0, cloudModule=None, runningBurnIn=False, burnInTime=None,
+    startYear=None
 ):
 
     # number of simulations to run
@@ -369,6 +331,10 @@ def run_model(
     # path to 200 parameters file
     if RkFilePath is None:
         raise MissingArgumentError( 'RkFilePath' )
+
+    # start year
+    if startYear is None:
+        raise MissingArgumentError( 'startYear' )
 
     # read in parameters
     print( f'-> reading in parameters from {RkFilePath}' )
@@ -437,7 +403,6 @@ def run_model(
     simData = [ item[ 1 ] for item in res ]
 
     # generate ntdmc data. doing it here because it needs access to 'params' and raw 'res'
-    startYear = 2026
     ntdmcData = constructNTDMCResultsAcrossAllSims( params, res, surveyType.upper(), startYear, resultsIndex = 2 )
 
     end_time = time.time()
@@ -446,7 +411,7 @@ def run_model(
 
     return results, simData, ntdmcData
 
-def sim_result_transform_all( results, iu, species, scenario, numSims, surveyTypeFileSuffix ):
+def sim_result_transform_all( results, iu, species, scenario, numSims, surveyTypeFileSuffix, startYear ):
 
     # create key dict for IHME/IPM format dataframes
     keys = {
@@ -466,66 +431,12 @@ def sim_result_transform_all( results, iu, species, scenario, numSims, surveyTyp
 
     print( f'-> starting ALL transform for {numSims} simulations with pandas' )
     a = time.time()
-    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_ALL, species, scenario, numSims, keys )
+    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_ALL, species, scenario, numSims, keys, startYear )
     b = time.time()
     print( f'-> finished ALL transform for {numSims} simulations with pandas in {(b-a):.3f}s' )
     return values
 
-def sim_result_transform_generator( results, iu, species, scenario, numSims, surveyTypeFileSuffix ):
-
-    # create key dict for IHME/IPM format dataframes
-    keys = {
-        "espen_loc":[],
-        "year_id":[],
-        "age_start":[],
-        "age_end":[],
-        "intensity":[],
-        "scenario":[],
-        "species":[],
-        "measure":[]
-    }
-
-    # add a column for each result draw
-    for i in range( 0, numSims ):
-        keys[ f'draw_{i}' ] = []
-
-    ################################################################################
-    # we're going to take the draw_1 from each run result for an IU:
-    #
-    #   Time,age_start,age_end,intensity,species,measure,draw_1
-    #   0.0,0,1,light,Mansoni,prevalence,0.0
-    #
-    # and add it as draw_x at the end of a row in this output file:
-    #
-    #   espen_loc,year_id,age_start,age_end,intensity,scenario,species,measure,draw_0,draw_1,draw_3,draw_4,draw_y,draw_z,...
-    #   BFA05335,2030,4,4,light,1,mansoni,prevalence,0.1,0.08,0.09,0.11,...
-    ################################################################################
-
-    ################################################################################
-    # IHME data file
-    ################################################################################
-
-    print( f'-> starting IHME transform for {numSims} simulations with pandas' )
-    a = time.time()
-    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_IHME, species, scenario, numSims, keys )
-    b = time.time()
-    print( f'-> finished IHME transform for {numSims} simulations with pandas in {(b-a):.3f}s' )
-    yield values
-
-    ################################################################################
-    # IPM costs file
-    ################################################################################
-
-    print( f'-> starting IPM transform for {numSims} simulations with pandas' )
-    a = time.time()
-    values = transform_results_with_pandas( results, iu, INSTITUTION_TYPE_IPM, species, scenario, numSims, keys )
-    b = time.time()
-    print( f'-> finished IPM transform for {numSims} simulations in {(b-a):.3f}s' )
-    yield values
-
-    return
-
-def transform_results_with_pandas( results, iu, type, species, scenario, numSims, keys ):
+def transform_results_with_pandas( results, iu, type, species, scenario, numSims, keys, startYear ):
 
     # strip off newlines from model output
     for i in range( 0, len( results ) ):
@@ -560,9 +471,7 @@ def transform_results_with_pandas( results, iu, type, species, scenario, numSims
         output[key] = results[ 0] [ key ][ startrow:endrow ]
 
     # work out the year for the row
-    output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2018 ).astype( int )
-    ## use 2020.5 for Rwanda TODO FIXME revert for Endgame
-    #output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + 2020.5 ).astype( int )
+    output[ 'year_id' ] = ( results[ 0 ][ 'Time' ] + startYear ).astype( int )
 
     # copy the static rows into the full list
     output[ 'espen_loc' ] = iu

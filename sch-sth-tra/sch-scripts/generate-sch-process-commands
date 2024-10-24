@@ -57,6 +57,7 @@ OUTPUTS["man-high"]="/Users/igor/Desktop/NTD/202410b-SCH/batch-1/man-high-cmds.t
 OUTPUTS["haema"]="/Users/igor/Desktop/NTD/202410b-SCH/batch-1/haema-cmds.txt"
 
 SCENARIOS="1,2ai,2aii,2bi,2bii,2ci,2cii,3a,3b,3c"
+START_YEAR=2026
 SIMULATIONS=200
 CORES=20
 #TARGET_BUCKET="ntd-flow-result-data-dev"
@@ -102,6 +103,7 @@ for disease in man-low man-high haema ; do
 		CMD=$( echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash run-sch-sth-tra.bash \
 				-d ${SHORT} \
 				-s ${SCENARIOS} \
+				-Y ${START_YEAR} \
 				-c ${CORES} \
 				-n ${SIMULATIONS} \
 				-i ${IU_FILE} \

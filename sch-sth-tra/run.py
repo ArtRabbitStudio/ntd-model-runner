@@ -40,6 +40,7 @@ def get_cli_options():
     parser.add_option( '-r', '--read-pickle-file-suffix', dest='readPickleFileSuffix', type='string', default=None )
     parser.add_option( '-f', '--save-pickle-file-suffix', dest='savePickleFileSuffix', type='string', default=None )
     parser.add_option( '-b', '--burn-in-time', dest='burnInTime', type='float', default=None )
+    parser.add_option( '-Y', '--start-year', dest='startYear', type='int', default=None )
     parser.add_option( '-y', '--survey-type', dest='surveyType', type='string', default='KK2' )
     parser.add_option( '-w', '--vaccine-waning-length', dest='vaccineWaningLength', type='int', default=None )
     parser.add_option( '-T', '--secular-trend', dest='secularTrend', action='store_true', default=False )
@@ -82,6 +83,11 @@ def check_options( run_options ):
     # make sure all necessary model info is provided
     if None in [ run_options.modelName, run_options.modelPath, run_options.modelBranch, run_options.modelCommit ]:
         print( "xx> model info not supplied." )
+        sys.exit( 1 )
+
+    # make sure start year provided
+    if run_options.startYear == None:
+        print( "xx> no start year supplied." )
         sys.exit( 1 )
 
 # check the run info in the DB for the requested list of IUs
@@ -172,6 +178,7 @@ def run_main():
         'readPickleFileSuffix': options.readPickleFileSuffix,
         'savePickleFileSuffix': options.savePickleFileSuffix,
         'burnInTime': options.burnInTime,
+        'startYear': options.startYear,
         'surveyType': options.surveyType,
         'vaccineWaningLength': options.vaccineWaningLength,
         'secularTrend': options.secularTrend,
