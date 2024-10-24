@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# ag --no-filename --no-numbers -w real 20241024134808/ | grep -vE "^$" | awk '{print $2}' > ptime
+# 0m39.851s
+
+total=0
+for s in $( cat ptime ) ; do
+        m=$( echo $s | cut -f 1 -d m )
+        s=$( echo $s | cut -f 2 -d m | cut -f 1 -d '.' )
+        t=$(( 60 * $m + $s ))
+        total=$(( total + t ))
+done
+
+count=$( wc -l < ptime )
+echo $total: $(( total / count ))
