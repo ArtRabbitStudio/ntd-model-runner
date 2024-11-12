@@ -10,6 +10,12 @@ ptime="results/${directory}-ptime"
 # create that file with just `time` outputs
 ag --no-filename --no-numbers -w real results/${directory}/ | grep -vE "^$" | awk '{print $2}' > ${ptime}
 
+# check there have been some runs
+if [[ ! -s ${ptime} ]] ; then
+        echo "${ptime} is empty, no results yet"
+        exit 0
+fi
+
 # count it all up
 total=0
 for s in $( cat ${ptime} ) ; do
