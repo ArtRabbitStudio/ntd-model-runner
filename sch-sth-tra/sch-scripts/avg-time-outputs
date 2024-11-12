@@ -1,15 +1,23 @@
 #!/usr/bin/env bash
 
-# ag --no-filename --no-numbers -w real 20241024134808/ | grep -vE "^$" | awk '{print $2}' > ptime
+# must be in ntd-model-runner/sch-sth-tra
 # 0m39.851s
 
+# get latest results/log directory
+directory=$( find ./results -maxdepth 1 -mindepth 1 -type d -regextype posix-extended -regex '\./results/[0-9]{14}'| sort | tail -1 | cut -f 3 -d / )
+# make associated filename
+ptime="results/${directory}-ptime"
+# create that file with just `time` outputs
+ag --no-filename --no-numbers -w real results/${directory}/ | grep -vE "^$" | awk '{print $2}' > ${ptime}
+
+# count it all up
 total=0
-for s in $( cat ptime ) ; do
+for s in $( cat ${ptime} ) ; do
         m=$( echo $s | cut -f 1 -d m )
         s=$( echo $s | cut -f 2 -d m | cut -f 1 -d '.' )
         t=$(( 60 * $m + $s ))
         total=$(( total + t ))
 done
 
-count=$( wc -l < ptime )
+count=$( wc -l < ${ptime} )
 echo $total: $(( total / count ))
