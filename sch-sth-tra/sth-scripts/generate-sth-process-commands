@@ -1,5 +1,5 @@
-#for disease in Tri:whipworm:trichuris ; do
-for disease in Asc:roundworm:ascaris ; do
+for disease in Tri:whipworm:trichuris ; do
+#for disease in Asc:roundworm:ascaris ; do
 #for disease in Hook:hookworm:hookworm ; do
 	for pair in sch:europe-west3-b:aa sch2:europe-west6-b:ab sch3:europe-west6-b:ac sch4:europe-west8-b:ad epioncho:europe-west1-b:ae epioncho2:europe-west3-b:af epioncho3:europe-west4-b:ag epioncho4:europe-west2-b:ah epioncho5:europe-west4-b:ai lf-backup:europe-west1-b:aj ; do
 
@@ -11,10 +11,15 @@ for disease in Asc:roundworm:ascaris ; do
         FILENAME=$( echo $disease | cut -f 2 -d : )
         SOURCENAME=$( echo $disease | cut -f 3 -d : )
 
-		RUN_IDENTIFIER="202411a-STH"
-		RUN_IU_DIRECTORY="sth-IUS-20241111"
+        ## FIXME update these for each run
+		RUN_IDENTIFIER="202412a-STH"
+		RUN_IU_DIRECTORY="sth-IUS-20241209"
+		SOURCE_DATA_DATE="20241203"
+
+		SOURCE_DIRECTORY="source-data-${SOURCENAME}-projections-all-africa-2025-${SOURCE_DATA_DATE}"
 
         CORES=20
+		START_YEAR=2026
 
 		IU_FILE="iu-disease-data/${RUN_IU_DIRECTORY}/${SOURCENAME}-${chunk}.csv"
 
@@ -37,7 +42,7 @@ for disease in Asc:roundworm:ascaris ; do
 
 		for scenario in 1 2a 2b 2c 3a 3b ; do
 
-            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash run-sch-sth-tra.bash -d ${SHORT} -i iu-disease-data/${RUN_IU_DIRECTORY}/ascaris-${chunk}.csv -n 200 -c ${CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p source-data-${SOURCENAME}-projections-all-africa-2025-20241008 -k ntd-disease-simulator-data -K ntd-endgame-result-data -o ${RUN_IDENTIFIER} -D -y KK2 >/dev/null </dev/null &"
+            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash run-sch-sth-tra.bash -d ${SHORT} -i iu-disease-data/${RUN_IU_DIRECTORY}/${SOURCENAME}-${chunk}.csv -n 200 -c ${CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p ${SOURCE_DIRECTORY} -k ntd-disease-simulator-data -K ntd-endgame-result-data -o ${RUN_IDENTIFIER} -D -y KK2 -Y ${START_YEAR} >/dev/null </dev/null &"
 
         done
 
