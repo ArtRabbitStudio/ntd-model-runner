@@ -171,8 +171,8 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
             f"{run_options.numSims}_simulations-{isSecularTrend}secular_trend{vwlIndicator}.csv{compressSuffix}"
         )
 
-        ipm_file_name = (
-            f"{output_data_path}/ipm-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-"
+        ntdmc_file_name = (
+            f"{output_data_path}/ntdmc-{iu}-{run_info.species.lower()}-scenario_{run_options.scenario}-"
             f"{run_options.numSims}_simulations-{isSecularTrend}secular_trend{vwlIndicator}.csv{compressSuffix}"
         )
 
@@ -180,11 +180,8 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         return run_trachoma_model(
             iu, run_options.scenario, run_options.numSims,
             vaccineWaningLength, secularTrend,
-            BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression
+            BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression
         )
-
-    if species == 'Epioncho':
-        return run_epioncho_model( iu, run_options.scenario, run_options.numSims, cloudModule, ihme_file_name, ipm_file_name, compressSuffix, compression )
 
     # locate pickle file for IU
     pickleReadSuffix = f"_{readPickleFileSuffix}" if readPickleFileSuffix != None else ""

@@ -274,7 +274,7 @@ function check_options () {
 
     # require basics - output_folder not needed as defaulting to a 'slugified' desc in run.py
     if [[ -z "${disease:=}" || -z "${num_sims:=}" || ! -f "${iu_list_file:=}" || -z "${run_name:=}" || -z "${person_email:=}" ]] ; then
-        echo "error: disease, num_sims, iu_list_file, run_name and person_email are required" >&2
+        echo "error: disease, num_sims, iu_list_file, run_name and person_email are required, and iu_list_file must be a regular file" >&2
         usage
     fi
 

@@ -93,6 +93,8 @@ def check_options( run_options ):
 # check the run info in the DB for the requested list of IUs
 def get_run_info( DB, run_options ):
 
+    print( f'-> checking for iu/disease combos in db' )
+
     # make a comma-separated list of '%s' with the same length as IU list
     format_strings = ', '.join( [ '%s' ] * len( run_options.iuList ) )
 
