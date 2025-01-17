@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+for disease in Tra:trachoma:trachoma ; do
+#for disease in Tri:whipworm:trichuris ; do
+#for disease in Asc:roundworm:ascaris ; do
+#for disease in Hook:hookworm:hookworm ; do
+	for pair in sch:europe-west3-b:aa sch2:europe-west6-b:ab sch3:europe-west6-b:ac sch4:europe-west8-b:ad epioncho:europe-west1-b:ae epioncho2:europe-west3-b:af epioncho3:europe-west4-b:ag epioncho4:europe-west2-b:ah epioncho5:europe-west4-b:ai lf-backup:europe-west1-b:aj ; do
+
+		machine=$( echo $pair | cut -f 1 -d : )
+		zone=$( echo $pair | cut -f 2 -d : )
+		chunk=$( echo $pair | cut -f 3 -d : )
+
+        SHORT=$( echo $disease | cut -f 1 -d : )
+        FILENAME=$( echo $disease | cut -f 2 -d : )
+        SOURCENAME=$( echo $disease | cut -f 3 -d : )
+
+        ## FIXME update these for each run
+		RUN_IDENTIFIER="202501a-TRA"
+		RUN_IU_DIRECTORY="${SOURCENAME}-IUs-20250115-espen"
+		RUN_IU_CHUNK_ROOT="${RUN_IU_DIRECTORY}"
+		SOURCE_DATA_DATE="20250113"
+
+		SOURCE_DIRECTORY="source-data-20250113-espen"
+
+        CORES=30
+		START_YEAR=2026
+
+		IU_FILE="iu-disease-data/${RUN_IU_DIRECTORY}/${RUN_IU_CHUNK_ROOT}-${chunk}.csv"
+
+		# check file exists
+		if [[ ! -f ${IU_FILE} ]] ; then
+			echo "ERROR: IU file ${IU_FILE} not found"
+			exit 1
+		fi
+
+		# check it has header line
+		if [[ -z $( ag "Group_name" ${IU_FILE} ) ]] ; then
+			echo "-> addiing header line to ${IU_FILE}"
+			gsed -i -e '1s;^;"Group_name","IU_ID","IU_ID2"\n;' ${IU_FILE}
+		fi
+
+		echo "${machine}:${zone}"
+		echo
+		echo "gcloud compute instances start ${machine} --zone=${zone} --project=artrabbit-clients-ntd"
+		echo
+
+		for scenario in 1 2 3a 3b ; do
+
+            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash ./run-sch-sth-tra.bash -d ${SHORT} -i ${IU_FILE} -n 200 -c ${CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p ${SOURCE_DIRECTORY} -k ntd-disease-simulator-data -K ntd-endgame-result-data -o ${RUN_IDENTIFIER} -w $((52*10)) -Y ${START_YEAR} >/dev/null </dev/null &"
+
+        done
+
+        echo
+		echo "------"
+        echo
+
+	done
+    echo
+    echo
+done
