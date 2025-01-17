@@ -101,7 +101,7 @@ function get_options () {
             # good point to get the model info
             echo "-> fetching model info ..." >&2
             model_name="${DISEASE_SHORT_NAMES_TO_MODEL[${disease}]}"
-            model_info=$( python3 model_info.py "$model_name" | base64 -d ) 2>/dev/null
+            model_info=$( pipenv run python3 model_info.py "$model_name" | base64 -d ) 2>/dev/null
             model_path=$( echo $model_info | jq -r .path )
             model_branch=$( echo $model_info | jq -r .branch )
             model_commit=$( echo $model_info | jq -r .commit )
@@ -299,7 +299,7 @@ function check_options () {
     if [[ "${DISPLAY_CMD:=n}" != "y" ]] && [[ "${FORCE_ADD_TO_EXISTING_RUN:=n}" != "y" ]]; then
 
         # call local find_run.py script to get existing run info
-        local existing_run_info=$( python3 find_run.py "${disease}" "${run_name}" 2>/dev/null )
+        local existing_run_info=$( pipenv run python3 find_run.py "${disease}" "${run_name}" 2>/dev/null )
 
         if [[ -n "${existing_run_info}" ]] ; then
 
@@ -439,7 +439,7 @@ function run_scenarios () {
                 output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -Y ${start_year} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
+            cmd="time pipenv run python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -Y ${start_year} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
 
             # check if asked to exit gracefully
             if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then

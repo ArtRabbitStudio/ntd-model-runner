@@ -1,0 +1,22 @@
+[project]
+name = "ntd_model_runner"
+version = "0.0.1"
+description = "SCH/STH/Trachoma simulation model runner"
+authors = [
+    { name = "ArtRabbit", email = "support@artrabbit.com" }
+]
+requires-python = ">=3.10.9"
+dependencies = [
+    'toml',
+    'fsspec==2022.11.0',
+    'gcsfs==2022.11.0',
+    'google-cloud-storage',
+    'psycopg2-binary',
+    'dotted-dict',
+    'python-slugify',
+    'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@_sch_model_branch_',
+    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@_trachoma_model_branch_',
+]
+[tool.setuptools.packages.find]
+include = []
+exclude = [ 'data', 'results', 'iu-disease-data' ]
