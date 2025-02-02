@@ -1,4 +1,4 @@
-from trachoma.trachoma_functions import *
+from ntdmc_trachoma.trachoma_functions import *
 import multiprocessing
 import sys
 import time

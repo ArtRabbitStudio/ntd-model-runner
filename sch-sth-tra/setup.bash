@@ -42,4 +42,7 @@ pipenv run pip install -U setuptools
 pipenv run pip install .
 echo
 
+info "-> checking pip install inside pipenv ..."
+pipenv run python check-python-env.py
+
 info "-> SCH-STH-TRA model and runner are built and ready to run."
