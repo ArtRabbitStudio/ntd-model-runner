@@ -55,7 +55,7 @@ DISEASE_SHORT_NAMES_TO_CODES["Haema"]="sch-haematobium"
 DISEASE_SHORT_NAMES_TO_CODES["Onc"]="epioncho"
 
 declare -A DISEASE_SHORT_NAMES_TO_MODEL
-DISEASE_SHORT_NAMES_TO_MODEL["Tra"]="trachoma"
+DISEASE_SHORT_NAMES_TO_MODEL["Tra"]="ntdmc-trachoma"
 DISEASE_SHORT_NAMES_TO_MODEL["Tri"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Asc"]="sch_simulation"
 DISEASE_SHORT_NAMES_TO_MODEL["Hook"]="sch_simulation"
