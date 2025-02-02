@@ -13,13 +13,13 @@ for disease in Tra:trachoma:trachoma ; do
         FILENAME=$( echo $disease | cut -f 2 -d : )
         SOURCENAME=$( echo $disease | cut -f 3 -d : )
 
-        ## FIXME update these for each run
-		RUN_IDENTIFIER="202501a-TRA"
-		RUN_IU_DIRECTORY="${SOURCENAME}-IUs-20250115-espen"
+        ## FIXME by parameterising CLI: update these for each run
+		RUN_IDENTIFIER="202502a-TRA"
+		RUN_IU_DIRECTORY="${SOURCENAME}-IUs-20250202-selected-espen-intersection"
 		RUN_IU_CHUNK_ROOT="${RUN_IU_DIRECTORY}"
-		SOURCE_DATA_DATE="20250113"
+		SOURCE_DATA_DATE="20250131"
 
-		SOURCE_DIRECTORY="source-data-20250113-espen"
+		SOURCE_DIRECTORY="source-data-20250131-espen"
 
         CORES=30
 		START_YEAR=2026
