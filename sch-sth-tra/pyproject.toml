@@ -15,7 +15,7 @@ dependencies = [
     'dotted-dict',
     'python-slugify',
     'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@master',
-    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@master',
+    'trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@a6dadbe3b04809a0c8ce5ab1ecf552c74d47d800',
 ]
 [tool.setuptools.packages.find]
 include = []
