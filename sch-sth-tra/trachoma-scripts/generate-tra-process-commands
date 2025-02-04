@@ -14,7 +14,7 @@ for disease in Tra:trachoma:trachoma ; do
         SOURCENAME=$( echo $disease | cut -f 3 -d : )
 
         ## FIXME by parameterising CLI: update these for each run
-		RUN_IDENTIFIER="202502a-TRA"
+		RUN_IDENTIFIER="202502b-TRA"
 		RUN_IU_DIRECTORY="${SOURCENAME}-IUs-20250202-selected-espen-intersection"
 		RUN_IU_CHUNK_ROOT="${RUN_IU_DIRECTORY}"
 		SOURCE_DATA_DATE="20250131"
