@@ -119,7 +119,7 @@ def run_simulations(
                 mean_worm_burden=True,
                 prevalence_OAE=True,
                 intensity=True,
-                with_sequela=True,
+                with_sequela=False,
                 with_pnc=True,
                 saving_multiple_states=True,
             )
@@ -135,7 +135,7 @@ def run_simulations(
                 mean_worm_burden=True,
                 prevalence_OAE=True,
                 intensity=True,
-                with_sequela=True,
+                with_sequela=False,
                 with_pnc=True,
                 saving_multiple_states=False,
             )
