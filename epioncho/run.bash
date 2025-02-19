@@ -283,8 +283,8 @@ select CHOICE in yes no ; do
 
 			# create a log file name
 			RUN_STAMP=$( date +%Y%m%d%H%M%S )
-			LOG_FILE="epioncho-run-${RUN_STAMP}-output.txt"
-			FINISH_FILE="epioncho-run-${RUN_STAMP}-finished.txt"
+			LOG_FILE="epioncho-run-${RUN_TITLE}-${RUN_STAMP}-output.txt"
+			FINISH_FILE="epioncho-run-${RUN_TITLE}-${RUN_STAMP}-finished.txt"
 
 			# run the parallel job in a detached process
 			nohup \
