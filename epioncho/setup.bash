@@ -40,4 +40,4 @@ pipenv run pip install -U setuptools
 pipenv run pip install .
 echo
 
-info "-> Epioncho model and runner are built and ready to run."
+info "-> Epioncho model and runner are built and ready to run on host $( hostname )."
