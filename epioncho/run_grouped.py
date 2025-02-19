@@ -1,3 +1,4 @@
+import json
 import os
 import csv
 import sys
@@ -5,11 +6,13 @@ import glob
 import h5py
 import time
 
+from endgame_simulations.models import create_update_model
+from epioncho_ibm.state.params import EndgameParams
+
 import numpy as np
 import pandas as pd
-
+from endgame_simulations.models import ParameterChange
 from collections import defaultdict
-
 from epioncho_ibm.endgame_simulation import EndgameSimulation
 from epioncho_ibm.state.params import EpionchoEndgameModel
 from epioncho_ibm.tools import (
@@ -26,6 +29,24 @@ from endgame_postprocessing.post_processing.aggregation import (
     country_lvl_aggregate,
     africa_lvl_aggregate,
 )
+
+
+def read_vector_control_scale(scenario_file_path):
+    """
+    Read a temporary property from the scenario file called
+    vc_post2026_scale_reduction
+    This applies a permanent scaling of the bite_rate_per_person_per_year
+    at the year 2026
+    1.0 = 100% scaling down (i.e. bite rate will be zero from 2026 onwards)
+    0.0 = 0% scaling down (i.e. bite rate will be unchanged)
+    """
+    # Temporary getting of additional scenario parameters
+    vector_control_parameter_name = "vc_post2026_scale_reduction"
+    with open(scenario_file_path, "r") as scenario_file_handle:
+        scenario_dictionary = json.load(scenario_file_handle)
+        if vector_control_parameter_name in scenario_dictionary["parameters"]:
+            return scenario_dictionary["parameters"][vector_control_parameter_name]
+    return 0.0
 
 
 def run_simulations(
@@ -54,6 +75,8 @@ def run_simulations(
 
     # read in scenario file
     new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
+
+    vector_control_scale_after_2026 = read_vector_control_scale(scenario_file)
 
     if len(new_endgame_model.programs) > 0:
 
@@ -94,6 +117,17 @@ def run_simulations(
             current_params.gamma_distribution
         )
         new_endgame_model.parameters.initial.seed = current_params.seed
+
+        new_bite_rate = current_params.blackfly.bite_rate_per_person_per_year * (
+            1.0 - vector_control_scale_after_2026
+        )
+
+        update_param_type = create_update_model(EndgameParams)
+        new_bite_rate_update_param = update_param_type(
+            **{"blackfly": {"bite_rate_per_person_per_year": new_bite_rate}}
+        )
+        bite_rate_change = ParameterChange(year=2026, params=new_bite_rate_update_param)
+        new_endgame_model.parameters.changes.append(bite_rate_change)
 
         # sim.simulation.state.current_time = 2026
         sim.reset_endgame(new_endgame_model)
@@ -212,7 +246,6 @@ def combineAndFilter(
     ).to_csv(f"{output_file_root}_combined-oncho-africa-lvl-agg.csv")
 
 
-
 """
 expects to be called e.g.:
 python run.py \
@@ -246,7 +279,7 @@ if __name__ == "__main__":
     n_sims = sys.argv[4]
     inclusive = sys.argv[5].lower() == "true" if len(sys.argv) >= 6 else False
     prevalence_OAE = sys.argv[6].lower() == "true" if len(sys.argv) >= 7 else False
-    sampling_interval = float(sys.argv[7]) if len(sys.argv) >= 8 else False
+    sampling_interval = float(sys.argv[7]) if len(sys.argv) >= 8 else 10
 
     run_simulations(
         IU,
