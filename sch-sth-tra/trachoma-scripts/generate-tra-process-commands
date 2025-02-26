@@ -1,27 +1,36 @@
 #!/usr/bin/env bash
 for disease in Tra:trachoma:trachoma ; do
-#for disease in Tri:whipworm:trichuris ; do
-#for disease in Asc:roundworm:ascaris ; do
-#for disease in Hook:hookworm:hookworm ; do
-	for pair in sch:europe-west3-b:aa sch2:europe-west6-b:ab sch3:europe-west6-b:ac sch4:europe-west8-b:ad epioncho:europe-west1-b:ae epioncho2:europe-west3-b:af epioncho3:europe-west4-b:ag epioncho4:europe-west2-b:ah epioncho5:europe-west4-b:ai lf-backup:europe-west1-b:aj ; do
 
-		machine=$( echo $pair | cut -f 1 -d : )
-		zone=$( echo $pair | cut -f 2 -d : )
-		chunk=$( echo $pair | cut -f 3 -d : )
+    for triplet in \
+        temp1:europe-west1-c:aa \
+        temp2:europe-west1-c:ab \
+        temp3:europe-west2-c:ac \
+        temp4:europe-west2-c:ad \
+        temp5:europe-west3-c:ae \
+        temp6:europe-west3-c:af \
+        temp7:europe-west4-c:ag \
+        temp8:europe-west4-c:ah \
+        temp9:europe-west6-c:ai \
+        temp10:europe-west6-c:aj
+    do
+
+		machine=$( echo $triplet | cut -f 1 -d : )
+		zone=$( echo $triplet | cut -f 2 -d : )
+		chunk=$( echo $triplet | cut -f 3 -d : )
 
         SHORT=$( echo $disease | cut -f 1 -d : )
         FILENAME=$( echo $disease | cut -f 2 -d : )
-        SOURCENAME=$( echo $disease | cut -f 3 -d : )
+        DISEASENAME=$( echo $disease | cut -f 3 -d : )
 
         ## FIXME by parameterising CLI: update these for each run
-		RUN_IDENTIFIER="202502a-TRA"
-		RUN_IU_DIRECTORY="${SOURCENAME}-IUs-20250202-selected-espen-intersection"
+		RUN_IDENTIFIER="202502c-TRA-espen"
+		RUN_IU_DIRECTORY="${DISEASENAME}-IUs-20250225-espen-cloud-fitted"
 		RUN_IU_CHUNK_ROOT="${RUN_IU_DIRECTORY}"
-		SOURCE_DATA_DATE="20250131"
+		SOURCE_DATA_DATE="20250225"
 
-		SOURCE_DIRECTORY="source-data-20250131-espen"
+		SOURCE_DIRECTORY="source-data-20250225-espen"
 
-        CORES=30
+        CORES=31
 		START_YEAR=2026
 
 		IU_FILE="iu-disease-data/${RUN_IU_DIRECTORY}/${RUN_IU_CHUNK_ROOT}-${chunk}.csv"
@@ -40,7 +49,7 @@ for disease in Tra:trachoma:trachoma ; do
 
 		echo "${machine}:${zone}"
 		echo
-		echo "gcloud compute instances start ${machine} --zone=${zone} --project=artrabbit-clients-ntd"
+		echo "gcloud compute ssh ${machine} --zone=${zone} --project=artrabbit-clients-ntd"
 		echo
 
 		for scenario in 1 2 3a 3b ; do
