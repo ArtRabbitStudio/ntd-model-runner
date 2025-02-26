@@ -14,8 +14,8 @@ dependencies = [
     'psycopg2-binary',
     'dotted-dict',
     'python-slugify',
-    'sch_simulation @ git+https://github.com/ntd-modelling-consortium/ntd-model-sch.git@_sch_model_branch_',
-    'ntdmc-trachoma @ git+https://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@_trachoma_model_branch_',
+    'sch_simulation @ git+ssh://github.com/ntd-modelling-consortium/ntd-model-sch.git@_sch_model_branch_',
+    'ntdmc-trachoma @ git+ssh://github.com/ntd-modelling-consortium/ntd-model-trachoma.git@_trachoma_model_branch_',
 ]
 [tool.setuptools.packages.find]
 include = []
