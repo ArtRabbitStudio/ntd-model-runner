@@ -45,7 +45,7 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
           'vacc_reduce_duration':0.5,
           'vacc_coverage': 0,
           'vacc_waning_length': 52 * ( 5 if vaccineWaningLength == None else vaccineWaningLength ),
-          'importation_rate': 0.9**10/(52*2500),
+          'importation_rate': 0,
           'importation_reduction_rate': (0.9)**(1/10),
           'surveyCoverage': 0.4}
 
@@ -85,7 +85,8 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
 
     # define the lists of random seeds, R0 and k
     seeds = amisparams.iloc[:, 0].tolist()
-    allBetas = amisparams.iloc[:, 1].tolist()
+    allBetas = amisparams.iloc[:, 99].tolist()
+    allKs = amisparams.iloc[:, 101].tolist()
 
     #############################################################################################################################
     #############################################################################################################################
@@ -124,8 +125,9 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
     #############################################################################################################################
 
     # run as many simulations as specified
-    def do_single_run(beta, i, pickleData, parameters, sim_params, demog, MDA_times, MDAData, VaccData, vacc_times, outputTimes):
+    def do_single_run(beta, infection_risk_shape, i, pickleData, parameters, sim_params, demog, MDA_times, MDAData, VaccData, vacc_times, outputTimes):
         np.random.seed(i)
+        parameters['infection_risk_shape'] = infection_risk_shape
         random_state = np.random.get_state()
         return run_single_simulation(
             pickleData=pickleData[i],
@@ -142,11 +144,12 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
             index=i,
             numpy_state=random_state,
             doIHMEOutput=True,
-            doSurvey=True,
+            doSurvey=False,
+            distToUse = "Exponential",
         )
 
     results = Parallel(n_jobs=num_cores)(
-                delayed(do_single_run)(allBetas[i], i, pickleData, params, sim_params, demog,
+                delayed(do_single_run)(allBetas[i], allKs[i], i, pickleData, params, sim_params, demog,
                                        MDA_times, MDAData, VaccData, vacc_times, outputTimes)for i in range(numSims)
             )
 
