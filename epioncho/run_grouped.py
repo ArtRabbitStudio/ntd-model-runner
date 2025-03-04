@@ -124,12 +124,12 @@ def run_simulations(
 
         update_param_type = create_update_model(EndgameParams)
         new_bite_rate_update_param = update_param_type(
-            **{"blackfly": {"bite_rate_per_person_per_year": new_bite_rate}}
+            **{"blackfly": {"bite_rate_per_person_per_year": new_bite_rate, "immigrated_l3": new_endgame_model.parameters.initial.blackfly.immigrated_l3}}
         )
         bite_rate_change = ParameterChange(year=2026, params=new_bite_rate_update_param)
         new_endgame_model.parameters.changes.append(bite_rate_change)
-
         # sim.simulation.state.current_time = 2026
+        sim.reset_endgame(new_endgame_model)
         sim.reset_endgame(new_endgame_model)
 
         age_grouped_run_data: Data = {}
