@@ -118,13 +118,14 @@ def run_simulations(
         )
         new_endgame_model.parameters.initial.seed = current_params.seed
 
-        new_bite_rate = current_params.blackfly.bite_rate_per_person_per_year * (
-            1.0 - vector_control_scale_after_2026
-        )
-
         update_param_type = create_update_model(EndgameParams)
         new_bite_rate_update_param = update_param_type(
-            **{"blackfly": {"bite_rate_per_person_per_year": new_bite_rate, "immigrated_l3": new_endgame_model.parameters.initial.blackfly.immigrated_l3}}
+            **{
+                "blackfly": {
+                    "vector_control_effects": vector_control_scale_after_2026,
+                    "immigrated_l3": new_endgame_model.parameters.initial.blackfly.immigrated_l3,
+                }
+            }
         )
         bite_rate_change = ParameterChange(year=2026, params=new_bite_rate_update_param)
         new_endgame_model.parameters.changes.append(bite_rate_change)
