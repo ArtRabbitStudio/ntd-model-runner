@@ -71,6 +71,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     destinationBucket = run_options.destinationBucket if hasattr( run_options, 'destinationBucket' ) else 'ntd-endgame-result-data'
     sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
     startYear = run_options.startYear if hasattr( run_options, 'startYear' ) else None
+    doTrachomaSurvey = run_options.doTrachomaSurvey if hasattr( run_options, 'doTrachomaSurvey' ) else False
     surveyType = run_options.surveyType if hasattr( run_options, 'surveyType' ) else 'KK2'
     secularTrend = run_options.secularTrend if hasattr( run_options, 'secularTrend' ) else False
     vaccineWaningLength = run_options.vaccineWaningLength if hasattr( run_options, 'vaccineWaningLength' ) else None
@@ -110,15 +111,17 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         isSecularTrend = "non_" if secularTrend == False else ""
         secularTrendPath = f"{isSecularTrend}secular_trend/"
         vaccineWaningLengthPath = "" if vaccineWaningLength == None else f"waning_length_{vaccineWaningLength}/"
+        doTrachomaSurveyPath = "no_survey/" if doTrachomaSurvey == False else f"with_survey/"
     else:
         secularTrendPath = ""
         vaccineWaningLengthPath = ""
+        doTrachomaSurveyPath = ""
 
-    # only include the group if it's been specified (which it only is in SCH, so secularTrendPath/vaccineWaningLengthPath only needed if it's None)
+    # only include the group if it's been specified (which it only is in SCH, so secularTrendPath/vaccineWaningLengthPath/doTrachomaSurveyPath only needed if it's None)
     if run_options.groupId is None:
         DISEASE_CLOUD_DST_PATH = (
             f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}{paramFileDiseaseSuffix.replace("_","-")}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/'
-            f'{secularTrendPath}{vaccineWaningLengthPath}{iu[0:3]}'
+            f'{secularTrendPath}{vaccineWaningLengthPath}{doTrachomaSurveyPath}{iu[0:3]}'
         )
     else:
         DISEASE_CLOUD_DST_PATH = f'ntd/{outputFolder}/{GcsPrefix}{GcsSpecies.lower()}{paramFileDiseaseSuffix.replace("_","-")}/scenario_{run_options.scenario}{surveyTypeDirSuffix}/group_{run_options.groupId:03}'
@@ -177,9 +180,10 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         )
 
         cloudModule = GCS if run_options.useCloudStorage else None
+
         return run_trachoma_model(
             iu, run_options.scenario, run_options.numSims,
-            vaccineWaningLength, secularTrend,
+            vaccineWaningLength, secularTrend, doTrachomaSurvey,
             BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression
         )
 

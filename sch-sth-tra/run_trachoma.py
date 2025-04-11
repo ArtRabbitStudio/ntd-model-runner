@@ -6,7 +6,7 @@ from joblib import Parallel, delayed
 num_cores = multiprocessing.cpu_count()
 import pickle
 
-def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression ):
+def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend, doSurvey, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression ):
 
     #############################################################################################################################
     #############################################################################################################################
@@ -45,8 +45,10 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
           'vacc_reduce_duration':0.5,
           'vacc_coverage': 0,
           'vacc_waning_length': 52 * ( 5 if vaccineWaningLength == None else vaccineWaningLength ),
-          'importation_rate': 0,
+          'importation_rate': 0.9**10/(52*2500),
           'importation_reduction_rate': (0.9)**(1/10),
+          'importation_reduction_length': 25,
+          'min_importation_rate': 0,
           'surveyCoverage': 0.4}
 
     burnin = 0
@@ -144,8 +146,9 @@ def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend
             index=i,
             numpy_state=random_state,
             doIHMEOutput=True,
-            doSurvey=False,
+            doSurvey=doSurvey,
             distToUse = "Exponential",
+            postMDAImportationReduction=True
         )
 
     results = Parallel(n_jobs=num_cores)(
