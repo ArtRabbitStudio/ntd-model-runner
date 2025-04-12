@@ -3,10 +3,9 @@ import multiprocessing
 import sys
 import time
 from joblib import Parallel, delayed
-num_cores = multiprocessing.cpu_count()
 import pickle
 
-def run_trachoma_model( iu, scenario, numSims, vaccineWaningLength, secularTrend, doSurvey, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression ):
+def run_trachoma_model( iu, scenario, numSims, num_cores, vaccineWaningLength, secularTrend, doSurvey, BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression ):
 
     #############################################################################################################################
     #############################################################################################################################

@@ -182,7 +182,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
         cloudModule = GCS if run_options.useCloudStorage else None
 
         return run_trachoma_model(
-            iu, run_options.scenario, run_options.numSims,
+            iu, run_options.scenario, run_options.numSims, run_options.numProcs,
             vaccineWaningLength, secularTrend, doTrachomaSurvey,
             BetaFilePath, InSimFilePath, cloudModule, ihme_file_name, ntdmc_file_name, compressSuffix, compression
         )
