@@ -31,24 +31,6 @@ from endgame_postprocessing.post_processing.aggregation import (
 )
 
 
-def read_vector_control_scale(scenario_file_path):
-    """
-    Read a temporary property from the scenario file called
-    vc_post2026_scale_reduction
-    This applies a permanent scaling of the bite_rate_per_person_per_year
-    at the year 2026
-    1.0 = 100% scaling down (i.e. bite rate will be zero from 2026 onwards)
-    0.0 = 0% scaling down (i.e. bite rate will be unchanged)
-    """
-    # Temporary getting of additional scenario parameters
-    vector_control_parameter_name = "vc_post2026_scale_reduction"
-    with open(scenario_file_path, "r") as scenario_file_handle:
-        scenario_dictionary = json.load(scenario_file_handle)
-        if vector_control_parameter_name in scenario_dictionary["parameters"]:
-            return scenario_dictionary["parameters"][vector_control_parameter_name]
-    return 0.0
-
-
 def run_simulations(
     IU,
     hdf5_file,
@@ -75,8 +57,6 @@ def run_simulations(
 
     # read in scenario file
     new_endgame_model = EpionchoEndgameModel.parse_file(scenario_file)
-
-    vector_control_scale_after_2026 = read_vector_control_scale(scenario_file)
 
     if len(new_endgame_model.programs) > 0:
 
@@ -118,19 +98,6 @@ def run_simulations(
         )
         new_endgame_model.parameters.initial.seed = current_params.seed
 
-        update_param_type = create_update_model(EndgameParams)
-        new_bite_rate_update_param = update_param_type(
-            **{
-                "blackfly": {
-                    "vector_control_effects": vector_control_scale_after_2026,
-                    "immigrated_l3": new_endgame_model.parameters.initial.blackfly.immigrated_l3,
-                }
-            }
-        )
-        bite_rate_change = ParameterChange(year=2026, params=new_bite_rate_update_param)
-        new_endgame_model.parameters.changes.append(bite_rate_change)
-        # sim.simulation.state.current_time = 2026
-        sim.reset_endgame(new_endgame_model)
         sim.reset_endgame(new_endgame_model)
 
         age_grouped_run_data: Data = {}
@@ -154,7 +121,7 @@ def run_simulations(
                 mean_worm_burden=True,
                 prevalence_OAE=True,
                 intensity=True,
-                with_sequela=False,
+                with_sequela=True,
                 with_pnc=True,
                 saving_multiple_states=True,
             )
@@ -170,7 +137,7 @@ def run_simulations(
                 mean_worm_burden=True,
                 prevalence_OAE=True,
                 intensity=True,
-                with_sequela=False,
+                with_sequela=True,
                 with_pnc=True,
                 saving_multiple_states=False,
             )
