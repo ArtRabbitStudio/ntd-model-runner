@@ -30,7 +30,7 @@ function usage () {
 	echo "	[-r <run-title>]"
 	echo "	[-L <local-output-root>] [-k (keep-local-data-files) ]"
 	echo "	[-V <sampling-interval>]"
-	echo "	[-C (shorten-iu-codes)] [-G (run-grouped)]"
+	echo "	[-C (shorten-iu-codes)] [-G (run-grouped)] [-P parallelise-by-iu]"
 	exit 1
 }
 
@@ -108,6 +108,7 @@ PROJECT_ROOT_DIR=$( get_abs_filename . )
 KEEP_LOCAL_DATA=n
 SHORTEN_IU_CODE=n
 RUN_GROUPED=n
+PARALLELISE_BY_SCENARIO=n
 SAMPLING_INTERVAL=1
 SCENARIO_DIR="./scenarios"
 
@@ -115,7 +116,7 @@ SCENARIO_DIR="./scenarios"
 mkdir -p run
 
 # read CLI options
-while getopts "hn:j:S:s:f:I:i:kO:r:o:L:V:CG" opts ; do
+while getopts "hn:j:S:s:f:I:i:kO:r:o:L:V:CGP" opts ; do
 
 	case "${opts}" in
 
@@ -192,6 +193,10 @@ while getopts "hn:j:S:s:f:I:i:kO:r:o:L:V:CG" opts ; do
 
 		G)
 			RUN_GROUPED=y
+			;;
+
+		P)
+			PARALLELISE_BY_SCENARIO=y
 			;;
 
 		*)
@@ -296,6 +301,7 @@ select CHOICE in yes no ; do
 					SAMPLING_INTERVAL="${SAMPLING_INTERVAL}" \
 					SHORTEN_IU_CODE="${SHORTEN_IU_CODE}" \
 					RUN_GROUPED="${RUN_GROUPED}" \
+					PARALLELISE_BY_SCENARIO="${PARALLELISE_BY_SCENARIO}" \
 					RUN_STAMP="${RUN_STAMP}" \
 					SCENARIOS="${SCENARIOS}" \
 					SCENARIO_ROOT="${SCENARIO_ROOT}" \

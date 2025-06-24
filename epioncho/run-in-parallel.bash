@@ -56,9 +56,48 @@ echo "-> saving output into ${OUTPUT_DATA_PATH}" >&2
 
 # run the job in parallel
 # TODO include all IUs
-NUM_SIMULATIONS=${NUM_SIMULATIONS:=5} \
-	parallel --line-buffer ${JOBS_ARG} -a <( cat ${IU_LIST_FILE} ) \
-	pipenv run bash run-epioncho-model.bash
+if [[ "${PARALLELISE_BY_SCENARIO}" = 'y' ]] ; then
+
+	echo "Parallelising by scenario"
+	for IU in $( cat "${IU_LIST_FILE}" ) ; do
+
+		# these all run individually as one process per scenario,
+		# so the HDF5 only needs to be downloaded once for each IU
+		REGION=${IU:0:3}
+		OUTPUT_REGION_DIR="${OUTPUT_DATA_PATH}/${REGION}"
+		OUTPUT_IU_DIR="${OUTPUT_REGION_DIR}/${IU}"
+		HDF5_FILE="OutputVals_${IU}.hdf5"
+		HDF5_FILE_GCS_LOCATION="gs://${GCS_INPUT_DATA_BUCKET}/${GCS_INPUT_DATA_PATH}/${HDF5_FILE}"
+		HDF5_FILE_LOCAL_LOCATION="${OUTPUT_IU_DIR}/${HDF5_FILE}"
+
+		# download the HDF5 file before running the model scenarios in sequence
+		if [[ -f "${HDF5_FILE_LOCAL_LOCATION}" ]] ; then
+			echo "HDF5 already downloaded"
+		else
+			echo "copying HDF5 file from GCS..."
+			echo "gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}"
+			gsutil cp ${HDF5_FILE_GCS_LOCATION} ${HDF5_FILE_LOCAL_LOCATION}
+			echo
+		fi
+
+		echo "running scenarios: ${SCENARIOS}"
+
+		REGION=${REGION} \
+		OUTPUT_IU_DIR=${OUTPUT_IU_DIR} \
+		HDF5_FILE_LOCAL_LOCATION=${HDF5_FILE_LOCAL_LOCATION} \
+		NUM_SIMULATIONS=${NUM_SIMULATIONS:=5} \
+			parallel --line-buffer ${JOBS_ARG} -a <( echo "${SCENARIOS}" | sed 's/,/\n/g' ) \
+			pipenv run bash run-epioncho-model-by-scenario.bash ${IU}
+
+		echo "Removing HDF5 file ..."
+		rm -f ${HDF5_FILE_LOCAL_LOCATION}
+	done
+
+else
+	NUM_SIMULATIONS=${NUM_SIMULATIONS:=5} \
+		parallel --line-buffer ${JOBS_ARG} -a <( cat ${IU_LIST_FILE} ) \
+		pipenv run bash run-epioncho-model.bash
+fi
 
 # indicate completion
 FINISH_STAMP=$( date +%Y%m%d%H%M%S )
