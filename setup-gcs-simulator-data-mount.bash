@@ -13,7 +13,9 @@ echo "-> installing gcsfuse"
 sudo apt-get install -y gcsfuse
 
 # create folder & setup permissions
-echo "-> setting up mount folders"
-sudo mkdir -p /mnt/gcs/ntd-disease-simulator-data
-sudo chmod -R 755 /mnt
-
+echo "-> checking mount folder"
+MOUNT_FOLDER=/mnt/gcs/ntd-disease-simulator-data
+if [[ ! -d "${MOUNT_FOLDER}" ]] ; then
+    sudo mkdir -p /mnt/gcs/ntd-disease-simulator-data
+    sudo chmod -R 755 /mnt
+fi
