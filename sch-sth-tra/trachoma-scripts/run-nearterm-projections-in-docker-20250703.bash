@@ -20,6 +20,7 @@
 #
 # gs://ntd-disease-simulator-data/nearterm-projections/trachoma/nearterm-20250703
 
+REGISTRY_PREFIX="gcr.io/artrabbit-clients-ntd"
 DOCKER_IMAGE=${DOCKER_IMAGE:=trachoma-amis-pipeline:20250702}
 TARGET_FOLDER="nearterm-20250703"
 NUM_CORES=${NUM_CORES:=126}
@@ -35,6 +36,9 @@ sudo gcsfuse \
     ntd-disease-simulator-data \
     /mnt/gcs/ntd-disease-simulator-data
 
+echo "-> fetching latest Docker image"
+docker pull "${REGISTRY_PREFIX}/${DOCKER_IMAGE}"
+
 echo "Running batches ${START}-${END} across ${NUM_CORES} cores using image '${DOCKER_IMAGE}'"
 
 for batch_id in $( seq ${START} ${END} ) ; do
@@ -43,7 +47,7 @@ for batch_id in $( seq ${START} ${END} ) ; do
 		--rm \
         -v "/mnt/gcs/ntd-disease-simulator-data/diseases/trachoma/source-data-20250605-espen:/ntdmc/trachoma-amis-integration/projections-prep/artefacts/projections/trachoma/${FOLDER_ID}" \
         -v "/mnt/gcs/ntd-disease-simulator-data/nearterm-projections:/ntdmc/trachoma-amis-integration/projections/artefacts" \
-		-ti gcr.io/artrabbit-clients-ntd/${DOCKER_IMAGE} \
+		-ti ${REGISTRY_PREFIX}/${DOCKER_IMAGE} \
 		--id=${batch_id} \
 		--folder-id=${TARGET_FOLDER} \
 		--stage=nearterm-projections \
