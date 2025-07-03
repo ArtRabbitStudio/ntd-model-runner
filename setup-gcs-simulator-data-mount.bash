@@ -18,4 +18,6 @@ MOUNT_FOLDER=/mnt/gcs/ntd-disease-simulator-data
 if [[ ! -d "${MOUNT_FOLDER}" ]] ; then
     sudo mkdir -p /mnt/gcs/ntd-disease-simulator-data
     sudo chmod -R 755 /mnt
+else
+    echo "mount folder ${MOUNT_FOLDER} already exists"
 fi
