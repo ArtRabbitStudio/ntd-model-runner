@@ -20,13 +20,22 @@
 #
 # gs://ntd-disease-simulator-data/nearterm-projections/trachoma/nearterm-20250703
 
-IMAGE=${IMAGE:=trachoma-amis-pipeline:20250702}
+DOCKER_IMAGE=${DOCKER_IMAGE:=trachoma-amis-pipeline:20250702}
 TARGET_FOLDER="nearterm-20250703"
 NUM_CORES=${NUM_CORES:=126}
 START=${1:-1}
 END=${2:-1}
 
-echo "Running batches ${START}-${END} across ${NUM_CORES} cores using image '${IMAGE}'"
+echo "-> setting up GCS folder mount"
+sudo gcsfuse \
+    -o allow_other \
+    --file-mode 666 \
+    --dir-mode 777 \
+    --implicit-dirs \
+    ntd-disease-simulator-data \
+    /mnt/gcs/ntd-disease-simulator-data
+
+echo "Running batches ${START}-${END} across ${NUM_CORES} cores using image '${DOCKER_IMAGE}'"
 
 for batch_id in $( seq ${START} ${END} ) ; do
 
@@ -34,7 +43,7 @@ for batch_id in $( seq ${START} ${END} ) ; do
 		--rm \
         -v "/mnt/gcs/ntd-disease-simulator-data/diseases/trachoma/source-data-20250605-espen:/ntdmc/trachoma-amis-integration/projections-prep/artefacts/projections/trachoma/${FOLDER_ID}" \
         -v "/mnt/gcs/ntd-disease-simulator-data/nearterm-projections:/ntdmc/trachoma-amis-integration/projections/artefacts" \
-		-ti gcr.io/artrabbit-clients-ntd/trachoma-amis-pipeline:20250702 \
+		-ti gcr.io/artrabbit-clients-ntd/${DOCKER_IMAGE} \
 		--id=${batch_id} \
 		--folder-id=${TARGET_FOLDER} \
 		--stage=nearterm-projections \
