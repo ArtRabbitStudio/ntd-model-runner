@@ -52,7 +52,7 @@ for batch_id in $( seq ${START} ${END} ) ; do
 		--rm \
         -v "/mnt/gcs/${GCS_BUCKET}/diseases/trachoma/source-data-20250605-espen:/ntdmc/trachoma-amis-integration/projections-prep/artefacts/projections/trachoma/${TARGET_FOLDER}" \
         -v "/mnt/gcs/${GCS_BUCKET}/nearterm-projections:/ntdmc/trachoma-amis-integration/projections/artefacts" \
-		-ti ${REGISTRY_PREFIX}/${DOCKER_IMAGE} \
+		${REGISTRY_PREFIX}/${DOCKER_IMAGE} \
 		--id=${batch_id} \
 		--folder-id=${TARGET_FOLDER} \
 		--stage=nearterm-projections \
