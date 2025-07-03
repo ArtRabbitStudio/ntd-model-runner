@@ -23,14 +23,17 @@ for disease in Tra:trachoma:trachoma ; do
         DISEASENAME=$( echo $disease | cut -f 3 -d : )
 
         ## FIXME by parameterising CLI: update these for each run
-		RUN_IDENTIFIER="202502c-TRA-espen"
-		RUN_IU_DIRECTORY="${DISEASENAME}-IUs-20250225-espen-cloud-fitted"
+		RUN_IDENTIFIER="202504a-TRA-espen-with-survey"
+		RUN_IU_DIRECTORY="${DISEASENAME}-IUs-20250412-with-without-surveys"
 		RUN_IU_CHUNK_ROOT="${RUN_IU_DIRECTORY}"
 		SOURCE_DATA_DATE="20250225"
 
-		SOURCE_DIRECTORY="source-data-20250225-espen"
+        SOURCE_BUCKET="ntd-disease-simulator-data"
+		SOURCE_DIRECTORY="source-data-${SOURCE_DATA_DATE}-espen"
 
-        CORES=31
+        DESTINATION_BUCKET="ntd-endgame-result-data"
+
+        NUM_CORES=25
 		START_YEAR=2026
 
 		IU_FILE="iu-disease-data/${RUN_IU_DIRECTORY}/${RUN_IU_CHUNK_ROOT}-${chunk}.csv"
@@ -43,7 +46,7 @@ for disease in Tra:trachoma:trachoma ; do
 
 		# check it has header line
 		if [[ -z $( ag "Group_name" ${IU_FILE} ) ]] ; then
-			echo "-> addiing header line to ${IU_FILE}"
+			echo "-> adding header line to ${IU_FILE}"
 			gsed -i -e '1s;^;"Group_name","IU_ID","IU_ID2"\n;' ${IU_FILE}
 		fi
 
@@ -52,9 +55,9 @@ for disease in Tra:trachoma:trachoma ; do
 		echo "gcloud compute ssh ${machine} --zone=${zone} --project=artrabbit-clients-ntd"
 		echo
 
-		for scenario in 1 2 3a 3b ; do
+		for scenario in _minus1 1 2 3a 3b ; do
 
-            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash ./run-sch-sth-tra.bash -d ${SHORT} -i ${IU_FILE} -n 200 -c ${CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p ${SOURCE_DIRECTORY} -k ntd-disease-simulator-data -K ntd-endgame-result-data -o ${RUN_IDENTIFIER} -w $((52*10)) -Y ${START_YEAR} >/dev/null </dev/null &"
+            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash ./run-sch-sth-tra.bash -d ${SHORT} -i ${IU_FILE} -n 200 -c ${NUM_CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p ${SOURCE_DIRECTORY} -k ${SOURCE_BUCKET} -K ${DESTINATION_BUCKET} -o ${RUN_IDENTIFIER} -w $((52*10)) -Y ${START_YEAR} -S >/dev/null </dev/null &"
 
         done
 

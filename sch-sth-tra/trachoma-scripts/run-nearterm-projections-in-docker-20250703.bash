@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# with
+#
+#   /mnt/gcs/ntd-disease-simulator-data/nearterm-projections/trachoma/20250702
+#
+# mounted as
+#
+#   /ntdmc/trachoma-amis-integration/projections/artefacts
+#
+# and with folder-id specified as `nearterm`, the container saved the results into:
+#
+# gs://ntd-disease-simulator-data/nearterm-projections/trachoma/20250702/trachoma/nearterm/BFA/BFA05332/Trachoma_BFA05332.p
+#																				 ^^^^^^^^
+#
+# so that means we need to mount ntd-disease-simulator-data/nearterm-projections
+# onto `artefacts` and specify folder-id as nearterm-20250703
+#
+# and that should save the results into:
+#
+# gs://ntd-disease-simulator-data/nearterm-projections/trachoma/nearterm-20250703
+
+IMAGE=${IMAGE:=trachoma-amis-pipeline:20250702}
+TARGET_FOLDER="nearterm-20250703"
+NUM_CORES=${NUM_CORES:=126}
+START=${1:-1}
+END=${2:-1}
+
+echo "Running batches ${START}-${END} across ${NUM_CORES} cores using image '${IMAGE}'"
+
+for batch_id in $( seq ${START} ${END} ) ; do
+
+	docker run \
+		--rm \
+        -v "/mnt/gcs/ntd-disease-simulator-data/diseases/trachoma/source-data-20250605-espen:/ntdmc/trachoma-amis-integration/projections-prep/artefacts/projections/trachoma/${FOLDER_ID}" \
+        -v "/mnt/gcs/ntd-disease-simulator-data/nearterm-projections:/ntdmc/trachoma-amis-integration/projections/artefacts" \
+		-ti gcr.io/artrabbit-clients-ntd/trachoma-amis-pipeline:20250702 \
+		--id=${batch_id} \
+		--folder-id=${TARGET_FOLDER} \
+		--stage=nearterm-projections \
+		--stop-importation \
+		--num-cores=${NUM_CORES}
+
+done
+

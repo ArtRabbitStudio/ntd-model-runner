@@ -53,7 +53,7 @@ SCENARIO=${2}
 
 function log () {
 	STAMP=$( date +%H:%M:%S )
-	echo "$$ ${IU} ${STAMP} | ${1}"
+	echo "$$ ${IU} ${SCENARIO} ${STAMP} | ${1}"
 }
 
 log "starting run for iu: ${IU} scenario: ${SCENARIO}"

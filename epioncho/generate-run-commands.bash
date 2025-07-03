@@ -20,11 +20,13 @@ for disease in Tra:trachoma:trachoma ; do
 	#	gcloud compute scp ${file} ${machine}:${filename} --zone=${zone} --project=artrabbit-clients-ntd
 		echo
 
+		scenario_list="15_VC50,15_VC75,1_VC50,1_VC75,2_VC50,2_VC75,7_VC50,7_VC75,8_VC50,8_VC75"
+
 		cat <<EOF
 cd ~/ntd-model-runner/epioncho && bash ./run.bash \\
 	-f /home/igor/epioncho-20250204-all/epioncho-iu-list-long-codes-20250204-${chunk}.txt \\
 	-S /home/igor/epioncho-20250204-all/scenarios \\
-	-s 19,20,21,22,23,24 \\
+	-s ${scenario_list} \\
 	-n 200 \\
 	-I ntd-disease-simulator-data \\
 	-i diseases/epioncho-ALL-v1-20240805 \\
