@@ -21,7 +21,9 @@
 # gs://ntd-disease-simulator-data/nearterm-projections/trachoma/nearterm-20250703
 
 REGISTRY_PREFIX="gcr.io/artrabbit-clients-ntd"
-DOCKER_IMAGE=${DOCKER_IMAGE:=trachoma-amis-pipeline:20250702}
+DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:=trachoma-amis-pipeline}
+DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG:=20250702}
+DOCKER_IMAGE="${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
 TARGET_FOLDER="nearterm-20250703"
 NUM_CORES=${NUM_CORES:=126}
 START=${1:-1}
@@ -36,8 +38,10 @@ sudo gcsfuse \
     ntd-disease-simulator-data \
     /mnt/gcs/ntd-disease-simulator-data
 
-echo "-> fetching latest Docker image"
-docker pull "${REGISTRY_PREFIX}/${DOCKER_IMAGE}"
+if [[ -z $( docker images | grep "${REGISTRY_PREFIX}/${DOCKER_IMAGE_NAME}" | grep "${DOCKER_IMAGE_TAG}" ) ]] ; then
+    echo "-> fetching latest Docker image"
+    docker pull "${REGISTRY_PREFIX}/${DOCKER_IMAGE}"
+fi
 
 echo "Running batches ${START}-${END} across ${NUM_CORES} cores using image '${DOCKER_IMAGE}'"
 
