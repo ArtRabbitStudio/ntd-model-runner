@@ -26,11 +26,12 @@ done )
 
 echo "-> recreating instances from backup timestamp ${BACKUP_STAMP}"
 
-parallel --colsep ':' -a <( for s in $( gcloud compute images list --project=artrabbit-clients-ntd --no-standard-images --format=json| jq -r '.[]|.name + "," + .sourceDisk'|grep --color=none -E '^temp[0-9]' | sort -V | grep "${BACKUP_STAMP}" ) ; do
+time parallel --colsep ':' -a <( for s in $( gcloud compute images list --project=artrabbit-clients-ntd --no-standard-images --format=json| jq -r '.[]|.name + "," + .sourceDisk'|grep --color=none -E '^temp[0-9]' | sort -V | grep "${BACKUP_STAMP}" ) ; do
+
     machine=$( echo $s | cut -f 1 -d '-' )
     backup=$( echo $s | cut -f 1 -d , )
     zone=$( echo $s | cut -f 9 -d / )
 
     echo $machine:$backup:$zone
-done | head -${NUM_INSTANCES} ) "echo gcloud compute instances create {1} --scopes=storage-full,compute-ro --boot-disk-type=pd-ssd --machine-type=n2d-highcpu-128 --image=projects/artrabbit-clients-ntd/global/images/{2} --zone={3} --project=artrabbit-clients-ntd; echo"
+done | head -${NUM_INSTANCES} ) "gcloud compute instances create {1} --scopes=storage-full,compute-ro --boot-disk-type=pd-ssd --machine-type=n2d-highcpu-128 --image=projects/artrabbit-clients-ntd/global/images/{2} --zone={3} --project=artrabbit-clients-ntd; echo"
 
