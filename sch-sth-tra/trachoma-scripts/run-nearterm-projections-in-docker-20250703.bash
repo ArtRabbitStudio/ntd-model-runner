@@ -45,7 +45,7 @@ for batch_id in $( seq ${START} ${END} ) ; do
 
 	docker run \
 		--rm \
-        -v "/mnt/gcs/ntd-disease-simulator-data/diseases/trachoma/source-data-20250605-espen:/ntdmc/trachoma-amis-integration/projections-prep/artefacts/projections/trachoma/${FOLDER_ID}" \
+        -v "/mnt/gcs/ntd-disease-simulator-data/diseases/trachoma/source-data-20250605-espen:/ntdmc/trachoma-amis-integration/projections-prep/artefacts/projections/trachoma/${TARGET_FOLDER}" \
         -v "/mnt/gcs/ntd-disease-simulator-data/nearterm-projections:/ntdmc/trachoma-amis-integration/projections/artefacts" \
 		-ti ${REGISTRY_PREFIX}/${DOCKER_IMAGE} \
 		--id=${batch_id} \
