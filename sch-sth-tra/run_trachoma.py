@@ -44,7 +44,8 @@ def run_trachoma_model( iu, scenario, numSims, num_cores, vaccineWaningLength, s
           'vacc_reduce_duration':0.5,
           'vacc_coverage': 0,
           'vacc_waning_length': 52 * ( 5 if vaccineWaningLength == None else vaccineWaningLength ),
-          'importation_rate': 0.9**10/(52*2500),
+#          'importation_rate': 0.9**10/(52*2500),
+          'importation_rate': 0,
           'importation_reduction_rate': (0.9)**(1/10),
           'importation_reduction_length': 25,
           'min_importation_rate': 0,
@@ -106,12 +107,12 @@ def run_trachoma_model( iu, scenario, numSims, num_cores, vaccineWaningLength, s
 
     # generate MDA data from coverage file
     coverageFileName = 'scen' + scenario + '.csv'
-    MDAData = readPlatformData(coverageFileName, "MDA")
+    MDAData = readPlatformDataFromModelDataDir(coverageFileName, "MDA")
     MDA_dates = getInterventionDates(MDAData)
     MDA_times = get_Intervention_times(MDA_dates, Start_date, sim_params['burnin'])
     sim_params['N_MDA'] = len(MDA_times)
 
-    VaccData = readPlatformData(coverageFileName, "Vaccine")
+    VaccData = readPlatformDataFromModelDataDir(coverageFileName, "Vaccine")
     Vaccine_dates = getInterventionDates(VaccData)
     vacc_times = get_Intervention_times(Vaccine_dates, Start_date, sim_params['burnin'])
     sim_params['N_Vaccines'] = len(vacc_times)

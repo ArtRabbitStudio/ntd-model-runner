@@ -23,13 +23,13 @@ for disease in Tra:trachoma:trachoma ; do
         DISEASENAME=$( echo $disease | cut -f 3 -d : )
 
         ## FIXME by parameterising CLI: update these for each run
-		RUN_IDENTIFIER="202504a-TRA-espen-with-survey"
-		RUN_IU_DIRECTORY="${DISEASENAME}-IUs-20250412-with-without-surveys"
+		RUN_IDENTIFIER="202507a-TRA-espen-with-without-survey"
+		RUN_IU_DIRECTORY="${DISEASENAME}-IUs-20250707-merged-espen-cloud-fitted-with-nearterm-projections-cloud-fitted"
 		RUN_IU_CHUNK_ROOT="${RUN_IU_DIRECTORY}"
-		SOURCE_DATA_DATE="20250225"
 
         SOURCE_BUCKET="ntd-disease-simulator-data"
-		SOURCE_DIRECTORY="source-data-${SOURCE_DATA_DATE}-espen"
+		SOURCE_DIRECTORY="source-data-20250605-espen-merged-cloud-fitted-state-data-nearterm-projections-20250703"
+        PICKLE_FILENAME_ROOT="Trachoma"
 
         DESTINATION_BUCKET="ntd-endgame-result-data"
 
@@ -57,7 +57,7 @@ for disease in Tra:trachoma:trachoma ; do
 
 		for scenario in _minus1 1 2 3a 3b ; do
 
-            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash ./run-sch-sth-tra.bash -d ${SHORT} -i ${IU_FILE} -n 200 -c ${NUM_CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p ${SOURCE_DIRECTORY} -k ${SOURCE_BUCKET} -K ${DESTINATION_BUCKET} -o ${RUN_IDENTIFIER} -w $((52*10)) -Y ${START_YEAR} -S >/dev/null </dev/null &"
+            echo "nohup env FORCE_ADD_TO_EXISTING_RUN=y DONT_WRITE_DB_RECORD=y bash ./run-sch-sth-tra.bash -d ${SHORT} -i ${IU_FILE} -n 200 -c ${NUM_CORES} -N ${RUN_IDENTIFIER} -e igor@artrabbit.com -s ${scenario} -p ${SOURCE_DIRECTORY} -k ${SOURCE_BUCKET} -I ${PICKLE_FILENAME_ROOT} -K ${DESTINATION_BUCKET} -o ${RUN_IDENTIFIER} -w $((52*10)) -Y ${START_YEAR} >/dev/null </dev/null &"
 
         done
 

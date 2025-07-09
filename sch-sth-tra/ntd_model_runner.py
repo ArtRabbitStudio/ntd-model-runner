@@ -68,6 +68,7 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     burnInTime = run_options.burnInTime if hasattr( run_options, 'burnInTime' ) else None
     outputFolder = run_options.outputFolder if hasattr( run_options, 'outputFolder' ) else '202206'
     sourceBucket = run_options.sourceBucket if hasattr( run_options, 'sourceBucket' ) else 'ntd-disease-simulator-data'
+    pickleFilenameRoot = run_options.pickleFilenameRoot if hasattr( run_options, 'pickleFilenameRoot' ) else 'OutputVals'
     destinationBucket = run_options.destinationBucket if hasattr( run_options, 'destinationBucket' ) else 'ntd-endgame-result-data'
     sourceDataPath = run_options.sourceDataPath if hasattr( run_options, 'sourceDataPath' ) else 'source-data'
     startYear = run_options.startYear if hasattr( run_options, 'startYear' ) else None
@@ -154,8 +155,8 @@ def run( run_info: SimpleNamespace, run_options: SimpleNamespace, DB ):
     if species == 'Trachoma':
 
         # locate pickle file for IU
-        GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/OutputVals_{iu}.p'
-        InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/OutputVals_{iu}.p'
+        GcsInSimFilePath = f'{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/{pickleFilenameRoot}_{iu}.p'
+        InSimFilePath = GcsInSimFilePath if run_options.useCloudStorage else f'{LOCAL_INPUT_DATA_DIR}/{pickleFilenameRoot}_{iu}.p'
 
         # locate Beta input file for IU
         GcsBetaFilePath = f'gs://{sourceBucket}/{DISEASE_CLOUD_SRC_PATH}/{region}/{iu}/InputBet_{iu}.csv'

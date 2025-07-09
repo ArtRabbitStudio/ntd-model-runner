@@ -24,9 +24,9 @@ SCH_MODEL_BRANCH="${SCH_MODEL_BRANCH:-master}"
 TRACHOMA_MODEL_BRANCH="${TRACHOMA_MODEL_BRANCH:-master}"
 POSTPROCESSING_REPO_BRANCH="${POSTPROCESSING_REPO_BRANCH:-main}"
 sed \
-	-e "s/_sch_model_branch_/${SCH_MODEL_BRANCH}/" \
-	-e "s/_trachoma_model_branch_/${TRACHOMA_MODEL_BRANCH}/" \
-	-e "s/_postprocessing_repo_branch_/${POSTPROCESSING_REPO_BRANCH}/" \
+	-e "s|_sch_model_branch_|${SCH_MODEL_BRANCH}|" \
+	-e "s|_trachoma_model_branch_|${TRACHOMA_MODEL_BRANCH}|" \
+	-e "s|_postprocessing_repo_branch_|${POSTPROCESSING_REPO_BRANCH}|" \
 	< pyproject.toml.tpl > pyproject.toml
 
 # clear out existing virtualenv

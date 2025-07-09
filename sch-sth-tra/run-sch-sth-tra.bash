@@ -15,6 +15,7 @@ num_sims=0
 num_procs=0
 source_data_path="source-data"
 source_bucket="ntd-disease-simulator-data"
+pickle_filename_root="OutputVals"
 destination_bucket="ntd-endgame-result-data"
 
 # empty default values
@@ -72,6 +73,7 @@ function usage() {
     echo "    [-X <short-disease-code-suffix>]"
     echo "    [-p <source-data-path>] [-o <output-folder>]"
     echo "    [-k <source-bucket>] [-K destination-bucket>]"
+    echo "    [-I <state-pIckle-data-filename-root>]"
     echo "    [-u (uncompressed)]"
     echo "    [-D (dont-split-SCH-results)]"
     echo "    [-l (local_storage)]"
@@ -156,6 +158,10 @@ function get_options () {
 
         k)
             source_bucket=${OPTARG}
+            ;;
+
+        I)
+            pickle_filename_root=${OPTARG}
             ;;
 
         K)
@@ -445,7 +451,7 @@ function run_scenarios () {
                 output_folder_cmd=" -o ${output_folder}"
             fi
 
-            cmd="time pipenv run python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -Y ${start_year} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${do_trachoma_survey}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
+            cmd="time pipenv run python3 -u run.py -d ${disease} ${cmd_options} -n ${num_sims} -c ${num_procs} -N ${run_name} -Y ${start_year} -e ${person_email} --model-name '${model_name}' --model-path '${model_path}' --model-branch '${model_branch}' --model-commit '${model_commit}' -m ${demogName} -k ${source_bucket} -I ${pickle_filename_root} -K ${destination_bucket} -p ${source_data_path}${output_folder_cmd}${read_pickle_cmd}${save_pickle_cmd}${burn_in_time_cmd}${do_trachoma_survey}${survey_type_cmd}${secular_trend_cmd}${vacc_waning_length}${uncompressed}${dont_split_sch_results}${local_storage}${param_subdir_cmd}${param_file_disease_suffix_cmd}${short_disease_code_suffix_cmd}"
 
             # check if asked to exit gracefully
             if [[ ${CONTINUE_EXECUTION} = 0 ]] ; then
@@ -583,7 +589,7 @@ function maybe_fetch_files () {
 }
 
 # call getopts in global scope to get argv for $0
-while getopts ":d:s:P:x:X:i:n:c:N:e:o:k:K:p:r:f:g:b:Sy:Y:w:TuDlh" opts ; do
+while getopts ":d:s:P:x:X:i:n:c:N:e:o:k:K:I:p:r:f:g:b:Sy:Y:w:TuDlh" opts ; do
     # shellcheck disable=SC2086
     get_options $opts
 done

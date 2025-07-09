@@ -20,6 +20,7 @@ def get_cli_options():
 
     parser.add_option( '-o', '--output-folder', dest='outputFolder', default=None )
     parser.add_option( '-k', '--source-bucket', dest='sourceBucket', default='ntd-disease-simulator-data' )
+    parser.add_option( '-I', '--pickle-filename-root', dest='pickleFilenameRoot', default='OutputVals' )
     parser.add_option( '-K', '--destination-bucket', dest='destinationBucket', default='ntd-endgame-result-data' )
     parser.add_option( '-d', '--disease', dest='disease', default='Man' )
     parser.add_option( '-m', '--demography-name', dest='demogName', default="Default" )
@@ -169,6 +170,7 @@ def run_main():
         'useCloudStorage': options.useCloudStorage,
         'outputFolder': options.outputFolder,
         'sourceBucket': options.sourceBucket,
+        'pickleFilenameRoot': options.pickleFilenameRoot,
         'destinationBucket': options.destinationBucket,
         'groupId': options.groupId if options.groupId != 0 else None,
         'scenario': options.scenario,

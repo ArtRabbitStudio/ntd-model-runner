@@ -11,7 +11,7 @@
 # and with folder-id specified as `nearterm`, the container saved the results into:
 #
 # gs://ntd-disease-simulator-data/nearterm-projections/trachoma/20250702/trachoma/nearterm/BFA/BFA05332/Trachoma_BFA05332.p
-#																				 ^^^^^^^^
+#                                                                                 ^^^^^^^^
 #
 # so that means we need to mount ntd-disease-simulator-data/nearterm-projections
 # onto `artefacts` and specify folder-id as nearterm-20250703
